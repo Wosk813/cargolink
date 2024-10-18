@@ -2,7 +2,7 @@ import { Link } from "@/src/i18n/routing";
 import { useTranslations } from "next-intl";
 
 export default function NavLinks() {
-  const t = useTranslations("sideNav");
+  const t = useTranslations("nav");
 
   const links = [
     {

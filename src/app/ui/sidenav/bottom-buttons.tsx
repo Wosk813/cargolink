@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { GlobeAltIcon } from "@heroicons/react/solid";
+import { GlobeAltIcon } from "@heroicons/react/24/outline";
 import { usePathname, useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 
 export default function BottomButtons() {
-  const t = useTranslations("sideNav");
+  const t = useTranslations("nav");
   const pathname = usePathname();
   const router = useRouter();
   const currentLocale = useLocale();

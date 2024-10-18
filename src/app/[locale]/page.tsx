@@ -1,3 +1,5 @@
+import { redirect } from "@/src/i18n/routing";
+
 export default function HomePage() {
-  return <h1>Hello</h1>;
+  redirect("/announcements");
 }
