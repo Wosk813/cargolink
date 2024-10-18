@@ -1,5 +1,8 @@
 {
-  "HomePage": {
-    "title": "Witaj świecie!"
+  "sideNav": {
+    "announcements": "Planowane trasy",
+    "errands": "Zlecenia",
+    "searchUser": "Wyszukaj użytkownika",
+    "login": "Zaloguj się"
   }
 }

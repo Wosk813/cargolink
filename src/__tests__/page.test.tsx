@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import { render, screen } from "@testing-library/react";
-import Page from "../app/page";
+import Page from "../app/[locale]/page";
 import { NextIntlClientProvider } from "next-intl";
 
 const mockMessages = { HomePage: { title: "Test Title" } };
@@ -12,5 +12,7 @@ test("Page", () => {
     </NextIntlClientProvider>
   );
 
-  expect(screen.getByRole("heading", { level: 1, name: "Test Title" })).toBeDefined();
+  expect(
+    screen.getByRole("heading", { level: 1, name: "Test Title" })
+  ).toBeDefined();
 });

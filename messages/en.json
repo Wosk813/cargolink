@@ -1,5 +1,8 @@
 {
-  "HomePage": {
-    "title": "Hello world!"
+  "sideNav": {
+    "announcements": "Annoucments",
+    "errands": "Errands",
+    "searchUser": "Search user",
+    "login": "Login"
   }
 }
