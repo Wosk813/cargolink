@@ -1,7 +1,7 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import "./globals.css";
-import Nav from "../ui/sidenav/sidenav";
+import Nav from "../ui/nav/nav";
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });

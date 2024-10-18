@@ -24,7 +24,7 @@ export default function Nav() {
         data-testid="side-menu"
         className={`
           ${isMenuOpen ? "fixed" : "hidden"} 
-          md:flex flex-col w-64 h-dvh text-white px-6 
+          md:flex flex flex-col w-64 h-dvh text-white px-6 
           bg-slate-800 z-50
         `}
       >
@@ -37,7 +37,10 @@ export default function Nav() {
         </div>
       </div>
 
-      <div className="flex md:hidden w-full text-white text-4xl py-8 px-5 justify-between font-bold">
+      <div
+        data-testid="page-title"
+        className="flex md:hidden w-full text-white text-4xl py-8 px-5 justify-between font-bold"
+      >
         <p>{t(currentPath)}</p>
         <Bars3Icon
           data-testid="menu-button"
