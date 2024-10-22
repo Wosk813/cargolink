@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.1.5",
+    "@vercel/postgres": "^0.10.0",
+    "bcryptjs": "^2.4.3",
     "next": "14.2.15",
     "next-intl": "^3.21.1",
     "react": "^18",
@@ -21,6 +23,8 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.2",
     "@testing-library/react": "^16.0.1",
+    "@types/bcrypt": "^5.0.2",
+    "@types/bcryptjs": "^2.4.6",
     "@types/jest": "^29.5.13",
     "@types/node": "20.16.12",
     "@types/react": "18.3.11",

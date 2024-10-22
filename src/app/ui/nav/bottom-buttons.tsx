@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -31,7 +31,7 @@ export default function BottomButtons() {
         </select>
         <GlobeAltIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white" />
       </div>
-      <Link href={`/${currentLocale}/login`} className="w-full">
+      <Link href={`/${currentLocale}/auth/login`} className="w-full">
         <p className="bg-slate-700 py-2 px-2 my-4 text-center rounded-md w-full">
           {t("login")}
         </p>

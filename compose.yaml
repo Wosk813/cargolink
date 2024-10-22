@@ -1,5 +1,4 @@
 version: "1.0"
-
 services:
   app:
     build: .
@@ -10,12 +9,11 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
-    command: npm run dev
 
   database:
     image: postgres:16.3
     environment:
-      POSTGRES_USER: root
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
       POSTGRES_DB: cargolink
     volumes:

@@ -4,7 +4,7 @@
 
 -- Dumped from database version 16.3 (Debian 16.3-1.pgdg120+1)
 -- Dumped by pg_dump version 16.4 (Homebrew)
-
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;

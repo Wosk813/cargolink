@@ -1,20 +1,19 @@
-# Use official Node.js image as the base
 FROM node:18-alpine
 
-# Set the working directory inside the container
+# Instalacja niezbędnych pakietów do kompilacji
+RUN apk add --no-cache python3 make g++ linux-headers
+
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Kopiowanie plików package
 COPY package*.json ./
 
-# Install dependencies
+# Instalacja zależności
 RUN npm install
 
-# Copy the rest of the application files to the container
+# Kopiowanie reszty aplikacji
 COPY . .
 
-# Expose the port the app runs on
 EXPOSE 3000
 
-# Command to run the Next.js app in development mode
 CMD ["npm", "run", "dev"]
