@@ -14,11 +14,12 @@
     "@heroicons/react": "^2.1.5",
     "@vercel/postgres": "^0.10.0",
     "bcryptjs": "^2.4.3",
-    "next": "14.2.15",
+    "next": "^15.0.0",
     "next-intl": "^3.21.1",
     "react": "^18",
     "react-dom": "^18",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.2",

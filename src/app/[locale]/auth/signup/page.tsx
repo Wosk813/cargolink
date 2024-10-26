@@ -1,4 +1,4 @@
-import LoginForm from "@/src/app/ui/auth/login-form";
+import { SignupForm } from "@/src/app/ui/auth/signup-form";
 
 export default function Page() {
   return (
@@ -8,7 +8,7 @@ export default function Page() {
         Dołącz do nas i uprość swoje procesy logistyczne. CargoLink – Twój
         niezawodny partner w świecie transportu!
       </p>
-      {/* <LoginForm /> */}
+      <SignupForm />
     </div>
   );
 }
