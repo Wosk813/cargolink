@@ -1,11 +1,11 @@
 "use client";
 
 import { authenticate } from "../../lib/actions";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
 import { MouseEvent } from "react";
 
 export default function LoginForm() {
-  const [errorMessage, dispatch] = useFormState(authenticate, undefined);
+  const [errorMessage, dispatch] = useActionState(authenticate, undefined);
 
   return (
     <form className="text-black" action={dispatch}>
