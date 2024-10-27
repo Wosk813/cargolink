@@ -1,6 +1,6 @@
 "use client";
 
-import { authenticate } from "../../lib/actions";
+import { authenticate } from "../../../lib/actions";
 import { useFormStatus } from "react-dom";
 import { MouseEvent } from "react";
 

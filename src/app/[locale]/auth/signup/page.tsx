@@ -2,12 +2,8 @@ import { SignupForm } from "@/src/app/ui/auth/signup-form";
 
 export default function Page() {
   return (
-    <div className="md:bg-slate-800 h-full px-12 py-8 w-full md:w-6/12 md:justify-center flex flex-col gap-6">
-      <h1 className="text-5xl font-bold md:text-center">CargoLink</h1>
-      <p className="md:text-slate-400 text-xl">
-        Dołącz do nas i uprość swoje procesy logistyczne. CargoLink – Twój
-        niezawodny partner w świecie transportu!
-      </p>
+    <div className="md:bg-slate-800 h-full px-12 py-8 w-full md:w-4/12 md:justify-center flex flex-col gap-6">
+      <h1 className="text-5xl font-bold md:text-center">Dołącz do nas</h1>
       <SignupForm />
     </div>
   );
