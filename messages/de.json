@@ -3,6 +3,23 @@
     "announcements": "Geplante Routen",
     "errands": "Bestellungen",
     "searchUser": "Benutzersuche",
-    "login": "Einloggen"
+    "login": "Einloggen",
+    "signup": "Registrieren"
+  },
+  "login": {
+    "login": "Einloggen",
+    "or": "oder",
+    "dontHaveAccount": "Sie haben kein Konto?",
+    "register": "Registrieren"
+  },
+  "signup": {
+    "joinUs": "Mach mit",
+    "firstname": "Vorname",
+    "lastname": "Nachname",
+    "repeatEmail": "E-Mail wiederholen",
+    "password": "Passwort",
+    "repeatPassword": "Passwort wiederholen",
+    "next": "Weiter",
+    "back": "Zurück"
   }
 }

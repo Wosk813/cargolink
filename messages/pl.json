@@ -3,6 +3,24 @@
     "announcements": "Planowane trasy",
     "errands": "Zlecenia",
     "searchUser": "Wyszukaj użytkownika",
-    "login": "Zaloguj się"
+    "login": "Zaloguj się",
+    "signup": "Zarejestruj się"
+  },
+  "login":{
+    "login": "Zaloguj się",
+    "or": "lub",
+    "dontHaveAccount": "Nie masz konta?",
+    "register": "Zarejestruj się"
+  },
+  "signup":
+  {
+    "joinUs": "Dołącz do nas",
+    "firstname": "Imię",
+    "lastname": "Nazwisko",
+    "repeatEmail": "Powtórz E-mail",
+    "password": "Hasło",
+    "repeatPassword": "Powtórz hasło",
+    "next": "Dalej",
+    "back": "Wróć"
   }
 }

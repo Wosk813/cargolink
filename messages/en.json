@@ -3,6 +3,23 @@
     "announcements": "Annoucments",
     "errands": "Errands",
     "searchUser": "Search user",
-    "login": "Login"
+    "login": "Login",
+    "signup": "Sign up"
+  },
+  "login": {
+    "login": "Log in",
+    "or": "or",
+    "dontHaveAccount": "Don't have account?",
+    "register": "Register"
+  },
+  "signup": {
+    "joinUs": "Join us",
+    "firstname": "Firstname",
+    "lastname": "Lastname",
+    "repeatEmail": "Repeat E-mail",
+    "password": "Password",
+    "repeatPassword": "Repeat password",
+    "next": "Next",
+    "back": "Back"
   }
 }
