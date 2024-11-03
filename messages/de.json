@@ -20,6 +20,12 @@
     "password": "Passwort",
     "repeatPassword": "Passwort wiederholen",
     "next": "Weiter",
-    "back": "Zurück"
+    "back": "Zurück",
+    "atLeastLength": "sollte mindestens {min} Zeichen haben",
+    "enterValidEmail": "Geben Sie eine gültige E-Mail-Adresse ein",
+    "atLeastLetter": "Das Passwort sollte mindestens einen Buchstaben enthalten",
+    "atLeastNumber": "Das Passwort sollte mindestens eine Zahl enthalten",
+    "emailDontMatch": "Die eingegebenen E-Mail-Adressen stimmen nicht überein",
+    "passwordDontMatch": "Die eingegebenen Passwörter stimmen nicht überein"
   }
 }

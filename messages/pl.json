@@ -6,14 +6,13 @@
     "login": "Zaloguj się",
     "signup": "Zarejestruj się"
   },
-  "login":{
+  "login": {
     "login": "Zaloguj się",
     "or": "lub",
     "dontHaveAccount": "Nie masz konta?",
     "register": "Zarejestruj się"
   },
-  "signup":
-  {
+  "signup": {
     "joinUs": "Dołącz do nas",
     "firstname": "Imię",
     "lastname": "Nazwisko",
@@ -22,6 +21,11 @@
     "repeatPassword": "Powtórz hasło",
     "next": "Dalej",
     "back": "Wróć",
-    "atLeast": "powinno mieć co najmniej "
+    "atLeastLength": "powinno mieć co najmniej {min} długości",
+    "enterValidEmail": "Wprowadź poprawny E-mail",
+    "atLeastLetter": "Hasło powinno mieć co najmniej jedną literę",
+    "atLeastNumber": "Hasło powinno mieć co najmniej jedną liczbę",
+    "emailDontMatch": "Wprowadzone E-mail'e nie są identyczne",
+    "passwordDontMatch": "Wprowadzone hasła nie są identyczne"
   }
 }

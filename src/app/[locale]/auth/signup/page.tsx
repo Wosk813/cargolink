@@ -1,11 +1,11 @@
-import { SignupForm } from "@/src/app/ui/auth/signup-form";
-import { useTranslations } from "next-intl";
+import { SignupForm } from '@/src/app/ui/auth/signup-form';
+import { useTranslations } from 'next-intl';
 
 export default function Page() {
-  const t = useTranslations('signup')
+  const t = useTranslations('signup');
   return (
-    <div className="md:bg-slate-800 h-full px-12 py-8 w-full md:w-4/12 md:justify-center flex flex-col gap-6">
-      <h1 className="text-3xl font-bold md:text-center">{t("joinUs")}</h1>
+    <div className="flex h-full w-full flex-col gap-6 px-12 py-8 md:w-4/12 md:justify-center md:bg-slate-800">
+      <h1 className="text-3xl font-bold md:text-center">{t('joinUs')}</h1>
       <SignupForm />
     </div>
   );

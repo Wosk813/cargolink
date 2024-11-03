@@ -1,15 +1,17 @@
-'use server'
+'use server';
 
-import { SignupFormSchema, FormState } from "../lib/definitions";
+import { SignupFormSchema, FormState } from '../lib/definitions';
+import { getTranslations } from 'next-intl/server';
 
 export async function signup(state: FormState, formData: FormData) {
-  const validatedFields = SignupFormSchema.safeParse({
-    firstname: formData.get("firstname"),
-    lastname: formData.get("lastname"),
-    email: formData.get("email"),
-    repeatEmail: formData.get("repeatEmail"),
-    password: formData.get("password"),
-    repeatPassword: formData.get("repeatPassword"),
+  const t = await getTranslations('signup');
+  const validatedFields = SignupFormSchema(t).safeParse({
+    firstname: formData.get('firstname'),
+    lastname: formData.get('lastname'),
+    email: formData.get('email'),
+    repeatEmail: formData.get('repeatEmail'),
+    password: formData.get('password'),
+    repeatPassword: formData.get('repeatPassword'),
   });
 
   if (!validatedFields.success) {

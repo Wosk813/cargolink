@@ -1,21 +1,21 @@
-import { Link } from "@/src/i18n/routing";
-import { useTranslations } from "next-intl";
+import { Link } from '@/src/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 export default function NavLinks() {
-  const t = useTranslations("nav");
+  const t = useTranslations('nav');
 
   const links = [
     {
-      name: t("announcements"),
-      href: "/announcements",
+      name: t('announcements'),
+      href: '/announcements',
     },
     {
-      name: t("errands"),
-      href: "/errands",
+      name: t('errands'),
+      href: '/errands',
     },
     {
-      name: t("searchUser"),
-      href: "/search/user",
+      name: t('searchUser'),
+      href: '/search/user',
     },
   ];
 
@@ -24,9 +24,7 @@ export default function NavLinks() {
       {links.map((link) => {
         return (
           <Link key={link.name} href={link.href}>
-            <p className="bg-slate-700 py-2 px-2 my-4 text-center rounded-md">
-              {link.name}
-            </p>
+            <p className="my-4 rounded-md bg-slate-700 px-2 py-2 text-center">{link.name}</p>
           </Link>
         );
       })}

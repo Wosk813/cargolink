@@ -14,12 +14,18 @@
   },
   "signup": {
     "joinUs": "Join us",
-    "firstname": "Firstname",
-    "lastname": "Lastname",
-    "repeatEmail": "Repeat E-mail",
+    "firstname": "First name",
+    "lastname": "Last name",
+    "repeatEmail": "Repeat Email",
     "password": "Password",
     "repeatPassword": "Repeat password",
     "next": "Next",
-    "back": "Back"
+    "back": "Back",
+    "atLeastLength": "should have at least {min} characters",
+    "enterValidEmail": "Enter a valid Email",
+    "atLeastLetter": "Password should have at least one letter",
+    "atLeastNumber": "Password should have at least one number",
+    "emailDontMatch": "Entered Emails don't match",
+    "passwordDontMatch": "Entered passwords don't match"
   }
 }

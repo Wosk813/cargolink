@@ -1,9 +1,9 @@
-version: "1.0"
+version: '1.0'
 services:
   app:
     build: .
     ports:
-      - "3000:3000"
+      - '3000:3000'
     volumes:
       - .:/app
       - /app/node_modules
@@ -19,4 +19,4 @@ services:
     volumes:
       - ./database.sql:/docker-entrypoint-initdb.d/database.sql
     ports:
-      - "5432:5432"
+      - '5432:5432'
