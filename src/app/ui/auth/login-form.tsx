@@ -2,6 +2,7 @@
 
 import { Button } from "../button";
 import { useTranslations } from "next-intl";
+import { Input } from "../input";
 
 export default function LoginForm() {
   const t = useTranslations("login")

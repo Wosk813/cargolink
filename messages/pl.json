@@ -21,6 +21,7 @@
     "password": "Hasło",
     "repeatPassword": "Powtórz hasło",
     "next": "Dalej",
-    "back": "Wróć"
+    "back": "Wróć",
+    "atLeast": "powinno mieć co najmniej "
   }
 }

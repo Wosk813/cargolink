@@ -4,7 +4,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export function Input({ title, className = "", ...rest }: InputProps) {
   return (
-    <div className="bg-slate-700 px-2 py-2 rounded-md">
+    <div className="bg-slate-700 px-2 py-1 rounded-md">
       <p className="text-slate-400 text-sm">{title}</p>
       <input
         type="text"

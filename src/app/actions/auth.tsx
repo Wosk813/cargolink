@@ -3,14 +3,15 @@
 import { SignupFormSchema, FormState } from "../lib/definitions";
 
 export async function signup(state: FormState, formData: FormData) {
-  // Validate form fields
   const validatedFields = SignupFormSchema.safeParse({
-    name: formData.get("name"),
+    firstname: formData.get("firstname"),
+    lastname: formData.get("lastname"),
     email: formData.get("email"),
+    repeatEmail: formData.get("repeatEmail"),
     password: formData.get("password"),
+    repeatPassword: formData.get("repeatPassword"),
   });
 
-  // If any form fields are invalid, return early
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
