@@ -15,7 +15,7 @@ export const SignupFormSchema = (t: any) =>
         .string()
         .email({ message: t('enterValidEmail') })
         .trim(),
-      repeatEmail: z.string().email().trim(),
+      repeatEmail: z.string(),
       password: z
         .string()
         .min(5, { message: t('password') + ' ' + t('atLeastLength', { min: 5 }) })

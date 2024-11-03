@@ -32,7 +32,7 @@ export function SignupForm() {
             <div>
               <ul>
                 {state.errors.password.map((error) => (
-                  <li key={error}>- {error}</li>
+                  <li className='text-sm text-red-500' key={error}>{error}</li>
                 ))}
               </ul>
             </div>
