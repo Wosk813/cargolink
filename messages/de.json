@@ -9,7 +9,7 @@
   "login": {
     "login": "Einloggen",
     "or": "oder",
-    "dontHaveAccount": "Sie haben kein Konto?",
+    "dontHaveAccount": "Haben Sie kein Konto?",
     "register": "Registrieren"
   },
   "signup": {
@@ -26,6 +26,34 @@
     "atLeastLetter": "Das Passwort sollte mindestens einen Buchstaben enthalten",
     "atLeastNumber": "Das Passwort sollte mindestens eine Zahl enthalten",
     "emailDontMatch": "Die eingegebenen E-Mail-Adressen stimmen nicht überein",
-    "passwordDontMatch": "Die eingegebenen Passwörter stimmen nicht überein"
+    "passwordDontMatch": "Die eingegebenen Passwörter stimmen nicht überein",
+    "nipIsNotValid": "Die NIP sollte {length} Zeichen haben",
+    "companyName": "Unternehmensname",
+    "selectCountry": "Land auswählen",
+    "postalCodeIsNotValid": "Die Postleitzahl ist ungültig, sie sollte {length} Zeichen haben",
+    "city": "Stadt",
+    "street": "Straße",
+    "submit": "Registrieren",
+    "selectAccountType": "Kontotyp auswählen",
+    "acceptStatute": "Akzeptiere die Allgemeinen Geschäftsbedingungen",
+    "whatLanguagesDoYouKnow": "Welche Sprachen sprechen Sie?",
+    "whatLanguagesDoYouKnowDesc": "Wählen Sie die Sprachen aus, die Sie sprechen. Diese werden auf Ihrem Profil angezeigt, um die Kommunikation mit anderen Nutzern zu erleichtern.",
+    "asCompany": "Möchten Sie die Anwendung als Unternehmen oder als Privatperson nutzen?",
+    "asCompanyDesc": "Die in diesen Feldern eingegebenen Daten werden verwendet, um die Vertragserstellung so einfach wie möglich für Sie zu gestalten.",
+    "accountType": "Wie möchten Sie den Service nutzen?",
+    "asCarrier": "Ich möchte Transportdienstleistungen anbieten",
+    "asCarrierDesc": "Als Transporteur auf unserer Plattform können Sie schnell und einfach Transportaufträge finden, die zu Ihren Routen und Ihrem Zeitplan passen. Mit unserer Plattform erhalten Sie Zugang zu einer Vielzahl von Aufträgen, wodurch Sie Ihre Ressourcen optimal nutzen und Leerfahrten vermeiden können. Zusätzlich können Sie Ihren Ruf durch Bewertungen und Kommentare von Auftraggebern aufbauen, was die Anzahl der Aufträge und langfristige Geschäftsbeziehungen steigert.",
+    "asPrincipal": "Ich möchte Transportdienstleistungen in Anspruch nehmen",
+    "asPrincipalDesc": "Als Auftraggeber auf unserer Plattform können Sie den Transport Ihrer Waren schnell und bequem beauftragen. Unsere Plattform hilft Ihnen, geeignete Transportunternehmen zu finden, die Ihre Anforderungen erfüllen und einen sicheren und termingerechten Transport gewährleisten.",
+    "company": "Unternehmen",
+    "companyFullName": "Vollständiger Unternehmensname",
+    "country": "Land",
+    "postalCode": "Postleitzahl",
+    "asPhisicalPerson": "Privatperson",
+    "chooseLanguages": "Wählen Sie die Sprachen, die Sie sprechen",
+    "acceptedStatute": "Ich habe die Allgemeinen Geschäftsbedingungen gelesen und akzeptiere sie"
+  },
+  "search": {
+    "searchUser": "Nach einem Benutzer suchen"
   }
 }

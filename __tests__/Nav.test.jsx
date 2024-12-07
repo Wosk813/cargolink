@@ -29,7 +29,6 @@ const messages = {
 
 describe('Nav', () => {
   beforeEach(() => {
-    // Ustaw domyślną wartość dla mockUsePathname przed każdym testem
     mockUsePathname.mockReturnValue('/pl/announcements');
   });
   it('renders a heading', () => {

@@ -5,7 +5,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export function Input({ title, className = '', error, ...rest }: InputProps) {
   return (
-    <div className="rounded-md bg-slate-700 px-2 py-1">
+    <div className="w-full rounded-md bg-slate-700 px-2 py-1">
       <p className="text-sm text-slate-400">{title}</p>
       <input
         type="text"
@@ -14,7 +14,7 @@ export function Input({ title, className = '', error, ...rest }: InputProps) {
           error ? 'border border-red-500' : ''
         } ${className}`}
       />
-      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+      {error && <div className="mt-1 text-sm text-red-500">{error}</div>}
     </div>
   );
 }

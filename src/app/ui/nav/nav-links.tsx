@@ -15,7 +15,7 @@ export default function NavLinks() {
     },
     {
       name: t('searchUser'),
-      href: '/search/user',
+      href: '/search/searchUser',
     },
   ];
 

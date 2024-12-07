@@ -1,6 +1,6 @@
 {
   "nav": {
-    "announcements": "Annoucments",
+    "announcements": "Announcements",
     "errands": "Errands",
     "searchUser": "Search user",
     "login": "Login",
@@ -9,7 +9,7 @@
   "login": {
     "login": "Log in",
     "or": "or",
-    "dontHaveAccount": "Don't have account?",
+    "dontHaveAccount": "Don't have an account?",
     "register": "Register"
   },
   "signup": {
@@ -26,6 +26,34 @@
     "atLeastLetter": "Password should have at least one letter",
     "atLeastNumber": "Password should have at least one number",
     "emailDontMatch": "Entered Emails don't match",
-    "passwordDontMatch": "Entered passwords don't match"
+    "passwordDontMatch": "Entered passwords don't match",
+    "nipIsNotValid": "NIP should have {length} characters",
+    "companyName": "Company name",
+    "selectCountry": "Select country",
+    "postalCodeIsNotValid": "Postal code is invalid, it should have {length} characters",
+    "city": "City",
+    "street": "Street",
+    "submit": "Sign up",
+    "selectAccountType": "Select account type",
+    "acceptStatute": "Accept the terms and conditions",
+    "whatLanguagesDoYouKnow": "What languages do you know?",
+    "whatLanguagesDoYouKnowDesc": "Select the languages you use. They will be displayed on your profile, making it easier to communicate with other users.",
+    "asCompany": "Do you intend to use the application as a company or an individual?",
+    "asCompanyDesc": "The data entered in these fields will be used to make contract generation require as little input from you as possible.",
+    "accountType": "How do you intend to use the service?",
+    "asCarrier": "I want to provide transportation services",
+    "asCarrierDesc": "As a carrier on our platform, you will be able to quickly and easily find transportation orders that match your routes and schedule. With our platform, you will gain access to a wide range of orders, helping you maximize your resources and avoid empty runs. Additionally, you can build your reputation through ratings and reviews from clients, increasing the number of orders and fostering long-term business relationships.",
+    "asPrincipal": "I want to request transportation services",
+    "asPrincipalDesc": "As a principal on our platform, you will enjoy the convenience of quickly and efficiently arranging the transportation of your goods. Our platform will help you find suitable carriers who meet your requirements and ensure safe and timely delivery.",
+    "company": "Company",
+    "companyFullName": "Full company name",
+    "country": "Country",
+    "postalCode": "Postal code",
+    "asPhisicalPerson": "Individual",
+    "chooseLanguages": "Choose the languages you know",
+    "acceptedStatute": "I have read and accept the terms and conditions"
+  },
+  "search": {
+    "searchUser": "Search user"
   }
 }

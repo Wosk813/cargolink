@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const SignupFormSchema = (t: any) =>
+export const SignupFormFirstStepSchema = (t: any) =>
   z
     .object({
       firstname: z
@@ -43,16 +43,43 @@ export const SignupFormSchema = (t: any) =>
       }
     });
 
-export type FormState =
-  | {
-      errors?: {
-        firstname?: string[];
-        lastname?: string[];
-        email?: string[];
-        repeatEmail?: string[];
-        password?: string[];
-        repeatPassword?: string[];
-      };
-      message?: string;
-    }
-  | undefined;
+export const SignupFormThirdSchema = (t: any) =>
+  z.object({
+    companyName: z
+      .string()
+      .min(2, { message: t('companyName') + ' ' + t('atLeastLength', { min: 2 }) }),
+    nip: z.string().length(10, { message: t('nipIsNotValid', { length: 10 }) }),
+    country: z.string().min(2, { message: t('selectCountry') }),
+    postalCode: z.string().length(6, { message: t('postalCodeIsNotValid', { length: 6 }) }),
+    city: z.string().min(2, { message: t('city') + ' ' + t('atLeastLength', { min: 2 }) }),
+    street: z.string().min(2, { message: t('street') + ' ' + t('atLeastLength', { min: 2 }) }),
+  });
+
+export interface ValidationErrors {
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  repeatEmail?: string;
+  password?: string | string[];
+  repeatPassword?: string;
+  accountType?: string;
+  companyName?: string;
+  nip?: string;
+  country?: string;
+  postalCode?: string;
+  city?: string;
+  street?: string;
+  isStatuteAccepted?: string;
+  [key: string]: string | string[] | undefined;
+}
+
+export enum ButtonTypes {
+  Primary,
+  Secondary,
+  Tertiary,
+}
+
+export enum AccountType {
+  Carrier = 'carrier',
+  Principal = 'principal',
+}
