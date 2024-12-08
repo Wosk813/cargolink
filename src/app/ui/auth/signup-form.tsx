@@ -1,6 +1,6 @@
 'use client';
 
-import { AccountType, ButtonTypes } from '../../lib/definitions';
+import { AccountType, ButtonTypes, ValidationErrors } from '../../lib/definitions';
 import { Input } from '../input';
 import { Button } from '../button';
 import React, { useState } from 'react';
@@ -19,7 +19,7 @@ import InputCheckbox from '@/src/app/ui/inputCheckbox';
 export function SignupForm() {
   const t = useTranslations('signup');
   const [step, setStep] = useState(1);
-  const [errors, setErrors] = useState<Record<string, string | string[]>>({});
+  const [errors, setErrors] = useState<ValidationErrors>({});
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
