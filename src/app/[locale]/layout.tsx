@@ -3,6 +3,7 @@ import { getMessages } from 'next-intl/server';
 import './globals.css';
 import Nav from '../ui/nav/nav';
 import { Inter } from 'next/font/google';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -26,6 +27,7 @@ export default async function LocaleLayout(props: {
             <Nav />
             <main className="relative flex-1">
               <div className="h-full px-5 md:py-8">{children}</div>
+              <SpeedInsights />
             </main>
           </div>
         </NextIntlClientProvider>
