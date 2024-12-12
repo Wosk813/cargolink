@@ -4,8 +4,15 @@ import './globals.css';
 import Nav from '../ui/nav/nav';
 import { Inter } from 'next/font/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Metadata } from 'next';
 
 const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: 'CargoLink',
+  description:
+    'Dołącz do nas i uprość swoje procesy logistyczne. CargoLink – Twój niezawodny partner w świecie transportu!',
+};
 
 export default async function LocaleLayout(props: {
   children: React.ReactNode;
