@@ -1,6 +1,12 @@
 'use client';
 
-import { AccountType, ButtonTypes, CompanyData, SignupFormData, ValidationErrors } from '../../lib/definitions';
+import {
+  AccountType,
+  ButtonTypes,
+  CompanyData,
+  SignupFormData,
+  ValidationErrors,
+} from '../../lib/definitions';
 import { Input } from '../input';
 import { Button } from '../button';
 import React, { useState } from 'react';
@@ -71,7 +77,7 @@ export function SignupForm() {
         setErrors({});
       } else {
         try {
-          await signup(formData)
+          await signup(formData);
         } catch (error) {
           console.error('Submission error:', error);
         }

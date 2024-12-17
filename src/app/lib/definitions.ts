@@ -74,17 +74,17 @@ export interface ValidationErrors {
 }
 
 export interface SignupFormData {
-  firstname?: string,
-  lastname?: string,
-  email?: string,
-  repeatEmail?: string,
-  password?: string,
-  repeatPassword?: string,
-  accountType?: AccountType,
-  asCompany?: boolean,
-  company: CompanyData,
-  languages?: string[],
-  isStatuteAccepted: boolean,
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  repeatEmail?: string;
+  password?: string;
+  repeatPassword?: string;
+  accountType?: AccountType;
+  asCompany?: boolean;
+  company: CompanyData;
+  languages?: string[];
+  isStatuteAccepted: boolean;
 }
 
 export interface CompanyData {
