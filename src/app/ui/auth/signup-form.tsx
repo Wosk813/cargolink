@@ -1,6 +1,6 @@
 'use client';
 
-import { AccountType, ButtonTypes, ValidationErrors } from '../../lib/definitions';
+import { AccountType, ButtonTypes, CompanyData, SignupFormData, ValidationErrors } from '../../lib/definitions';
 import { Input } from '../input';
 import { Button } from '../button';
 import React, { useState } from 'react';
@@ -15,26 +15,27 @@ import { useTranslations } from 'next-intl';
 import CountrySelector from '@/src/app/ui/countrySelector';
 import LanguageSelector from '@/src/app/ui/languageSelector';
 import InputCheckbox from '@/src/app/ui/inputCheckbox';
+import { signup } from '@/src/app/actions/auth';
 
 export function SignupForm() {
   const t = useTranslations('signup');
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState<ValidationErrors>({});
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<SignupFormData>({
     firstname: '',
     lastname: '',
     email: '',
     repeatEmail: '',
     password: '',
     repeatPassword: '',
-    accountType: '',
+    accountType: AccountType.Carrier,
     asCompany: true,
     company: {},
     languages: [],
     isStatuteAccepted: false,
   });
 
-  const [companyData, setCompanyData] = useState({
+  const [companyData, setCompanyData] = useState<CompanyData>({
     companyName: '',
     nip: '',
     country: '',
@@ -61,7 +62,8 @@ export function SignupForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const stepErrors = validateCurrentStep();
+
+    const stepErrors = await validateCurrentStep();
 
     if (Object.keys(stepErrors).length === 0) {
       if (step < 4) {
@@ -69,7 +71,7 @@ export function SignupForm() {
         setErrors({});
       } else {
         try {
-          console.log('Form submitted:', { ...formData, ...companyData });
+          await signup(formData)
         } catch (error) {
           console.error('Submission error:', error);
         }
@@ -79,10 +81,10 @@ export function SignupForm() {
     }
   };
 
-  const validateCurrentStep = () => {
+  const validateCurrentStep = async () => {
     switch (step) {
       case 1:
-        return validateFirstStep(t, formData);
+        return await validateFirstStep(t, formData);
       case 2:
         return validateSecondStep(t, formData);
       case 3:

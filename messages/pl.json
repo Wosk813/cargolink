@@ -51,7 +51,8 @@
     "postalCode": "Kod pocztowy",
     "asPhisicalPerson": "Osoba fizyczna",
     "chooseLanguages": "Wybierz języki jakie znasz",
-    "acceptedStatute": "Przeczytałem/am regulamin i go akceptuje"
+    "acceptedStatute": "Przeczytałem/am regulamin i go akceptuje",
+    "emailIsUsed": "Ten e-mail jest już przez kogoś używany"
   },
   "search": {
     "searchUser": "Wyszukaj użytkownika"

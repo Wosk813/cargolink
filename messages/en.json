@@ -51,7 +51,8 @@
     "postalCode": "Postal code",
     "asPhisicalPerson": "Individual",
     "chooseLanguages": "Choose the languages you know",
-    "acceptedStatute": "I have read and accept the terms and conditions"
+    "acceptedStatute": "I have read and accept the terms and conditions",
+    "emailIsUsed": "This email is already used by someone"
   },
   "search": {
     "searchUser": "Search user"

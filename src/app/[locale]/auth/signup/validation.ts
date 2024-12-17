@@ -3,10 +3,16 @@ import {
   SignupFormThirdSchema,
   ValidationErrors,
 } from '@/src/app/lib/definitions';
+import { checkIfUserExists } from '@/src/app/actions/auth';
 
-export const validateFirstStep = (t: any, formData: any): ValidationErrors => {
+export const validateFirstStep = async (t: any, formData: any): Promise<ValidationErrors> => {
   try {
     SignupFormFirstStepSchema(t).parse(formData);
+    const emailExistsErrors = await checkIfUserExists(formData);
+    if (emailExistsErrors.email) {
+      return emailExistsErrors;
+    }
+
     return {};
   } catch (error: any) {
     const stepErrors: ValidationErrors = {};

@@ -73,6 +73,29 @@ export interface ValidationErrors {
   [key: string]: string | string[] | undefined;
 }
 
+export interface SignupFormData {
+  firstname?: string,
+  lastname?: string,
+  email?: string,
+  repeatEmail?: string,
+  password?: string,
+  repeatPassword?: string,
+  accountType?: AccountType,
+  asCompany?: boolean,
+  company: CompanyData,
+  languages?: string[],
+  isStatuteAccepted: boolean,
+}
+
+export interface CompanyData {
+  companyName?: string;
+  nip?: string;
+  country?: string;
+  postalCode?: string;
+  city?: string;
+  street?: string;
+}
+
 export enum ButtonTypes {
   Primary,
   Secondary,
