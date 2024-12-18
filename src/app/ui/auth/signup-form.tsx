@@ -113,6 +113,7 @@ export function SignupForm() {
         return (
           <>
             <Input
+              data-testid="firstname-input"
               name="firstname"
               title={t('firstname')}
               error={errors.firstname as string}
@@ -307,7 +308,9 @@ export function SignupForm() {
             {t('back')}
           </Button>
         )}
-        <Button type="submit">{step === 4 ? t('submit') : t('next')}</Button>
+        <Button data-testid="button-next" type="submit">
+          {step === 4 ? t('submit') : t('next')}
+        </Button>
       </div>
     </form>
   );
