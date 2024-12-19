@@ -17,6 +17,20 @@ export async function signup(formData: SignupFormData) {
       'INSERT INTO companies (name, nip, country, city, street, postal_code) VALUES ($1, $2, $3, $4, $5, $6)',
       [companyName, nip, country, city, street, postalCode],
     );
+    const results = await sql('SELECT * FROM companies WHERE nip = $1', [nip]);
+    await sql(
+      'INSERT INTO users (first_name, last_name, email, password, account_type, company_id, languages, is_phisical_person) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+      [
+        firstname,
+        lastname,
+        email,
+        password,
+        accountType,
+        results[0]['company_id'],
+        languages,
+        false,
+      ],
+    );
   } else {
     await sql(
       'INSERT INTO users (first_name, last_name, email, password, account_type, company_id, languages, is_phisical_person) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
