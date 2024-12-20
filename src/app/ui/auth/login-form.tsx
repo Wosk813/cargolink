@@ -1,12 +1,9 @@
-'use client';
-
 import { Button } from '../button';
-import { useTranslations } from 'next-intl';
 import { Input } from '../input';
+import { useTranslations } from 'next-intl';
 
 export default function LoginForm() {
   const t = useTranslations('login');
-
   return (
     <form className="flex flex-col gap-4 text-black">
       <Input type="email" name="email" title="Email" required />

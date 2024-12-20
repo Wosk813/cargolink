@@ -8,10 +8,7 @@ export default function Page() {
     <div className="flex h-full w-full flex-col justify-between px-4 py-4 md:w-6/12 md:justify-center md:gap-12 md:bg-slate-800 md:px-8">
       <div className="flex flex-col gap-12">
         <h1 className="text-5xl font-bold md:text-7xl">CargoLink</h1>
-        <p className="text-xl md:text-slate-400">
-          Dołącz do nas i uprość swoje procesy logistyczne. CargoLink – Twój niezawodny partner w
-          świecie transportu!
-        </p>
+        <p className="text-xl md:text-slate-400">{t('desc')}</p>
       </div>
       <div className={'w-full rounded-2xl bg-slate-800 p-6 md:p-0'}>
         <LoginForm />

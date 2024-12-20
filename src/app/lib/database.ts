@@ -3,10 +3,12 @@
 import { neon } from '@neondatabase/serverless';
 import { SignupFormData, ValidationErrors } from '@/src/app/lib/definitions';
 import { getTranslations } from 'next-intl/server';
+import { createSession } from '@/src/app/lib/session';
+import { redirect } from 'next/navigation';
 
 const sql = neon(`${process.env.DATABASE_URL}`);
 
-export async function signup(formData: SignupFormData) {
+export async function register(formData: SignupFormData) {
   if (!formData) {
     return;
   }
@@ -37,6 +39,9 @@ export async function signup(formData: SignupFormData) {
       [firstname, lastname, email, password, accountType, null, languages, true],
     );
   }
+  const user = await sql('SELECT * FROM users WHERE email = $1', [email]);
+  await createSession(user[0]['user_id']);
+  redirect('/');
 }
 
 export async function checkIfUserExists(formData: SignupFormData): Promise<ValidationErrors> {
@@ -48,4 +53,18 @@ export async function checkIfUserExists(formData: SignupFormData): Promise<Valid
   errors.email = results.length > 0 ? t('emailIsUsed') : '';
 
   return errors;
+}
+
+export async function checkCredentials(formData: { email: any; password: any }) {
+  const t = await getTranslations('login');
+  const results = await sql('SELECT * FROM users WHERE email = $1 AND password = $2', [
+    formData.email,
+    formData.password,
+  ]);
+
+  if (results.length == 0) {
+    return {
+      errors: t('credentialsError'),
+    };
+  }
 }
