@@ -12,7 +12,8 @@
     "dontHaveAccount": "Nie masz konta?",
     "register": "Zarejestruj się",
     "desc": "Dołącz do nas i uprość swoje procesy logistyczne. CargoLink – Twój niezawodny partner w świecie transportu!",
-    "credentialsError": "Podany e-mail lub hasło są nieprawidłowe"
+    "credentialsError": "Podany e-mail lub hasło są nieprawidłowe",
+    "password": "Hasło"
   },
   "signup": {
     "joinUs": "Dołącz do nas",

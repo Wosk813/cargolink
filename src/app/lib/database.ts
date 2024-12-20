@@ -55,11 +55,14 @@ export async function checkIfUserExists(formData: SignupFormData): Promise<Valid
   return errors;
 }
 
-export async function checkCredentials(formData: { email: any; password: any }) {
+export async function checkCredentials(
+  state: { errors: string } | undefined,
+  formData: FormData,
+): Promise<{ errors: string } | undefined> {
   const t = await getTranslations('login');
   const results = await sql('SELECT * FROM users WHERE email = $1 AND password = $2', [
-    formData.email,
-    formData.password,
+    formData.get('email'),
+    formData.get('password'),
   ]);
 
   if (results.length == 0) {

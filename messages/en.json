@@ -11,7 +11,9 @@
     "or": "or",
     "dontHaveAccount": "Don't have an account?",
     "register": "Register",
-    "desc": "Join us and simplify your logistics processes. CargoLink – your reliable partner in the world of transport!"
+    "desc": "Join us and simplify your logistics processes. CargoLink – your reliable partner in the world of transport!",
+    "credentialsError": "The email or password you entered is incorrect",
+    "password": "Password"
   },
   "signup": {
     "joinUs": "Join us",
