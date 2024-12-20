@@ -4,7 +4,8 @@
     "errands": "Bestellungen",
     "searchUser": "Benutzersuche",
     "login": "Einloggen",
-    "signup": "Registrieren"
+    "signup": "Registrieren",
+    "profile": "Profil"
   },
   "login": {
     "login": "Einloggen",

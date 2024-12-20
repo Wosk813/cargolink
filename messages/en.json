@@ -4,7 +4,8 @@
     "errands": "Errands",
     "searchUser": "Search user",
     "login": "Login",
-    "signup": "Sign up"
+    "signup": "Sign up",
+    "profile": "Profile"
   },
   "login": {
     "login": "Log in",

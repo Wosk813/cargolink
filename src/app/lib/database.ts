@@ -56,7 +56,6 @@ export async function checkIfUserExists(formData: SignupFormData): Promise<Valid
 }
 
 export async function checkCredentials(
-  state: { errors: string } | undefined,
   formData: FormData,
 ): Promise<{ errors: string } | undefined> {
   const t = await getTranslations('login');
@@ -70,4 +69,14 @@ export async function checkCredentials(
       errors: t('credentialsError'),
     };
   }
+}
+
+export async function getUserById(userId: string) {
+  const user = await sql('SELECT * FROM users WHERE user_id = $1', [userId]);
+  return user[0];
+}
+
+export async function getUserByEmail(email: string) {
+  const user = await sql('SELECT * FROM users WHERE email = $1', [email]);
+  return user[0];
 }
