@@ -10,7 +10,7 @@ export async function handleLogin(state: { errors: string } | undefined, formDat
     return { errors: credentialsErrors.errors };
   }
   const user = await getUserByEmail(formData.get('email') as string);
-  await createSession(user['user_id']);
+  await createSession(user['user_id'], user['role']);
   redirect({ href: '/announcements', locale: 'pl' });
 }
 

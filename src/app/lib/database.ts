@@ -40,7 +40,7 @@ export async function register(formData: SignupFormData) {
     );
   }
   const user = await sql('SELECT * FROM users WHERE email = $1', [email]);
-  await createSession(user[0]['user_id']);
+  await createSession(user[0]['user_id'], user[0]['role']);
   redirect('/');
 }
 

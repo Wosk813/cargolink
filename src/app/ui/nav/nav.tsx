@@ -10,9 +10,10 @@ import { useState } from 'react';
 type ClientNavigationProps = {
   links: Array<{ name: string; href: string }>;
   onLogout: () => Promise<void>;
+  isAuth: boolean;
 };
 
-export default function Nav({ links, onLogout }: ClientNavigationProps) {
+export default function Nav({ links, onLogout, isAuth }: ClientNavigationProps) {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,10 +35,10 @@ export default function Nav({ links, onLogout }: ClientNavigationProps) {
           <NavLinks links={links} />
         </div>
         <div className="mt-auto">
-          <BottomButtons />
+          <BottomButtons onLogout={onLogout} isAuth={isAuth} />
         </div>
       </div>
- 
+
       <div
         data-testid="page-title"
         className="flex w-full justify-between px-5 py-8 text-4xl font-bold text-white md:hidden"

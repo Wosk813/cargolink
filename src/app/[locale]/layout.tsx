@@ -7,7 +7,6 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Metadata } from 'next';
 import { verifySession } from '../lib/dal';
 import { Role } from '../lib/definitions';
-import { get } from 'http';
 import { logout } from '../lib/actions';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -82,23 +81,20 @@ export default async function LocaleLayout(props: {
   params: Promise<{ locale: string }>;
 }) {
   const params = await props.params;
-
   const { locale } = params;
-
   const { children } = props;
-
   const messages = await getMessages();
 
-  // const { isAuth } = await verifySession();
+  const { isAuth, role } = await verifySession();
 
-  const links = await getNavLinks(Role.Admin);
+  const links = await getNavLinks(role);
 
   return (
     <html lang={locale}>
       <body className={`${inter.className} min-h-screen bg-slate-800 text-white`}>
         <NextIntlClientProvider messages={messages}>
           <div className="flex min-h-screen flex-col md:flex-row">
-            <Nav links={links} onLogout={logout} />
+            <Nav links={links} onLogout={logout} isAuth={isAuth} />
             <main className="relative flex-1">
               <div className="h-full px-5 md:py-8">{children}</div>
               <SpeedInsights />
