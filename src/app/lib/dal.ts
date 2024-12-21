@@ -19,16 +19,14 @@ export const verifySession = cache(async () => {
   return { isAuth: true, userId: session?.userId as string };
 });
 
-export const getUser = cache(async () => {
-  const session = await verifySession();
-  if (!session) return null;
-
-  try {
-    const user = getUserById(session.userId);
-
-    return user;
-  } catch (error) {
-    console.log('Failed to fetch user');
-    return null;
-  }
-});
+// export const getUser = cache(async () => {
+//   const session = await verifySession();
+//   if (!session) return null;
+//
+//   try {
+//     return getUserById(session.userId);
+//   } catch (error) {
+//     console.log('Failed to fetch user');
+//     return null;
+//   }
+// });

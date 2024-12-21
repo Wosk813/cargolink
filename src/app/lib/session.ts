@@ -2,7 +2,7 @@ import 'server-only';
 import { SignJWT, jwtVerify } from 'jose';
 import { SessionPayload } from '@/src/app/lib/definitions';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { redirect } from '@/src/i18n/routing';
 
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
@@ -67,5 +67,5 @@ export async function deleteSession() {
 
 export async function logout() {
   await deleteSession();
-  redirect('/login');
+  redirect({ href: '/auth/login', locale: 'pl' });
 }

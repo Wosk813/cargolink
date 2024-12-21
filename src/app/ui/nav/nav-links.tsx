@@ -1,10 +1,10 @@
 import { Link } from '@/src/i18n/routing';
 import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { verifySession } from '../../lib/dal';
 
-export default async function NavLinks() {
+export default function NavLinks() {
   const t = useTranslations('nav');
-  const { isAuth } = await verifySession();
 
   const links = [
     {
@@ -20,13 +20,6 @@ export default async function NavLinks() {
       href: '/search/searchUser',
     },
   ];
-
-  if (isAuth) {
-    links.push({
-      name: t('profile'),
-      href: '/profile',
-    });
-  }
 
   return (
     <>
