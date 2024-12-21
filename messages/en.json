@@ -6,7 +6,10 @@
     "login": "Login",
     "signup": "Sign up",
     "profile": "Profile",
-    "logout": "Logout"
+    "logout": "Logout",
+    "messages": "Messages",
+    "moderation": "Moderation panel",
+    "admin": "Admin panel"
   },
   "login": {
     "login": "Log in",

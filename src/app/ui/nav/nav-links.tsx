@@ -1,25 +1,14 @@
+'use client';
+
 import { Link } from '@/src/i18n/routing';
 import { useTranslations } from 'next-intl';
-import { getTranslations } from 'next-intl/server';
-import { verifySession } from '../../lib/dal';
 
-export default function NavLinks() {
+type NavLinksProps = {
+  links: Array<{ name: string; href: string }>;
+};
+
+export default function NavLinks({ links }: NavLinksProps) {
   const t = useTranslations('nav');
-
-  const links = [
-    {
-      name: t('announcements'),
-      href: '/announcements',
-    },
-    {
-      name: t('errands'),
-      href: '/errands',
-    },
-    {
-      name: t('searchUser'),
-      href: '/search/searchUser',
-    },
-  ];
 
   return (
     <>

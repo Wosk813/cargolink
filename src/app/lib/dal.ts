@@ -6,7 +6,6 @@ import { cookies } from 'next/headers';
 import { decrypt } from '@/src/app/lib/session';
 import { cache } from 'react';
 import { redirect } from '@/src/i18n/routing';
-import { getUserById } from './database';
 
 export const verifySession = cache(async () => {
   const cookie = (await cookies()).get('session')?.value;
@@ -16,7 +15,8 @@ export const verifySession = cache(async () => {
     redirect({ href: '/auth/login', locale: 'pl' });
   }
 
-  return { isAuth: true, userId: session?.userId as string };
+  console.log(session);
+  return { isAuth: true, userId: session?.userId };
 });
 
 // export const getUser = cache(async () => {
