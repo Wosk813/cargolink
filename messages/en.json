@@ -5,7 +5,8 @@
     "searchUser": "Search user",
     "login": "Login",
     "signup": "Sign up",
-    "profile": "Profile"
+    "profile": "Profile",
+    "logout": "Logout"
   },
   "login": {
     "login": "Log in",

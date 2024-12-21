@@ -1,7 +1,7 @@
 'use server';
 
 import { checkCredentials, getUserByEmail } from './database';
-import { createSession } from './session';
+import { createSession, deleteSession } from './session';
 import { redirect } from '@/src/i18n/routing';
 
 export async function handleLogin(state: { errors: string } | undefined, formData: FormData) {
@@ -12,4 +12,9 @@ export async function handleLogin(state: { errors: string } | undefined, formDat
   const user = await getUserByEmail(formData.get('email') as string);
   await createSession(user['user_id']);
   redirect({ href: '/announcements', locale: 'pl' });
+}
+
+export async function logout() {
+  await deleteSession();
+  redirect({ href: '/auth/login', locale: 'pl' });
 }

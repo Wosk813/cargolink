@@ -5,7 +5,8 @@
     "searchUser": "Benutzersuche",
     "login": "Einloggen",
     "signup": "Registrieren",
-    "profile": "Profil"
+    "profile": "Profil",
+    "logout": "Ausloggen"
   },
   "login": {
     "login": "Einloggen",

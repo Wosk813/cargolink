@@ -64,8 +64,3 @@ export async function deleteSession() {
   const cookieStore = await cookies();
   cookieStore.delete('session');
 }
-
-export async function logout() {
-  await deleteSession();
-  redirect({ href: '/auth/login', locale: 'pl' });
-}
