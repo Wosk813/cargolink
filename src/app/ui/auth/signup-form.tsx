@@ -21,7 +21,7 @@ import { useTranslations } from 'next-intl';
 import CountrySelector from '@/src/app/ui/countrySelector';
 import LanguageSelector from '@/src/app/ui/languageSelector';
 import InputCheckbox from '@/src/app/ui/inputCheckbox';
-import { signup } from '@/src/app/actions/auth';
+import { register } from '@/src/app/lib/database';
 
 export function SignupForm() {
   const t = useTranslations('signup');
@@ -77,7 +77,7 @@ export function SignupForm() {
         setErrors({});
       } else {
         try {
-          await signup(formData);
+          await register(formData);
         } catch (error) {
           console.error('Submission error:', error);
         }

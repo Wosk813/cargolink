@@ -4,13 +4,17 @@
     "errands": "Bestellungen",
     "searchUser": "Benutzersuche",
     "login": "Einloggen",
-    "signup": "Registrieren"
+    "signup": "Registrieren",
+    "profile": "Profil"
   },
   "login": {
     "login": "Einloggen",
     "or": "oder",
     "dontHaveAccount": "Haben Sie kein Konto?",
-    "register": "Registrieren"
+    "register": "Registrieren",
+    "desc": "Machen Sie mit und vereinfachen Sie Ihre Logistikprozesse. CargoLink – Ihr zuverlässiger Partner in der Transportwelt!",
+    "credentialsError": "Die von Ihnen eingegebene E-Mail-Adresse oder das Passwort ist falsch",
+    "password": "Passwort"
   },
   "signup": {
     "joinUs": "Mach mit",

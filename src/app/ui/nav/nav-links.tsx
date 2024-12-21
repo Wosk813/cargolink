@@ -1,5 +1,7 @@
 import { Link } from '@/src/i18n/routing';
 import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
+import { verifySession } from '../../lib/dal';
 
 export default function NavLinks() {
   const t = useTranslations('nav');

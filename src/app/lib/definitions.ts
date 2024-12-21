@@ -106,3 +106,15 @@ export enum AccountType {
   Carrier = 'carrier',
   Principal = 'principal',
 }
+
+export enum Role {
+  User = 'user',
+  Admin = 'admin',
+  Moderator = 'moderator',
+}
+
+export type SessionPayload = {
+  userId?: string;
+  role?: Role;
+  expiresAt?: Date;
+};
