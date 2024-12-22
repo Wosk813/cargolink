@@ -60,7 +60,8 @@
     "asPhisicalPerson": "Privatperson",
     "chooseLanguages": "Wählen Sie die Sprachen, die Sie sprechen",
     "acceptedStatute": "Ich habe die Allgemeinen Geschäftsbedingungen gelesen und akzeptiere sie",
-    "emailIsUsed": "Diese E-Mail-Adresse wird bereits von jemandem verwendet"
+    "emailIsUsed": "Diese E-Mail-Adresse wird bereits von jemandem verwendet",
+    "mustNotBeEmpty": "Dieses Feld darf nicht leer sein"
   },
   "search": {
     "searchUser": "Nach einem Benutzer suchen"

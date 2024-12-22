@@ -60,7 +60,8 @@
     "asPhisicalPerson": "Individual",
     "chooseLanguages": "Choose the languages you know",
     "acceptedStatute": "I have read and accept the terms and conditions",
-    "emailIsUsed": "This email is already used by someone"
+    "emailIsUsed": "This email is already used by someone",
+    "mustNotBeEmpty": "This field must not be empty"
   },
   "search": {
     "searchUser": "Search user"

@@ -308,7 +308,7 @@ export function SignupForm() {
             {t('back')}
           </Button>
         )}
-        <Button data-testid="button-next" type="submit">
+        <Button className="mb-6" data-testid="button-next" type="submit">
           {step === 4 ? t('submit') : t('next')}
         </Button>
       </div>
