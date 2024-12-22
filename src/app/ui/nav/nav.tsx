@@ -32,7 +32,7 @@ export default function Nav({ links, onLogout, isAuth }: ClientNavigationProps) 
       >
         <h1 className="py-8 text-center text-4xl font-bold">CargoLink</h1>
         <div>
-          <NavLinks links={links} />
+          <NavLinks links={links} handleMenuOpen={handleOpenMenu} />
         </div>
         <div className="mt-auto">
           <BottomButtons onLogout={onLogout} isAuth={isAuth} />
