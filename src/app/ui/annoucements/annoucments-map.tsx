@@ -1,12 +1,14 @@
-import { Button } from '../button';
-import { ButtonTypes } from '../../lib/definitions';
+import { Link } from '@/src/i18n/routing';
 
 export default function AnnoucementsMapButt() {
   return (
     <div>
-      <Button buttType={ButtonTypes.Secondary} className="border-yellow-300 text-yellow-300">
+      <Link
+        href={'/announcements/map'}
+        className="block w-full rounded-md border-2 border-yellow-300 p-4 text-center text-xl text-yellow-300"
+      >
         Otwórz mapę tras
-      </Button>
+      </Link>
     </div>
   );
 }

@@ -1,11 +1,12 @@
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   title?: string;
   error?: any;
+  containerStytles?: string;
 }
 
-export function Input({ title, className = '', error, ...rest }: InputProps) {
+export function Input({ title, className = '', error, containerStytles, ...rest }: InputProps) {
   return (
-    <div className="w-full rounded-md bg-slate-700 px-2 py-1">
+    <div className={`${containerStytles} w-full rounded-md bg-slate-700 px-2 py-1`}>
       <p className="text-sm text-slate-400">{title}</p>
       <input
         type="text"
