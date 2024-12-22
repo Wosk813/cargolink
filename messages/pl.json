@@ -5,7 +5,11 @@
     "searchUser": "Wyszukaj użytkownika",
     "login": "Zaloguj się",
     "signup": "Zarejestruj się",
-    "profile": "Profil"
+    "profile": "Profil",
+    "logout": "Wyloguj się",
+    "messages": "Wiadomości",
+    "moderation": "Panel moderatora",
+    "admin": "Panel administratora"
   },
   "login": {
     "login": "Zaloguj się",

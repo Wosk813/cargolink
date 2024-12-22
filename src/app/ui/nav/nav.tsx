@@ -7,7 +7,13 @@ import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
-export default function Nav() {
+type ClientNavigationProps = {
+  links: Array<{ name: string; href: string }>;
+  onLogout: () => Promise<void>;
+  isAuth: boolean;
+};
+
+export default function Nav({ links, onLogout, isAuth }: ClientNavigationProps) {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,10 +32,10 @@ export default function Nav() {
       >
         <h1 className="py-8 text-center text-4xl font-bold">CargoLink</h1>
         <div>
-          <NavLinks />
+          <NavLinks links={links} />
         </div>
         <div className="mt-auto">
-          <BottomButtons />
+          <BottomButtons onLogout={onLogout} isAuth={isAuth} />
         </div>
       </div>
 

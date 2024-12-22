@@ -1,8 +1,7 @@
 import 'server-only';
 import { SignJWT, jwtVerify } from 'jose';
-import { SessionPayload } from '@/src/app/lib/definitions';
+import { Role, SessionPayload } from '@/src/app/lib/definitions';
 import { cookies } from 'next/headers';
-import { redirect } from '@/src/i18n/routing';
 
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
@@ -26,9 +25,10 @@ export async function decrypt(session: string | undefined = '') {
   }
 }
 
-export async function createSession(userId: string) {
+export async function createSession(userId: string, role: Role) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-  const session = await encrypt({ userId, expiresAt });
+  const payload = { userId: userId, expiresAt: expiresAt, role: role };
+  const session = await encrypt(payload);
   const cookieStore = await cookies();
 
   cookieStore.set('session', session, {
@@ -63,9 +63,4 @@ export async function updateSession() {
 export async function deleteSession() {
   const cookieStore = await cookies();
   cookieStore.delete('session');
-}
-
-export async function logout() {
-  await deleteSession();
-  redirect({ href: '/auth/login', locale: 'pl' });
 }

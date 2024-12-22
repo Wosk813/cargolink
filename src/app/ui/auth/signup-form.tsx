@@ -21,7 +21,7 @@ import { useTranslations } from 'next-intl';
 import CountrySelector from '@/src/app/ui/countrySelector';
 import LanguageSelector from '@/src/app/ui/languageSelector';
 import InputCheckbox from '@/src/app/ui/inputCheckbox';
-import { register } from '@/src/app/lib/database';
+import { register } from '@/src/app/lib/actions';
 
 export function SignupForm() {
   const t = useTranslations('signup');

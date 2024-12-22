@@ -6,7 +6,7 @@ export default async function ProfilePage() {
   return (
     <div>
       <h1>Profile page</h1>
-      <p>User ID: {userId}</p>
+      <p>User ID: {typeof userId === 'string' ? userId : 'Unknown'}</p>
     </div>
   );
 }

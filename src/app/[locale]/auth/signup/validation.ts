@@ -3,7 +3,7 @@ import {
   SignupFormThirdSchema,
   ValidationErrors,
 } from '@/src/app/lib/definitions';
-import { checkIfUserExists } from '@/src/app/lib/database';
+import { checkIfUserExists } from '@/src/app/lib/actions';
 
 export const validateFirstStep = async (t: any, formData: any): Promise<ValidationErrors> => {
   try {
