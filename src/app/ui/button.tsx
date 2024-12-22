@@ -20,6 +20,7 @@ export function Button({
     [ButtonTypes.Primary]: 'bg-yellow-300',
     [ButtonTypes.Secondary]: 'bg-none text-white border border-white',
     [ButtonTypes.Tertiary]: 'bg-transparent',
+    [ButtonTypes.Normal]: 'bg-slate-700 text-white',
   };
 
   const disabledStyles = 'opacity-50 cursor-not-allowed';

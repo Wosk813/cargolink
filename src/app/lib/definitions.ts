@@ -100,6 +100,7 @@ export enum ButtonTypes {
   Primary,
   Secondary,
   Tertiary,
+  Normal,
 }
 
 export enum AccountType {
