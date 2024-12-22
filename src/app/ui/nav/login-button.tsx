@@ -21,7 +21,7 @@ export default function LoginButton({ onLogout, isAuth }: LoginButtonProps) {
     );
   } else {
     return (
-      <Link href={`/${currentLocale}/auth/login`} className="w-full">
+      <Link href={`/auth/login`} className="w-full">
         <p className="my-4 w-full rounded-md bg-slate-700 px-2 py-2 text-center">{t('login')}</p>
       </Link>
     );
