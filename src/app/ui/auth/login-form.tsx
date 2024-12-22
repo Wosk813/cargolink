@@ -13,7 +13,7 @@ export default function LoginForm() {
     <form className="flex flex-col gap-4 text-black" action={login}>
       <Input type="email" error={state?.errors} name="email" title="E-mail" required />
       <Input type="password" error={state?.errors} name="password" title={t('password')} required />
-      <Button className="mt-4" disabled={pending}>
+      <Button className="mt-4" disabled={pending} disabledMessage={t('loginPending')}>
         {t('login')}
       </Button>
     </form>

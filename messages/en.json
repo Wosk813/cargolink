@@ -9,7 +9,8 @@
     "logout": "Logout",
     "messages": "Messages",
     "moderation": "Moderation panel",
-    "admin": "Admin panel"
+    "admin": "Admin panel",
+    "logoutPending": "Logging out ..."
   },
   "login": {
     "login": "Log in",
@@ -18,7 +19,8 @@
     "register": "Register",
     "desc": "Join us and simplify your logistics processes. CargoLink – your reliable partner in the world of transport!",
     "credentialsError": "The email or password you entered is incorrect",
-    "password": "Password"
+    "password": "Password",
+    "loginPending": "Logging in ..."
   },
   "signup": {
     "joinUs": "Join us",

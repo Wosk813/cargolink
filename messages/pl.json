@@ -9,7 +9,8 @@
     "logout": "Wyloguj się",
     "messages": "Wiadomości",
     "moderation": "Panel moderatora",
-    "admin": "Panel administratora"
+    "admin": "Panel administratora",
+    "logoutPending": "Wylogowywanie ..."
   },
   "login": {
     "login": "Zaloguj się",
@@ -18,7 +19,8 @@
     "register": "Zarejestruj się",
     "desc": "Dołącz do nas i uprość swoje procesy logistyczne. CargoLink – Twój niezawodny partner w świecie transportu!",
     "credentialsError": "Podany e-mail lub hasło są nieprawidłowe",
-    "password": "Hasło"
+    "password": "Hasło",
+    "loginPending": "Logowanie ..."
   },
   "signup": {
     "joinUs": "Dołącz do nas",
