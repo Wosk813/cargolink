@@ -118,3 +118,15 @@ export type SessionPayload = {
   role?: Role;
   expiresAt?: Date;
 };
+
+export type AnnoucementProps = {
+  title: string;
+  from: string;
+  to: string;
+  departureDate: Date;
+  arrivalDate: Date;
+  carProps: {
+    maxWeight: number;
+    maxSize: { x: number; y: number; height: number };
+  };
+};

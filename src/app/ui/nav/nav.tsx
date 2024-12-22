@@ -26,7 +26,7 @@ export default function Nav({ links, onLogout, isAuth }: ClientNavigationProps) 
 
   const handleClickLink = () => {
     setIsMenuOpen(false);
-  }
+  };
 
   return (
     <>
