@@ -6,31 +6,79 @@ import { ArrowsUpDownIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24
 import { Input } from '../input';
 import { useState } from 'react';
 
-const SortButton = ({ content }: { content: string }) => {
+interface SortButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  content: string;
+  selected?: boolean;
+}
+
+function SortButton({ content, selected, ...rest }: SortButtonProps) {
   return (
-    <Button buttType={ButtonTypes.Normal} className="text-left font-normal hover:bg-slate-600">
+    <Button
+      buttType={ButtonTypes.Normal}
+      className={`text-left font-normal ${selected ? 'bg-slate-500' : 'hover:bg-slate-600'}`}
+      {...rest}
+    >
       {content}
     </Button>
   );
-};
+}
 
-const SortOptions = ({ hidden }: { hidden: boolean }) => {
+function SortOptions({ hidden }: { hidden: boolean }) {
+  const [selected, setSelected] = useState(1);
+
   if (hidden) {
     return null;
   }
+
+  function handleClick(value: number) {
+    setSelected(value);
+  }
+
   return (
     <div className="flex flex-col p-2">
-      <SortButton content="Od najwcześniejszych" />
-      <SortButton content="Od najpóźniejszych" />
-      <SortButton content="Od największej wagi towaru" />
-      <SortButton content="Od najmniejszej wagi towaru" />
-      <SortButton content="Od najmniejszych wymiarów towaru" />
-      <SortButton content="Od najwiekszych wymiarów towaru" />
-      <SortButton content="Od najniższej wysokości towaru" />
-      <SortButton content="Od największej wysokości towaru" />
+      <SortButton
+        onClick={() => handleClick(1)}
+        selected={selected == 1}
+        content="Od najwcześniejszych"
+      />
+      <SortButton
+        onClick={() => handleClick(2)}
+        selected={selected == 2}
+        content="Od najpóźniejszych"
+      />
+      <SortButton
+        onClick={() => handleClick(3)}
+        selected={selected == 3}
+        content="Od największej wagi towaru"
+      />
+      <SortButton
+        onClick={() => handleClick(4)}
+        selected={selected == 4}
+        content="Od najmniejszej wagi towaru"
+      />
+      <SortButton
+        onClick={() => handleClick(5)}
+        selected={selected == 5}
+        content="Od najmniejszych wymiarów towaru"
+      />
+      <SortButton
+        onClick={() => handleClick(6)}
+        selected={selected == 6}
+        content="Od najwiekszych wymiarów towaru"
+      />
+      <SortButton
+        onClick={() => handleClick(7)}
+        selected={selected == 7}
+        content="Od najniższej wysokości towaru"
+      />
+      <SortButton
+        onClick={() => handleClick(8)}
+        selected={selected == 8}
+        content="Od największej wysokości towaru"
+      />
     </div>
   );
-};
+}
 
 const FilterOptions = ({ hidden }: { hidden: boolean }) => {
   if (hidden) {
