@@ -145,50 +145,50 @@ export enum GoodsCategory {
 }
 
 export enum SortDirection {
-  ByNewest,
-  ByOldest,
-  ByWeightAsc,
-  ByWeightDesc,
-  BySizeAsc,
-  BySizeDesc,
-  ByHeightAsc,
-  ByHeightDesc,
+  ByNewest = 'byNewest',
+  ByOldest = 'byOldest',
+  ByWeightAsc = 'ByWeightAsc',
+  ByWeightDesc = 'ByWeightDesc',
+  BySizeAsc = 'BySizeAsc',
+  BySizeDesc = 'BySizeDesc',
+  ByHeightAsc = 'ByHeightAsc',
+  ByHeightDesc = 'ByHeightDesc',
 }
 
 export type FilterProps = {
   date: {
     departureDate: {
-      from: Date;
-      to: Date;
+      from: Date | null;
+      to: Date | null;
     };
     arrivalDate: {
-      from: Date;
-      to: Date;
+      from: Date | null;
+      to: Date | null;
     };
   };
   cities: {
-    from: string;
-    to: string;
+    from: string | null;
+    to: string | null;
   };
   goods: {
     weight: {
-      from: number;
-      to: number;
+      from: number | null;
+      to: number | null;
     };
     size: {
       x: {
-        from: number;
-        to: number;
+        from: number | null;
+        to: number | null;
       };
       y: {
-        from: number;
-        to: number;
+        from: number | null;
+        to: number | null;
       };
       height: {
-        from: number;
-        to: number;
+        from: number | null;
+        to: number | null;
       };
     };
-    category: GoodsCategory;
+    category?: GoodsCategory;
   };
 };

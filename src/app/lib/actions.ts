@@ -3,7 +3,12 @@
 import { createSession, deleteSession } from './session';
 import { redirect } from '@/src/i18n/routing';
 import { neon } from '@neondatabase/serverless';
-import { AnnoucementProps, SignupFormData, ValidationErrors } from '@/src/app/lib/definitions';
+import {
+  AnnoucementProps,
+  SignupFormData,
+  SortDirection,
+  ValidationErrors,
+} from '@/src/app/lib/definitions';
 import { getTranslations } from 'next-intl/server';
 
 const sql = neon(
@@ -102,13 +107,45 @@ export async function getUserByEmail(email: string) {
   return user[0];
 }
 
-export async function getAnnouncements() {
-  const dbAnnoucements = await sql('SELECT * FROM announcements');
+function sortDirectionToSQL(sortBy: SortDirection) {
+  let by = '';
+  switch (sortBy) {
+    case SortDirection.ByNewest:
+      by = 'created_at ASC';
+      break;
+    case SortDirection.ByOldest:
+      by = 'created_at DESC';
+      break;
+    case SortDirection.ByWeightAsc:
+      by = 'max_weight ASC';
+      break;
+    case SortDirection.ByWeightDesc:
+      by = 'max_weight DESC';
+      break;
+    case SortDirection.ByHeightAsc:
+      by = 'max_height ASC';
+      break;
+    case SortDirection.ByHeightDesc:
+      by = 'max_height DESC';
+      break;
+    case SortDirection.BySizeAsc:
+      by = 'size_x * size_y ASC';
+      break;
+    case SortDirection.BySizeDesc:
+      by = 'size_x * size_y DESC';
+      break;
+  }
+  return `ORDER BY ${by}`;
+}
+
+export async function getAnnouncements(sortBy: SortDirection) {
+  let sqlString = `SELECT * FROM announcements ${sortDirectionToSQL(sortBy)}`;
+  const dbAnnoucements = await sql(sqlString);
   const announcements: Array<AnnoucementProps> = [];
   dbAnnoucements.map((dbAnnoucement) => {
     if (!dbAnnoucement['is_accepted']) return;
     let annoucement: AnnoucementProps = {
-      id: dbAnnoucement['annoucment_id'],
+      id: dbAnnoucement['announcement_id'],
       title: dbAnnoucement['title'],
       fromCity: dbAnnoucement['from_city'],
       toCity: dbAnnoucement['to_city'],

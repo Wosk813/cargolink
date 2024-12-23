@@ -30,7 +30,6 @@ const formatWeight = (weight: number) => {
 };
 
 export default function Annoucement({
-  id,
   title,
   fromCity,
   toCity,

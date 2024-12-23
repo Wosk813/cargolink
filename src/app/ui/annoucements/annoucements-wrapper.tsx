@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { SortDirection, FilterProps, AnnoucementProps } from '../../lib/definitions';
 import Annoucement from './annoucment';
+import { Link } from '@/src/i18n/routing';
 
 type WrapperProps = {
   sortDirection: SortDirection;
@@ -12,29 +13,36 @@ export default function AnnoucmentsWrapper({ sortDirection, filterOptions }: Wra
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/pl/announcements/get')
+    setLoading(true);
+    fetch(`/pl/announcements/get?sort=${sortDirection}`)
       .then((res) => res.json())
       .then((data) => {
         setAnnoucements(data);
         setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching announcements:', error);
+        setLoading(false);
       });
-  }, []);
+  }, [sortDirection]);
 
   if (isLoading) return <p>Loading...</p>;
-  if (!annoucements) return <p>No annoucements</p>;
+  if (!annoucements || annoucements.length === 0) return <p>No announcements</p>;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex max-h-full flex-col gap-4 overflow-visible">
       {annoucements.map((annoucement: AnnoucementProps, index) => (
-        <Annoucement
-          key={index}
-          title={annoucement.title}
-          fromCity={annoucement.fromCity}
-          toCity={annoucement.toCity}
-          departureDate={annoucement.departureDate}
-          arrivalDate={annoucement.arrivalDate}
-          carProps={annoucement.carProps}
-        />
+        <Link href={`/announcements/${annoucement.id}`}>
+          <Annoucement
+            key={index}
+            title={annoucement.title}
+            fromCity={annoucement.fromCity}
+            toCity={annoucement.toCity}
+            departureDate={annoucement.departureDate}
+            arrivalDate={annoucement.arrivalDate}
+            carProps={annoucement.carProps}
+          />
+        </Link>
       ))}
     </div>
   );
