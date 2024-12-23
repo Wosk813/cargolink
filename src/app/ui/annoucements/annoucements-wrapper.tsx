@@ -1,6 +1,12 @@
+import { SortDirection, FilterProps } from '../../lib/definitions';
 import Annoucement from './annoucment';
 
-export default function AnnoucmentsWrapper() {
+type WrapperProps = {
+  sortDirection: SortDirection;
+  filterOptions: FilterProps;
+};
+
+export default function AnnoucmentsWrapper({ sortDirection, filterOptions }: WrapperProps) {
   return (
     <div className="flex flex-col gap-4">
       <Annoucement
