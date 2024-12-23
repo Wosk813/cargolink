@@ -31,7 +31,7 @@
     "repeatPassword": "Powtórz hasło",
     "next": "Dalej",
     "back": "Wróć",
-    "atLeastLength": "powinno mieć co najmniej {min} długości",
+    "atLeastLength": "powinno mieć co najmniej {min} znaków",
     "enterValidEmail": "Wprowadź poprawny E-mail",
     "atLeastLetter": "Hasło powinno mieć co najmniej jedną literę",
     "atLeastNumber": "Hasło powinno mieć co najmniej jedną liczbę",
@@ -39,7 +39,7 @@
     "passwordDontMatch": "Wprowadzone hasła nie są identyczne",
     "nipIsNotValid": "NIP powinien mieć {length} znaków",
     "companyName": "Przedsiębiorstwo",
-    "selectCountry": "Wybierz kraj",
+    "selectCountry": "Wybierz państwo",
     "postalCodeIsNotValid": "Kod pocztowy nie jest prawidłowy, powinien mieć {length} znaków",
     "city": "Miasto",
     "street": "Ulica",
@@ -62,7 +62,8 @@
     "asPhisicalPerson": "Osoba fizyczna",
     "chooseLanguages": "Wybierz języki jakie znasz",
     "acceptedStatute": "Przeczytałem/am regulamin i go akceptuje",
-    "emailIsUsed": "Ten e-mail jest już przez kogoś używany"
+    "emailIsUsed": "Ten e-mail jest już przez kogoś używany",
+    "mustNotBeEmpty": "To pole nie może być puste"
   },
   "search": {
     "searchUser": "Wyszukaj użytkownika"

@@ -5,11 +5,11 @@ export const SignupFormFirstStepSchema = (t: any) =>
     .object({
       firstname: z
         .string()
-        .min(2, { message: t('firstname') + ' ' + t('atLeastLength', { min: 2 }) })
+        .min(1, { message: t('mustNotBeEmpty') })
         .trim(),
       lastname: z
         .string()
-        .min(2, { message: t('lastname') + ' ' + t('atLeastLength', { min: 2 }) })
+        .min(1, { message: t('mustNotBeEmpty') })
         .trim(),
       email: z
         .string()
@@ -45,14 +45,12 @@ export const SignupFormFirstStepSchema = (t: any) =>
 
 export const SignupFormThirdSchema = (t: any) =>
   z.object({
-    companyName: z
-      .string()
-      .min(2, { message: t('companyName') + ' ' + t('atLeastLength', { min: 2 }) }),
+    companyName: z.string().min(1, { message: t('mustNotBeEmpty') }),
     nip: z.string().length(10, { message: t('nipIsNotValid', { length: 10 }) }),
     country: z.string().min(2, { message: t('selectCountry') }),
-    postalCode: z.string().length(6, { message: t('postalCodeIsNotValid', { length: 6 }) }),
-    city: z.string().min(2, { message: t('city') + ' ' + t('atLeastLength', { min: 2 }) }),
-    street: z.string().min(2, { message: t('street') + ' ' + t('atLeastLength', { min: 2 }) }),
+    postalCode: z.string().min(1, { message: t('mustNotBeEmpty') }),
+    city: z.string().min(1, { message: t('mustNotBeEmpty') }),
+    street: z.string().min(1, { message: t('mustNotBeEmpty') }),
   });
 
 export interface ValidationErrors {
