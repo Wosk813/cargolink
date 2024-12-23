@@ -32,9 +32,8 @@ export default function AnnoucmentsWrapper({ sortDirection, filterOptions }: Wra
   return (
     <div className="flex max-h-full flex-col gap-4 overflow-visible">
       {annoucements.map((annoucement: AnnoucementProps, index) => (
-        <Link href={`/announcements/${annoucement.id}`}>
+        <Link key={annoucement.id} href={`/announcements/${annoucement.id}`}>
           <Annoucement
-            key={index}
             title={annoucement.title}
             fromCity={annoucement.fromCity}
             toCity={annoucement.toCity}
