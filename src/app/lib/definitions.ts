@@ -98,6 +98,7 @@ export enum ButtonTypes {
   Primary,
   Secondary,
   Tertiary,
+  Normal,
 }
 
 export enum AccountType {
@@ -115,4 +116,79 @@ export type SessionPayload = {
   userId?: string;
   role?: Role;
   expiresAt?: Date;
+};
+
+export type AnnoucementProps = {
+  id?: string;
+  title: string;
+  fromCity?: string;
+  toCity?: string;
+  fromGeography?: string;
+  toGeography?: string;
+  departureDate: Date;
+  arrivalDate: Date;
+  carProps: {
+    maxWeight: number;
+    maxSize: { x: number; y: number; height: number };
+    brand?: string;
+    model?: string;
+  };
+  authorId?: string;
+  isAccepted?: boolean;
+};
+
+export enum GoodsCategory {
+  Electronics = 'electronics',
+  Furniture = 'furniture',
+  Food = 'food',
+  Other = 'other',
+}
+
+export enum SortDirection {
+  ByNewest,
+  ByOldest,
+  ByWeightAsc,
+  ByWeightDesc,
+  BySizeAsc,
+  BySizeDesc,
+  ByHeightAsc,
+  ByHeightDesc,
+}
+
+export type FilterProps = {
+  date: {
+    departureDate: {
+      from: Date;
+      to: Date;
+    };
+    arrivalDate: {
+      from: Date;
+      to: Date;
+    };
+  };
+  cities: {
+    from: string;
+    to: string;
+  };
+  goods: {
+    weight: {
+      from: number;
+      to: number;
+    };
+    size: {
+      x: {
+        from: number;
+        to: number;
+      };
+      y: {
+        from: number;
+        to: number;
+      };
+      height: {
+        from: number;
+        to: number;
+      };
+    };
+    category: GoodsCategory;
+  };
 };

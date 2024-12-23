@@ -1,11 +1,9 @@
 'use client';
 
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { GlobeAltIcon } from '@heroicons/react/24/outline';
 import { usePathname, useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { Button } from '../button';
 import LoginButton from './login-button';
 
 type BottomButtonsProps = {

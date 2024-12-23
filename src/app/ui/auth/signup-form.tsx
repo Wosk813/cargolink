@@ -22,9 +22,11 @@ import CountrySelector from '@/src/app/ui/countrySelector';
 import LanguageSelector from '@/src/app/ui/languageSelector';
 import InputCheckbox from '@/src/app/ui/inputCheckbox';
 import { register } from '@/src/app/lib/actions';
+import { useActionState } from 'react';
 
 export function SignupForm() {
   const t = useTranslations('signup');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [formData, setFormData] = useState<SignupFormData>({
@@ -67,6 +69,7 @@ export function SignupForm() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    setIsSubmitting(true);
     e.preventDefault();
 
     const stepErrors = await validateCurrentStep();
@@ -85,6 +88,7 @@ export function SignupForm() {
     } else {
       setErrors(stepErrors);
     }
+    setIsSubmitting(false);
   };
 
   const validateCurrentStep = async () => {
@@ -308,7 +312,7 @@ export function SignupForm() {
             {t('back')}
           </Button>
         )}
-        <Button className="mb-6" data-testid="button-next" type="submit">
+        <Button data-testid="button-next" type="submit" disabled={isSubmitting}>
           {step === 4 ? t('submit') : t('next')}
         </Button>
       </div>

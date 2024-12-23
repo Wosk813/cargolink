@@ -3,7 +3,7 @@
 import { createSession, deleteSession } from './session';
 import { redirect } from '@/src/i18n/routing';
 import { neon } from '@neondatabase/serverless';
-import { SignupFormData, ValidationErrors } from '@/src/app/lib/definitions';
+import { AnnoucementProps, SignupFormData, ValidationErrors } from '@/src/app/lib/definitions';
 import { getTranslations } from 'next-intl/server';
 
 const sql = neon(
@@ -100,4 +100,34 @@ export async function getUserById(userId: string) {
 export async function getUserByEmail(email: string) {
   const user = await sql('SELECT * FROM users WHERE email = $1', [email]);
   return user[0];
+}
+
+export async function getAnnouncements() {
+  const dbAnnoucements = await sql('SELECT * FROM announcements');
+  const announcements: Array<AnnoucementProps> = [];
+  dbAnnoucements.map((dbAnnoucement) => {
+    if (!dbAnnoucement['is_accepted']) return;
+    let annoucement: AnnoucementProps = {
+      id: dbAnnoucement['annoucment_id'],
+      title: dbAnnoucement['title'],
+      fromCity: dbAnnoucement['from_city'],
+      toCity: dbAnnoucement['to_city'],
+      fromGeography: dbAnnoucement['from_geography'],
+      toGeography: dbAnnoucement['to_geography'],
+      departureDate: dbAnnoucement['start_date'],
+      arrivalDate: dbAnnoucement['arrive_date'],
+      carProps: {
+        maxWeight: dbAnnoucement['max_weight'],
+        maxSize: {
+          x: dbAnnoucement['size_x'],
+          y: dbAnnoucement['size_y'],
+          height: dbAnnoucement['max_height'],
+        },
+      },
+      authorId: dbAnnoucement['author_id'],
+      isAccepted: dbAnnoucement['is_accepted'],
+    };
+    announcements.push(annoucement);
+  });
+  return announcements;
 }
