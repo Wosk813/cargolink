@@ -30,9 +30,10 @@ const formatWeight = (weight: number) => {
 };
 
 export default function Annoucement({
+  id,
   title,
-  from,
-  to,
+  fromCity,
+  toCity,
   departureDate,
   arrivalDate,
   carProps,
@@ -43,12 +44,12 @@ export default function Annoucement({
       <div className="flex justify-between rounded-md bg-slate-800 p-4">
         <div className="flex flex-col">
           <p className="text-sm text-slate-400">z</p>
-          <h2 className="text-xl">{from}</h2>
+          <h2 className="text-xl">{fromCity}</h2>
         </div>
         <ArrowRightIcon className="w-8 text-slate-400" />
         <div className="flex flex-col">
           <p className="text-sm text-slate-400">do</p>
-          <h2 className="text-xl">{to}</h2>
+          <h2 className="text-xl">{toCity}</h2>
         </div>
       </div>
       <div className="flex gap-4">

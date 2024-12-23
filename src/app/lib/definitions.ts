@@ -121,15 +121,22 @@ export type SessionPayload = {
 };
 
 export type AnnoucementProps = {
+  id?: string;
   title: string;
-  from: string;
-  to: string;
+  fromCity?: string;
+  toCity?: string;
+  fromGeography?: string;
+  toGeography?: string;
   departureDate: Date;
   arrivalDate: Date;
   carProps: {
     maxWeight: number;
     maxSize: { x: number; y: number; height: number };
+    brand?: string;
+    model?: string;
   };
+  authorId?: string;
+  isAccepted?: boolean;
 };
 
 export enum GoodsCategory {

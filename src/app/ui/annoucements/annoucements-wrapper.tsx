@@ -1,4 +1,5 @@
-import { SortDirection, FilterProps } from '../../lib/definitions';
+import { useEffect, useState } from 'react';
+import { SortDirection, FilterProps, AnnoucementProps } from '../../lib/definitions';
 import Annoucement from './annoucment';
 
 type WrapperProps = {
@@ -7,24 +8,34 @@ type WrapperProps = {
 };
 
 export default function AnnoucmentsWrapper({ sortDirection, filterOptions }: WrapperProps) {
+  const [annoucements, setAnnoucements] = useState<Array<AnnoucementProps>>([]);
+  const [isLoading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/pl/announcements/get')
+      .then((res) => res.json())
+      .then((data) => {
+        setAnnoucements(data);
+        setLoading(false);
+      });
+  }, []);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (!annoucements) return <p>No annoucements</p>;
+
   return (
     <div className="flex flex-col gap-4">
-      <Annoucement
-        title="Zamierzam wybrać się z Wrocławia do Berlina"
-        from="PL, Wrocław"
-        to="DE, Berlin"
-        departureDate={new Date()}
-        arrivalDate={new Date(new Date().setDate(new Date().getDate() + 2))}
-        carProps={{ maxWeight: 10000, maxSize: { x: 2, y: 1, height: 200 } }}
-      />
-      <Annoucement
-        title="Zamierzam wybrać się z Wrocławia do Berlina"
-        from="PL, Wrocław"
-        to="DE, Berlin"
-        departureDate={new Date()}
-        arrivalDate={new Date(new Date().setDate(new Date().getDate() + 2))}
-        carProps={{ maxWeight: 10000, maxSize: { x: 2, y: 1, height: 200 } }}
-      />
+      {annoucements.map((annoucement: AnnoucementProps, index) => (
+        <Annoucement
+          key={index}
+          title={annoucement.title}
+          fromCity={annoucement.fromCity}
+          toCity={annoucement.toCity}
+          departureDate={annoucement.departureDate}
+          arrivalDate={annoucement.arrivalDate}
+          carProps={annoucement.carProps}
+        />
+      ))}
     </div>
   );
 }

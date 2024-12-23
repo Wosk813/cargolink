@@ -5,7 +5,7 @@ export default function AnnoucementsMapButt() {
     <div>
       <Link
         href={'/announcements/map'}
-        className="block w-full rounded-md border-2 border-yellow-300 p-4 text-center text-xl text-yellow-300"
+        className="block w-full rounded-md border-2 border-yellow-300 p-1 text-center text-xl text-yellow-300"
       >
         Otwórz mapę tras
       </Link>
