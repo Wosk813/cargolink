@@ -34,6 +34,7 @@ export default function Annoucments() {
 
   function handleClick(direction: SortDirection) {
     setSortDirection(direction);
+    setSortOptionsAreHidden(true);
   }
 
   const toggleSortOptions = () => {
@@ -47,38 +48,38 @@ export default function Annoucments() {
   const [filters, setFilters] = useState<FilterProps>({
     date: {
       departureDate: {
-        from: new Date(),
-        to: new Date(new Date().setDate(new Date().getDate() + 2)),
+        from: null,
+        to: null,
       },
       arrivalDate: {
-        from: new Date(),
-        to: new Date(new Date().setDate(new Date().getDate() + 2)),
+        from: null,
+        to: null,
       },
     },
     cities: {
-      from: 'PL, Wrocław',
-      to: 'DE, Berlin',
+      from: null,
+      to: null,
     },
     goods: {
       weight: {
-        from: 0,
-        to: 10_000,
+        from: null,
+        to: null,
       },
       size: {
         x: {
-          from: 0,
-          to: 10,
+          from: null,
+          to: null,
         },
         y: {
           from: 0,
-          to: 10,
+          to: null,
         },
         height: {
-          from: 50,
-          to: 400,
+          from: 0,
+          to: null,
         },
       },
-      category: GoodsCategory.Other,
+      category: GoodsCategory.All,
     },
   });
 
@@ -153,7 +154,7 @@ export default function Annoucments() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 w-full">
       <div className="rounded-md bg-slate-700 transition-all duration-300 ease-in-out">
         <div className="flex justify-between">
           <Button
@@ -182,7 +183,11 @@ export default function Annoucments() {
                   className="bg-slate-800"
                   title="od"
                   type="date"
-                  value={filters.date.departureDate.from.toISOString().split('T')[0]}
+                  value={
+                    filters.date.departureDate.from
+                      ? filters.date.departureDate.from.toISOString().split('T')[0]
+                      : ''
+                  }
                   onChange={(e) => handleDateChange('departureDate', 'from', e.target.value)}
                 />
                 <Input
@@ -190,7 +195,11 @@ export default function Annoucments() {
                   className="bg-slate-800"
                   title="do"
                   type="date"
-                  value={filters.date.departureDate.to.toISOString().split('T')[0]}
+                  value={
+                    filters.date.departureDate.to
+                      ? filters.date.departureDate.to.toISOString().split('T')[0]
+                      : ''
+                  }
                   onChange={(e) => handleDateChange('departureDate', 'to', e.target.value)}
                 />
               </div>
@@ -201,7 +210,11 @@ export default function Annoucments() {
                   className="bg-slate-800"
                   title="od"
                   type="date"
-                  value={filters.date.arrivalDate.from.toISOString().split('T')[0]}
+                  value={
+                    filters.date.arrivalDate.from
+                      ? filters.date.arrivalDate.from.toISOString().split('T')[0]
+                      : ''
+                  }
                   onChange={(e) => handleDateChange('arrivalDate', 'from', e.target.value)}
                 />
                 <Input
@@ -209,7 +222,11 @@ export default function Annoucments() {
                   className="bg-slate-800"
                   title="do"
                   type="date"
-                  value={filters.date.arrivalDate.to.toISOString().split('T')[0]}
+                  value={
+                    filters.date.arrivalDate.to
+                      ? filters.date.arrivalDate.to.toISOString().split('T')[0]
+                      : 0
+                  }
                   onChange={(e) => handleDateChange('arrivalDate', 'to', e.target.value)}
                 />
               </div>
@@ -220,15 +237,17 @@ export default function Annoucments() {
                 containerStytles="bg-slate-800"
                 className="bg-slate-800"
                 title="z"
-                value={filters.cities.from}
+                value={filters.cities.from ? filters.cities.from : ''}
                 onChange={(e) => handleCityChange('from', e.target.value)}
+                placeholder="Wrocław"
               />
               <Input
                 containerStytles="bg-slate-800"
                 className="bg-slate-800"
                 title="do"
-                value={filters.cities.to}
+                value={filters.cities.to ? filters.cities.to : ''}
                 onChange={(e) => handleCityChange('to', e.target.value)}
+                placeholder="Berlin"
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -240,7 +259,7 @@ export default function Annoucments() {
                   className="bg-slate-800"
                   title="od"
                   type="number"
-                  value={filters.goods.weight.from}
+                  value={filters.goods.weight.from ? filters.goods.weight.from : ''}
                   onChange={(e) => handleWeightChange('from', e.target.value)}
                 />
                 <Input
@@ -248,7 +267,7 @@ export default function Annoucments() {
                   className="bg-slate-800"
                   title="do"
                   type="number"
-                  value={filters.goods.weight.to}
+                  value={filters.goods.weight.to ? filters.goods.weight.to : ''}
                   onChange={(e) => handleWeightChange('to', e.target.value)}
                 />
               </div>
@@ -259,7 +278,7 @@ export default function Annoucments() {
                   className="bg-slate-800"
                   title="od"
                   type="number"
-                  value={filters.goods.size.x.from}
+                  value={filters.goods.size.x.from ? filters.goods.size.x.from : ''}
                   onChange={(e) => handleSizeChange('x', 'from', e.target.value)}
                 />
                 <Input
@@ -267,7 +286,7 @@ export default function Annoucments() {
                   className="bg-slate-800"
                   title="do"
                   type="number"
-                  value={filters.goods.size.x.to}
+                  value={filters.goods.size.x.to ? filters.goods.size.x.to : ''}
                   onChange={(e) => handleSizeChange('x', 'to', e.target.value)}
                 />
               </div>
@@ -278,7 +297,7 @@ export default function Annoucments() {
                   className="bg-slate-800"
                   title="od"
                   type="number"
-                  value={filters.goods.size.y.from}
+                  value={filters.goods.size.y.from ? filters.goods.size.y.from : ''}
                   onChange={(e) => handleSizeChange('y', 'from', e.target.value)}
                 />
                 <Input
@@ -286,7 +305,7 @@ export default function Annoucments() {
                   className="bg-slate-800"
                   title="do"
                   type="number"
-                  value={filters.goods.size.y.to}
+                  value={filters.goods.size.y.to ? filters.goods.size.y.to : ''}
                   onChange={(e) => handleSizeChange('y', 'to', e.target.value)}
                 />
               </div>
@@ -297,7 +316,7 @@ export default function Annoucments() {
                   className="bg-slate-800"
                   title="od"
                   type="number"
-                  value={filters.goods.size.height.from}
+                  value={filters.goods.size.height.from ? filters.goods.size.height.from : ''}
                   onChange={(e) => handleSizeChange('height', 'from', e.target.value)}
                 />
                 <Input
@@ -305,7 +324,7 @@ export default function Annoucments() {
                   className="bg-slate-800"
                   title="do"
                   type="number"
-                  value={filters.goods.size.height.to}
+                  value={filters.goods.size.height.to ? filters.goods.size.height.to : ''}
                   onChange={(e) => handleSizeChange('height', 'to', e.target.value)}
                 />
               </div>
@@ -338,35 +357,35 @@ export default function Annoucments() {
             content="Od najpóźniejszych"
           />
           <SortButton
-            onClick={() => handleClick(SortDirection.ByWeightAsc)}
-            selected={sortDirection == SortDirection.ByWeightAsc}
+            onClick={() => handleClick(SortDirection.ByWeightDesc)}
+            selected={sortDirection == SortDirection.ByWeightDesc}
             content="Od największej wagi towaru"
           />
           <SortButton
-            onClick={() => handleClick(SortDirection.ByWeightDesc)}
-            selected={sortDirection == SortDirection.ByWeightDesc}
+            onClick={() => handleClick(SortDirection.ByWeightAsc)}
+            selected={sortDirection == SortDirection.ByWeightAsc}
             content="Od najmniejszej wagi towaru"
-          />
-          <SortButton
-            onClick={() => handleClick(SortDirection.BySizeAsc)}
-            selected={sortDirection == SortDirection.BySizeAsc}
-            content="
-        Od najwiekszych wymiarów towaru"
           />
           <SortButton
             onClick={() => handleClick(SortDirection.BySizeDesc)}
             selected={sortDirection == SortDirection.BySizeDesc}
-            content="Od najmniejszych wymiarów towaru"
+            content="
+        Od najwiekszych wymiarów towaru"
           />
           <SortButton
-            onClick={() => handleClick(SortDirection.ByHeightAsc)}
-            selected={sortDirection == SortDirection.ByHeightAsc}
-            content="Od najniższej wysokości towaru"
+            onClick={() => handleClick(SortDirection.BySizeAsc)}
+            selected={sortDirection == SortDirection.BySizeAsc}
+            content="Od najmniejszych wymiarów towaru"
           />
           <SortButton
             onClick={() => handleClick(SortDirection.ByHeightDesc)}
             selected={sortDirection == SortDirection.ByHeightDesc}
             content="Od największej wysokości towaru"
+          />
+          <SortButton
+            onClick={() => handleClick(SortDirection.ByHeightAsc)}
+            selected={sortDirection == SortDirection.ByHeightAsc}
+            content="Od najniższej wysokości towaru"
           />
         </div>
       </div>

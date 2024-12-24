@@ -30,7 +30,6 @@ const formatWeight = (weight: number) => {
 };
 
 export default function Annoucement({
-  id,
   title,
   fromCity,
   toCity,
@@ -39,7 +38,7 @@ export default function Annoucement({
   carProps,
 }: AnnoucementProps) {
   return (
-    <div className="display flex flex-col gap-4 rounded-md bg-slate-700 p-4">
+    <div className="display flex flex-col gap-2 rounded-md bg-slate-700 p-4 md:gap-4">
       <h1 className="rounded-md bg-slate-800 p-2 text-xl">{title}</h1>
       <div className="flex justify-between rounded-md bg-slate-800 p-4">
         <div className="flex flex-col">
@@ -52,7 +51,7 @@ export default function Annoucement({
           <h2 className="text-xl">{toCity}</h2>
         </div>
       </div>
-      <div className="flex gap-4">
+      <div className="flex gap-2 md:gap-4">
         <div className="flex w-full flex-col gap-2 rounded-md bg-slate-800 p-4">
           <p className="text-sm text-slate-400">planowan data rozpoczęcia trasy</p>
           <FormattedDate date={new Date(departureDate)} />
@@ -62,20 +61,20 @@ export default function Annoucement({
           <FormattedDate date={new Date(arrivalDate)} />
         </div>
       </div>
-      <div className="flex gap-4">
+      <div className="flex gap-2 md:gap-4 flex-wrap md:flex-nowrap">
         <div className="flex w-full flex-col justify-between gap-2 rounded-md bg-slate-800 p-4">
           <p className="text-sm text-slate-400">maksymalna waga towarów</p>
-          <p className="text-center text-2xl">{formatWeight(carProps.maxWeight)}</p>
+          <p className="text-center text-xl md:text-2xl">{formatWeight(carProps.maxWeight)}</p>
         </div>
         <div className="flex w-full flex-col justify-between gap-2 rounded-md bg-slate-800 p-4">
           <p className="text-sm text-slate-400">maksymalny wymiar towarów</p>
-          <p className="text-center text-2xl">
+          <p className="text-center text-xl md:text-2xl">
             {carProps.maxSize.x}x{carProps.maxSize.y}
           </p>
         </div>
         <div className="flex w-full flex-col justify-between gap-2 rounded-md bg-slate-800 p-4">
           <p className="text-sm text-slate-400">maksymalna wysokość towarów</p>
-          <p className="text-center text-2xl">{carProps.maxSize.height} cm</p>
+          <p className="text-center text-xl md:text-2xl">{carProps.maxSize.height} cm</p>
         </div>
       </div>
     </div>
