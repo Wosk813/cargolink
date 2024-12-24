@@ -96,7 +96,7 @@ export default async function LocaleLayout(props: {
           <div className="flex min-h-screen flex-col md:flex-row">
             <Nav links={links} onLogout={logout} isAuth={isAuth} />
             <main className="relative flex-1">
-              <div className="h-full px-5 md:py-8">{children}</div>
+              <div className="mx-6 h-full md:ml-0 md:py-8">{children}</div>
               <SpeedInsights />
             </main>
           </div>

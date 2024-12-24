@@ -5,6 +5,8 @@ import { redirect } from '@/src/i18n/routing';
 import { neon } from '@neondatabase/serverless';
 import {
   AnnoucementProps,
+  FilterProps,
+  GoodsCategory,
   SignupFormData,
   SortDirection,
   ValidationErrors,
@@ -138,8 +140,75 @@ function sortDirectionToSQL(sortBy: SortDirection) {
   return `ORDER BY ${by}`;
 }
 
-export async function getAnnouncements(sortBy: SortDirection) {
-  let sqlString = `SELECT * FROM announcements ${sortDirectionToSQL(sortBy)}`;
+function filterOptionsToSQL(filterOptions: FilterProps): string {
+  const conditions: string[] = [];
+
+  // Dates
+  if (filterOptions.date.departureDate.from) {
+    conditions.push(`departure_date >= '${filterOptions.date.departureDate.from.toISOString()}'`);
+  }
+  if (filterOptions.date.departureDate.to) {
+    conditions.push(`departure_date <= '${filterOptions.date.departureDate.to.toISOString()}'`);
+  }
+  if (filterOptions.date.arrivalDate.from) {
+    conditions.push(`arrival_date >= '${filterOptions.date.arrivalDate.from.toISOString()}'`);
+  }
+  if (filterOptions.date.arrivalDate.to) {
+    conditions.push(`arrival_date <= '${filterOptions.date.arrivalDate.to.toISOString()}'`);
+  }
+
+  // Cities
+  if (filterOptions.cities.from) {
+    conditions.push(`from_city ILIKE '%${filterOptions.cities.from}%'`);
+  }
+  if (filterOptions.cities.to) {
+    conditions.push(`to_city ILIKE '%${filterOptions.cities.to}%'`);
+  }
+
+  // Goods
+  if (filterOptions.goods.weight.from !== null) {
+    conditions.push(`max_weight >= ${filterOptions.goods.weight.from}`);
+  }
+  if (filterOptions.goods.weight.to !== null) {
+    conditions.push(`max_weight <= ${filterOptions.goods.weight.to}`);
+  }
+
+  if (filterOptions.goods.size.x.from !== null) {
+    conditions.push(`size_x >= ${filterOptions.goods.size.x.from}`);
+  }
+  if (filterOptions.goods.size.x.to !== null) {
+    conditions.push(`size_x <= ${filterOptions.goods.size.x.to}`);
+  }
+
+  if (filterOptions.goods.size.y.from !== null) {
+    conditions.push(`size_y >= ${filterOptions.goods.size.y.from}`);
+  }
+  if (filterOptions.goods.size.y.to !== null) {
+    conditions.push(`size_y <= ${filterOptions.goods.size.y.to}`);
+  }
+
+  if (filterOptions.goods.size.height.from !== null) {
+    conditions.push(`max_height >= ${filterOptions.goods.size.height.from}`);
+  }
+  if (filterOptions.goods.size.height.to !== null) {
+    conditions.push(`max_height <= ${filterOptions.goods.size.height.to}`);
+  }
+
+  // Category
+  if (filterOptions.goods.category) {
+    if (filterOptions.goods.category != GoodsCategory.All)
+      conditions.push(`category = '${filterOptions.goods.category}'`);
+  }
+
+  if (conditions.length === 0) {
+    return '';
+  }
+
+  return `WHERE ${conditions.join(' AND ')}`;
+}
+
+export async function getAnnouncements(sortBy: SortDirection, filterOptions: FilterProps) {
+  let sqlString = `SELECT * FROM announcements ${filterOptionsToSQL(filterOptions)} ${sortDirectionToSQL(sortBy)}`;
   const dbAnnoucements = await sql(sqlString);
   const announcements: Array<AnnoucementProps> = [];
   dbAnnoucements.map((dbAnnoucement) => {

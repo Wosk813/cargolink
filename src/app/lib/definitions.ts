@@ -142,6 +142,7 @@ export enum GoodsCategory {
   Furniture = 'furniture',
   Food = 'food',
   Other = 'other',
+  All = 'all',
 }
 
 export enum SortDirection {

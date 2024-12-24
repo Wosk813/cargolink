@@ -71,15 +71,15 @@ export default function Annoucments() {
           to: null,
         },
         y: {
-          from: null,
+          from: 0,
           to: null,
         },
         height: {
-          from: null,
+          from: 0,
           to: null,
         },
       },
-      category: GoodsCategory.Other,
+      category: GoodsCategory.All,
     },
   });
 
@@ -154,7 +154,7 @@ export default function Annoucments() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 w-full">
       <div className="rounded-md bg-slate-700 transition-all duration-300 ease-in-out">
         <div className="flex justify-between">
           <Button
