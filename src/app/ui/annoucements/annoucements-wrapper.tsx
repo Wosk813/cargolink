@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { SortDirection, FilterProps, AnnoucementProps } from '../../lib/definitions';
 import Annoucement from './annoucment';
 import { Link } from '@/src/i18n/routing';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import AnnouncementsWrapperSkeleton from '../skeletons/annoucments';
+import { useLocale } from 'next-intl';
 
 type WrapperProps = {
   sortDirection: SortDirection;
@@ -12,7 +14,7 @@ type WrapperProps = {
 export default function AnnoucmentsWrapper({ sortDirection, filterOptions }: WrapperProps) {
   const [annoucements, setAnnoucements] = useState<Array<AnnoucementProps>>([]);
   const [isLoading, setLoading] = useState(true);
-
+  const currentLocale = useLocale();
   const router = useRouter();
 
   useEffect(() => {
@@ -80,7 +82,8 @@ export default function AnnoucmentsWrapper({ sortDirection, filterOptions }: Wra
     };
 
     const params = buildURLParams();
-    router.push(`/pl/announcements?${params.toString()}`, { scroll: false });
+
+    router.push(`/${currentLocale}/announcements?${params.toString()}`, { scroll: false });
 
     setLoading(true);
     fetch(`/pl/announcements/get?${params.toString()}`)
@@ -95,7 +98,7 @@ export default function AnnoucmentsWrapper({ sortDirection, filterOptions }: Wra
       });
   }, [sortDirection, filterOptions, router]);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <AnnouncementsWrapperSkeleton />;
   if (!annoucements || annoucements.length === 0) return <p>No announcements</p>;
 
   return (

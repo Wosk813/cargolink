@@ -9,6 +9,8 @@ import { SortDirection, FilterProps } from '../../lib/definitions';
 import { Select } from '../select';
 import AnnoucmentsWrapper from './annoucements-wrapper';
 import AnnoucementsMapButt from './annoucments-map';
+import AnnoucmentsWrapperSkeleton from '../skeletons/annoucments';
+import { useTranslations } from 'next-intl';
 
 interface SortButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   content: string;
@@ -153,8 +155,9 @@ export default function Annoucments() {
     }));
   };
 
+  const t = useTranslations('posts');
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <div className="flex w-full flex-col gap-4">
       <div className="rounded-md bg-slate-700 transition-all duration-300 ease-in-out">
         <div className="flex justify-between">
           <Button
@@ -162,26 +165,26 @@ export default function Annoucments() {
             className="flex w-full items-center justify-center gap-2 rounded-md !bg-slate-700 p-0 text-center font-normal text-white"
           >
             <ArrowsUpDownIcon className="h-6" />
-            <p className="text-xl">Sortuj</p>
+            <p className="text-xl">{t('sort')}</p>
           </Button>
           <Button
             onClick={toggleFilterOptions}
             className="flex w-full items-center justify-center gap-2 !bg-slate-700 p-0 text-center font-normal text-white"
           >
             <AdjustmentsHorizontalIcon className="h-6" />
-            <p className="text-xl">Filtruj</p>
+            <p className="text-xl">{t('filter')}</p>
           </Button>
         </div>
         <div className={`flex flex-col p-2 ${filterOptionsAreHidden ? 'hidden' : ''}`}>
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-              <h1 className="text-xl">Termin</h1>
-              <h2>Data wyjazdu</h2>
+              <h1 className="text-xl">{t('deadline')}</h1>
+              <h2>{t('departureDate')}</h2>
               <div className="flex gap-2">
                 <Input
                   containerStytles="bg-slate-800"
                   className="bg-slate-800"
-                  title="od"
+                  title={t('from')}
                   type="date"
                   value={
                     filters.date.departureDate.from
@@ -193,7 +196,7 @@ export default function Annoucments() {
                 <Input
                   containerStytles="bg-slate-800"
                   className="bg-slate-800"
-                  title="do"
+                  title={t('to')}
                   type="date"
                   value={
                     filters.date.departureDate.to
@@ -203,12 +206,12 @@ export default function Annoucments() {
                   onChange={(e) => handleDateChange('departureDate', 'to', e.target.value)}
                 />
               </div>
-              <h2>Data przyjazdu</h2>
+              <h2>{t('arrivalDate')}</h2>
               <div className="flex gap-2">
                 <Input
                   containerStytles="bg-slate-800"
                   className="bg-slate-800"
-                  title="od"
+                  title={t('from')}
                   type="date"
                   value={
                     filters.date.arrivalDate.from
@@ -220,7 +223,7 @@ export default function Annoucments() {
                 <Input
                   containerStytles="bg-slate-800"
                   className="bg-slate-800"
-                  title="do"
+                  title={t('to')}
                   type="date"
                   value={
                     filters.date.arrivalDate.to
@@ -232,7 +235,7 @@ export default function Annoucments() {
               </div>
             </div>
             <div className="flex flex-col gap-2">
-              <h1 className="text-xl">Miejsce</h1>
+              <h1 className="text-xl">{t('cities')}</h1>
               <Input
                 containerStytles="bg-slate-800"
                 className="bg-slate-800"
@@ -244,20 +247,20 @@ export default function Annoucments() {
               <Input
                 containerStytles="bg-slate-800"
                 className="bg-slate-800"
-                title="do"
+                title={t('to')}
                 value={filters.cities.to ? filters.cities.to : ''}
                 onChange={(e) => handleCityChange('to', e.target.value)}
                 placeholder="Berlin"
               />
             </div>
             <div className="flex flex-col gap-2">
-              <h1 className="text-xl">Towar</h1>
-              <h2>Waga</h2>
+              <h1 className="text-xl">{t('ware')}</h1>
+              <h2>{t('weight')}</h2>
               <div className="flex gap-2">
                 <Input
                   containerStytles="bg-slate-800"
                   className="bg-slate-800"
-                  title="od"
+                  title={t('from')}
                   type="number"
                   value={filters.goods.weight.from ? filters.goods.weight.from : ''}
                   onChange={(e) => handleWeightChange('from', e.target.value)}
@@ -265,18 +268,18 @@ export default function Annoucments() {
                 <Input
                   containerStytles="bg-slate-800"
                   className="bg-slate-800"
-                  title="do"
+                  title={t('to')}
                   type="number"
                   value={filters.goods.weight.to ? filters.goods.weight.to : ''}
                   onChange={(e) => handleWeightChange('to', e.target.value)}
                 />
               </div>
-              <h2>Szerokość podstawy</h2>
+              <h2>{t('width')}</h2>
               <div className="flex gap-2">
                 <Input
                   containerStytles="bg-slate-800"
                   className="bg-slate-800"
-                  title="od"
+                  title={t('from')}
                   type="number"
                   value={filters.goods.size.x.from ? filters.goods.size.x.from : ''}
                   onChange={(e) => handleSizeChange('x', 'from', e.target.value)}
@@ -284,18 +287,18 @@ export default function Annoucments() {
                 <Input
                   containerStytles="bg-slate-800"
                   className="bg-slate-800"
-                  title="do"
+                  title={t('to')}
                   type="number"
                   value={filters.goods.size.x.to ? filters.goods.size.x.to : ''}
                   onChange={(e) => handleSizeChange('x', 'to', e.target.value)}
                 />
               </div>
-              <h2>Długość podstawy</h2>
+              <h2>{t('length')}</h2>
               <div className="flex gap-2">
                 <Input
                   containerStytles="bg-slate-800"
                   className="bg-slate-800"
-                  title="od"
+                  title={t('from')}
                   type="number"
                   value={filters.goods.size.y.from ? filters.goods.size.y.from : ''}
                   onChange={(e) => handleSizeChange('y', 'from', e.target.value)}
@@ -303,18 +306,18 @@ export default function Annoucments() {
                 <Input
                   containerStytles="bg-slate-800"
                   className="bg-slate-800"
-                  title="do"
+                  title={t('to')}
                   type="number"
                   value={filters.goods.size.y.to ? filters.goods.size.y.to : ''}
                   onChange={(e) => handleSizeChange('y', 'to', e.target.value)}
                 />
               </div>
-              <h2>Wysokość</h2>
+              <h2>{t('height')}</h2>
               <div className="flex gap-2">
                 <Input
                   containerStytles="bg-slate-800"
                   className="bg-slate-800"
-                  title="od"
+                  title={t('from')}
                   type="number"
                   value={filters.goods.size.height.from ? filters.goods.size.height.from : ''}
                   onChange={(e) => handleSizeChange('height', 'from', e.target.value)}
@@ -322,70 +325,76 @@ export default function Annoucments() {
                 <Input
                   containerStytles="bg-slate-800"
                   className="bg-slate-800"
-                  title="do"
+                  title={t('to')}
                   type="number"
                   value={filters.goods.size.height.to ? filters.goods.size.height.to : ''}
                   onChange={(e) => handleSizeChange('height', 'to', e.target.value)}
                 />
               </div>
-              <h2>Kategoria towaru</h2>
+              <h2>{t('wareCategory')}</h2>
               <Select
                 containerStytles="bg-slate-800"
                 className="bg-slate-800"
-                title="Kategoria towaru"
+                title={t('wareCategory')}
                 options={[
-                  { value: 'other', label: 'Inne' },
-                  { value: 'electronics', label: 'Elektronika' },
-                  { value: 'furniture', label: 'Meble' },
-                  { value: 'food', label: 'Żywność' },
+                  { value: 'other', label: t('other') },
+                  { value: 'electronics', label: t('electronicts') },
+                  { value: 'furniture', label: t('furniture') },
+                  { value: 'food', label: t('food') },
                 ]}
                 value={filters.goods.category}
                 onChange={(e) => handleCategoryChange(e.target.value)}
               />
             </div>
+            <Button
+              onClick={() => {
+                setFilterOptionsAreHidden(true);
+              }}
+            >
+              {t('accept')}
+            </Button>
           </div>
         </div>
         <div className={`flex flex-col p-2 ${sortOptionsAreHidden ? 'hidden' : ''}`}>
           <SortButton
             onClick={() => handleClick(SortDirection.ByNewest)}
             selected={sortDirection == SortDirection.ByNewest}
-            content="Od najwcześniejszych"
+            content={t('ByNewest')}
           />
           <SortButton
             onClick={() => handleClick(SortDirection.ByOldest)}
             selected={sortDirection == SortDirection.ByOldest}
-            content="Od najpóźniejszych"
+            content={t('ByOldest')}
           />
           <SortButton
             onClick={() => handleClick(SortDirection.ByWeightDesc)}
             selected={sortDirection == SortDirection.ByWeightDesc}
-            content="Od największej wagi towaru"
+            content={t('ByWeightDesc')}
           />
           <SortButton
             onClick={() => handleClick(SortDirection.ByWeightAsc)}
             selected={sortDirection == SortDirection.ByWeightAsc}
-            content="Od najmniejszej wagi towaru"
+            content={t('ByWeightAsc')}
           />
           <SortButton
             onClick={() => handleClick(SortDirection.BySizeDesc)}
             selected={sortDirection == SortDirection.BySizeDesc}
-            content="
-        Od najwiekszych wymiarów towaru"
+            content={t('BySizeDesc')}
           />
           <SortButton
             onClick={() => handleClick(SortDirection.BySizeAsc)}
             selected={sortDirection == SortDirection.BySizeAsc}
-            content="Od najmniejszych wymiarów towaru"
+            content={t('BySizeAsc')}
           />
           <SortButton
             onClick={() => handleClick(SortDirection.ByHeightDesc)}
             selected={sortDirection == SortDirection.ByHeightDesc}
-            content="Od największej wysokości towaru"
+            content={t('ByHeightDesc')}
           />
           <SortButton
             onClick={() => handleClick(SortDirection.ByHeightAsc)}
             selected={sortDirection == SortDirection.ByHeightAsc}
-            content="Od najniższej wysokości towaru"
+            content={t('ByHeightAsc')}
           />
         </div>
       </div>
