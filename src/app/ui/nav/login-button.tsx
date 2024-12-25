@@ -30,7 +30,7 @@ export default function LoginButton({ onLogout, isAuth }: LoginButtonProps) {
         className="my-4 w-full rounded-md !bg-slate-700 px-2 py-2 text-center font-normal text-white"
         disabled={pending}
       >
-        Wyloguj
+        {t('logout')}
       </Button>
     );
   } else {
