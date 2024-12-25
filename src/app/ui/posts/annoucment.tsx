@@ -2,7 +2,8 @@ import { useTranslations } from 'next-intl';
 import { AnnoucementProps } from '../../lib/definitions';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 
-const FormattedDate = ({ date }: { date: Date }) => {
+export const FormattedDate = ({ date }: { date: Date | undefined }) => {
+  if (!date) return <p>Error</p>;
   const dateFormat = date.toLocaleString('pl-PL', {
     day: '2-digit',
     month: '2-digit',
@@ -23,7 +24,8 @@ const FormattedDate = ({ date }: { date: Date }) => {
   );
 };
 
-const formatWeight = (weight: number) => {
+export const formatWeight = (weight: number | undefined) => {
+  if (!weight) return 'Error';
   if (weight >= 1000) {
     return `${(weight / 1000).toString().replace(/\.0+$/, '')} t`;
   }

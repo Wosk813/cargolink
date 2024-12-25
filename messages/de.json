@@ -10,7 +10,8 @@
     "messages": "Nachrichten",
     "moderation": "Moderationspanel",
     "admin": "Admin-Panel",
-    "logoutPending": "Ausloggen ..."
+    "logoutPending": "Ausloggen ...",
+    "close": "schließen"
   },
   "login": {
     "login": "Einloggen",

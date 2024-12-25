@@ -2,14 +2,15 @@
 
 import { createSession, deleteSession } from './session';
 import { redirect } from '@/src/i18n/routing';
-import { neon } from '@neondatabase/serverless';
+import { neon, NeonQueryPromise } from '@neondatabase/serverless';
 import {
-  AnnoucementProps,
   FilterProps,
   GoodsCategory,
   SignupFormData,
   SortDirection,
   ValidationErrors,
+  AnnoucementProps,
+  User,
 } from '@/src/app/lib/definitions';
 import { getTranslations } from 'next-intl/server';
 
@@ -209,31 +210,64 @@ function filterOptionsToSQL(filterOptions: FilterProps): string {
 
 export async function getAnnouncements(sortBy: SortDirection, filterOptions: FilterProps) {
   let sqlString = `SELECT * FROM announcements ${filterOptionsToSQL(filterOptions)} ${sortDirectionToSQL(sortBy)}`;
-  const dbAnnoucements = await sql(sqlString);
-  const announcements: Array<AnnoucementProps> = [];
-  dbAnnoucements.map((dbAnnoucement) => {
-    if (!dbAnnoucement['is_accepted']) return;
-    let annoucement: AnnoucementProps = {
-      id: dbAnnoucement['announcement_id'],
-      title: dbAnnoucement['title'],
-      fromCity: dbAnnoucement['from_city'],
-      toCity: dbAnnoucement['to_city'],
-      fromGeography: dbAnnoucement['from_geography'],
-      toGeography: dbAnnoucement['to_geography'],
-      departureDate: dbAnnoucement['start_date'],
-      arrivalDate: dbAnnoucement['arrive_date'],
-      carProps: {
-        maxWeight: dbAnnoucement['max_weight'],
-        maxSize: {
-          x: dbAnnoucement['size_x'],
-          y: dbAnnoucement['size_y'],
-          height: dbAnnoucement['max_height'],
-        },
-      },
-      authorId: dbAnnoucement['author_id'],
-      isAccepted: dbAnnoucement['is_accepted'],
-    };
-    announcements.push(annoucement);
+  const dbrows = await sql(sqlString);
+  const announcements: Array<AnnoucementProps | null> = [];
+  dbrows.map((dbrow) => {
+    if (!dbrow['is_accepted']) return;
+    let row: AnnoucementProps | null = dbRowToObject(dbrow, 'annoucement') as AnnoucementProps;
+    announcements.push(row);
   });
   return announcements;
+}
+
+export async function getAnnouncementsById(id: string): Promise<AnnoucementProps | null> {
+  let row = await sql('SELECT * FROM announcements WHERE announcement_id=$1', [id]);
+  return dbRowToObject(row[0], 'annoucement') as AnnoucementProps;
+}
+
+function dbRowToObject(row: any, object: string) {
+  switch (object) {
+    case 'annoucement':
+      let annoucement: AnnoucementProps = {
+        id: row['announcement_id'],
+        title: row['title'],
+        fromCity: row['from_city'],
+        toCity: row['to_city'],
+        fromGeography: row['from_geography'],
+        toGeography: row['to_geography'],
+        departureDate: row['start_date'],
+        arrivalDate: row['arrive_date'],
+        carProps: {
+          maxWeight: row['max_weight'],
+          maxSize: {
+            x: row['size_x'],
+            y: row['size_y'],
+            height: row['max_height'],
+          },
+          brand: row['vehicle_brand'],
+          model: row['vehicle_model'],
+        },
+        authorId: row['author_id'],
+        isAccepted: row['is_accepted'],
+        desc: row['desc'],
+      };
+      return annoucement;
+    case 'user':
+      let user: User = {
+        firstname: row['first_name'],
+        lastname: row['last_name'],
+        email: row['email'],
+        createdAt: row['created_at'],
+        accountType: row['account_type'],
+        companyId: row['company_id'],
+        lastSeen: row['last_logged'],
+        languages: row['languages'],
+        isPhisicalPerson: row['is_psyhical_person'],
+        role: row['role'],
+        userDesc: row['user_desc'],
+      };
+      return user;
+  }
+
+  return null;
 }

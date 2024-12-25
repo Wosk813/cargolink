@@ -10,7 +10,8 @@
     "messages": "Wiadomości",
     "moderation": "Panel moderatora",
     "admin": "Panel administratora",
-    "logoutPending": "Wylogowywanie ..."
+    "logoutPending": "Wylogowywanie ...",
+    "close": "Zamknij"
   },
   "login": {
     "login": "Zaloguj się",

@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl';
-import Annoucments from '../../ui/annoucements/annoucments';
+import Annoucments from '../../ui/posts/annoucments';
 
 export default function Page() {
   const t = useTranslations('nav');

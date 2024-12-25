@@ -10,7 +10,8 @@
     "messages": "Messages",
     "moderation": "Moderation panel",
     "admin": "Admin panel",
-    "logoutPending": "Logging out ..."
+    "logoutPending": "Logging out ...",
+    "close": "Close"
   },
   "login": {
     "login": "Log in",

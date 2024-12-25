@@ -21,7 +21,7 @@ function SortButton({ content, selected, ...rest }: SortButtonProps) {
   return (
     <Button
       buttType={ButtonTypes.Normal}
-      className={`text-left font-normal ${selected ? '!bg-slate-500' : 'hover:bg-slate-600'}`}
+      className={`text-left font-normal ${selected ? '!bg-yellow-300 !text-black' : 'hover:bg-slate-600'}`}
       {...rest}
     >
       {content}
