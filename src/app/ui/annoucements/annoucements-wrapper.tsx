@@ -3,6 +3,7 @@ import { SortDirection, FilterProps, AnnoucementProps } from '../../lib/definiti
 import Annoucement from './annoucment';
 import { Link } from '@/src/i18n/routing';
 import { useRouter } from 'next/navigation';
+import AnnouncementsWrapperSkeleton from '../skeletons/annoucments';
 
 type WrapperProps = {
   sortDirection: SortDirection;
@@ -95,7 +96,7 @@ export default function AnnoucmentsWrapper({ sortDirection, filterOptions }: Wra
       });
   }, [sortDirection, filterOptions, router]);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <AnnouncementsWrapperSkeleton />;
   if (!annoucements || annoucements.length === 0) return <p>No announcements</p>;
 
   return (

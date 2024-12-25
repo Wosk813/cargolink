@@ -9,6 +9,7 @@ import { SortDirection, FilterProps } from '../../lib/definitions';
 import { Select } from '../select';
 import AnnoucmentsWrapper from './annoucements-wrapper';
 import AnnoucementsMapButt from './annoucments-map';
+import AnnoucmentsWrapperSkeleton from '../skeletons/annoucments';
 
 interface SortButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   content: string;
@@ -154,7 +155,7 @@ export default function Annoucments() {
   };
 
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <div className="flex w-full flex-col gap-4">
       <div className="rounded-md bg-slate-700 transition-all duration-300 ease-in-out">
         <div className="flex justify-between">
           <Button
