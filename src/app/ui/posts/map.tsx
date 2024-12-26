@@ -50,7 +50,7 @@ export default function Map({ zoom = 13, className, from, to }: MapProps) {
 
   return (
     <MapContainer
-      center={from.coordinates}
+      center={from?.coordinates}
       zoom={zoom}
       scrollWheelZoom={true}
       className={`${className} h-screen w-full`}
@@ -60,7 +60,7 @@ export default function Map({ zoom = 13, className, from, to }: MapProps) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {from.coordinates && (
+      {from?.coordinates && (
         <Marker position={from.coordinates}>
           <Popup>Punkt początkowy</Popup>
         </Marker>
