@@ -78,7 +78,7 @@
     "to": "zu",
     "plannedDepartureDate": "geplantes Startdatum der Route",
     "plannedArrivalDate": "geplantes Ankunftsdatum",
-    "maxiumWeight": "maximales Warengewicht",
+    "maximumWeight": "maximales Warengewicht",
     "maximumSize": "maximale Warengröße",
     "maximumHeight": "maximale Warenhöhe",
     "deadline": "Frist",
@@ -103,6 +103,26 @@
     "other": "Andere",
     "electronicts": "Elektronik",
     "furniture": "Möbel",
-    "food": "Lebensmittel"
+    "food": "Lebensmittel",
+    "roadDetails": "Routendetails",
+    "desc": "Beschreibung",
+    "carInfo": "Fahrzeuginformationen",
+    "brand": "Marke",
+    "model": "Modell",
+    "sizeInfo": "Die Maße sind in Europaletten angegeben"
+  },
+  "opinions": {
+    "opinions": "Meinungen",
+    "carrier": "Transporteur",
+    "avgRate": "Durchschnittliche Bewertung",
+    "goToProfile": "Zum Profil",
+    "lastComments": "Neueste Kommentare",
+    "showMore": "Mehr anzeigen",
+    "contact": "Kontakt",
+    "goToChat": "Zum Chat"
+  },
+  "map": {
+    "startPoint": "Startpunkt",
+    "endPoint": "Endpunkt"
   }
 }

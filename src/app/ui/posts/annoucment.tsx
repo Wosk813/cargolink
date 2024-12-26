@@ -68,7 +68,7 @@ export default function Annoucement({
       </div>
       <div className="flex flex-wrap gap-2 md:flex-nowrap md:gap-4">
         <div className="flex w-full flex-col justify-between gap-2 rounded-md bg-slate-800 p-4">
-          <p className="text-sm text-slate-400">{t('maxiumWeight')}</p>
+          <p className="text-sm text-slate-400">{t('maximumWeight')}</p>
           <p className="text-center text-xl md:text-2xl">{formatWeight(carProps.maxWeight)}</p>
         </div>
         <div className="flex w-full flex-col justify-between gap-2 rounded-md bg-slate-800 p-4">

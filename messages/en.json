@@ -78,7 +78,7 @@
     "to": "to",
     "plannedDepartureDate": "planned route start date",
     "plannedArrivalDate": "planned arrival date",
-    "maxiumWeight": "maximum goods weight",
+    "maximumWeight": "maximum goods weight",
     "maximumSize": "maximum goods size",
     "maximumHeight": "maximum goods height",
     "deadline": "Deadline",
@@ -103,6 +103,26 @@
     "other": "Other",
     "electronicts": "Electronicts",
     "furniture": "Furniture",
-    "food": "Food"
+    "food": "Food",
+    "roadDetails": "Route details",
+    "desc": "Description",
+    "carInfo": "Vehicle information",
+    "brand": "Brand",
+    "model": "Model",
+    "sizeInfo": "Dimensions are given in euro pallets"
+  },
+  "opinions": {
+    "opinions": "Opinions",
+    "carrier": "Carrier",
+    "avgRate": "Average rating",
+    "goToProfile": "Go to profile",
+    "lastComments": "Latest comments",
+    "showMore": "Show more",
+    "contact": "Contact",
+    "goToChat": "Go to chat"
+  },
+  "map": {
+    "startPoint": "Starting point",
+    "endPoint": "Ending point"
   }
 }

@@ -8,7 +8,6 @@ import Opinions from '@/src/app/ui/posts/opinions';
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const annoucementId = (await params).id;
   const annoucement = await getAnnouncementsById(annoucementId);
-  const t = await getTranslations('posts');
   return (
     <div className="flex flex-col gap-4 pb-4">
       <div className="flex flex-col gap-4 md:flex-row">

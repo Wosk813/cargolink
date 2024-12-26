@@ -1,8 +1,12 @@
+'use client';
+
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Icon } from 'leaflet';
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css';
+import 'leaflet-defaulticon-compatibility';
 import { useEffect, useState } from 'react';
 import { GeoPoint } from '../../lib/definitions';
+import { useTranslations } from 'next-intl';
 
 type MapProps = {
   zoom?: number;
@@ -13,15 +17,7 @@ type MapProps = {
 
 export default function Map({ zoom = 13, className, from, to }: MapProps) {
   const [routePoints, setRoutePoints] = useState<[number, number][]>([]);
-
-  useEffect(() => {
-    delete (Icon.Default.prototype as any)._getIconUrl;
-    Icon.Default.mergeOptions({
-      iconRetinaUrl: '/images/marker-icon-2x.png',
-      iconUrl: '/images/marker-icon.png',
-      shadowUrl: '/images/marker-shadow.png',
-    });
-  }, []);
+  const t = useTranslations('map');
 
   useEffect(() => {
     const fetchRoute = async () => {
@@ -62,13 +58,13 @@ export default function Map({ zoom = 13, className, from, to }: MapProps) {
 
       {from?.coordinates && (
         <Marker position={from.coordinates}>
-          <Popup>Punkt początkowy</Popup>
+          <Popup>{t('startPoint')}</Popup>
         </Marker>
       )}
 
       {to?.coordinates && (
         <Marker position={to.coordinates}>
-          <Popup>Punkt końcowy</Popup>
+          <Popup>{t('endPoint')}</Popup>
         </Marker>
       )}
 

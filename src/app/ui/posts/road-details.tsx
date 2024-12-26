@@ -33,15 +33,15 @@ export default function RoadDetails({
   const t = useTranslations('posts');
   return (
     <div className={`${className} flex flex-col gap-2 rounded-md bg-slate-700 p-2`}>
-      <p className="text-xl">Szczegóły trasy</p>
+      <p className="text-xl">{t('roadDetails')}</p>
       <div className="flex justify-between rounded-md bg-slate-800 p-2">
         <div className="flex flex-col">
-          <p className="text-sm text-slate-400">z</p>
+          <p className="text-sm text-slate-400">{t('fromCity')}</p>
           <h2 className="text-xl">{from}</h2>
         </div>
         <ArrowRightIcon className="w-8 text-slate-400" />
         <div className="flex flex-col">
-          <p className="text-sm text-slate-400">do</p>
+          <p className="text-sm text-slate-400">{t('to')}</p>
           <h2 className="text-xl">{to}</h2>
         </div>
       </div>
@@ -55,12 +55,7 @@ export default function RoadDetails({
           <FormattedDate date={arrivalDate} />
         </div>
       </div>
-      <Map
-        className="h-64 rounded-md"
-        from={fromGeography}
-        to={toGeography}
-        zoom={5}
-      />
+      <Map className="!h-64 rounded-md" from={fromGeography} to={toGeography} zoom={5} />
     </div>
   );
 }
