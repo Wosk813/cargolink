@@ -11,7 +11,8 @@
     "moderation": "Moderation panel",
     "admin": "Admin panel",
     "logoutPending": "Logging out ...",
-    "close": "Close"
+    "close": "Close",
+    "announcement": "Planned route"
   },
   "login": {
     "login": "Log in",

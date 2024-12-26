@@ -11,7 +11,8 @@
     "moderation": "Moderationspanel",
     "admin": "Admin-Panel",
     "logoutPending": "Ausloggen ...",
-    "close": "schließen"
+    "close": "schließen",
+    "announcement": "Geplante Route"
   },
   "login": {
     "login": "Einloggen",

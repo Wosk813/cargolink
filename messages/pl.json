@@ -11,7 +11,8 @@
     "moderation": "Panel moderatora",
     "admin": "Panel administratora",
     "logoutPending": "Wylogowywanie ...",
-    "close": "Zamknij"
+    "close": "Zamknij",
+    "announcement": "Planowana trasa"
   },
   "login": {
     "login": "Zaloguj się",
