@@ -11,8 +11,8 @@ import { useTranslations } from 'next-intl';
 type MapProps = {
   zoom?: number;
   className?: string;
-  from: GeoPoint | undefined;
-  to: GeoPoint | undefined;
+  from?: GeoPoint | undefined;
+  to?: GeoPoint | undefined;
 };
 
 export default function Map({ zoom = 13, className, from, to }: MapProps) {
@@ -49,7 +49,7 @@ export default function Map({ zoom = 13, className, from, to }: MapProps) {
       center={from?.coordinates}
       zoom={zoom}
       scrollWheelZoom={true}
-      className={`${className} h-screen w-full z-10`}
+      className={`${className} z-10 h-screen w-full`}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
