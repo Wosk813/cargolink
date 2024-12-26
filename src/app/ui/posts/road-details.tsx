@@ -1,23 +1,27 @@
+'use client';
+
 import { FormattedDate } from '@/src/app/ui/posts/annoucment';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
-import { getTranslations } from 'next-intl/server';
+import dynamic from 'next/dynamic';
+
+const Map = dynamic(() => import('@/src/app/ui/posts/map'), {
+  ssr: false,
+  loading: () => <div className="h-[500px] w-full bg-gray-100">Ładowanie mapy...</div>,
+});
+import { useTranslations } from 'next-intl';
 
 type RoadDetailsProps = {
   from: string | undefined;
   to: string | undefined;
   departureDate: Date | undefined;
   arrivalDate: Date | undefined;
+  className?: string
 };
 
-export default async function RoadDetails({
-  from,
-  to,
-  departureDate,
-  arrivalDate,
-}: RoadDetailsProps) {
-  const t = await getTranslations('posts');
+export default function RoadDetails({ from, to, departureDate, arrivalDate, className }: RoadDetailsProps) {
+  const t = useTranslations('posts');
   return (
-    <div className="flex flex-col gap-2 rounded-md bg-slate-700 p-2">
+    <div className={`${className} flex flex-col gap-2 rounded-md bg-slate-700 p-2`}>
       <p className="text-xl">Szczegóły trasy</p>
       <div className="flex justify-between rounded-md bg-slate-800 p-2">
         <div className="flex flex-col">
@@ -40,6 +44,7 @@ export default async function RoadDetails({
           <FormattedDate date={arrivalDate} />
         </div>
       </div>
+      <Map className="h-64 rounded-md" center={[52.2297, 21.0122]} zoom={13} />
     </div>
   );
 }

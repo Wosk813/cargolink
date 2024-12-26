@@ -23,20 +23,25 @@ export default function CarInfo({ brand, model, maxWeight, maxSize, maxHeight }:
             <p>{model}</p>
           </div>
         </div>
-        <div className="rounded-md bg-slate-800 p-2">
-          <p className="text-sm text-slate-400">Maksymalna waga towarów</p>
-          <p className="text-center text-xl">{formatWeight(maxWeight)}</p>
+        <div className="flex flex-col gap-2 md:flex-row md:gap-4">
+          <div className="rounded-md bg-slate-800 p-2 md:w-full">
+            <p className="text-sm text-slate-400">Maksymalna waga towarów</p>
+            <p className="text-center text-xl">{formatWeight(maxWeight)}</p>
+          </div>
+          <div className="rounded-md bg-slate-800 p-2 md:w-full">
+            <p className="text-sm text-slate-400">maksymalny wymiar towarów </p>
+            <p className="text-center text-xl">
+              {maxSize?.x}x{maxSize?.y}
+            </p>
+          </div>
+          <div className="rounded-md bg-slate-800 p-2 md:w-full">
+            <p className="text-sm text-slate-400">maksymalna wysokość towarów</p>
+            <p className="text-center text-xl">{maxHeight} cm</p>
+          </div>
         </div>
-        <div className="rounded-md bg-slate-800 p-2">
-          <p className="text-sm text-slate-400">maksymalny wymiar towarów </p>
-          <p className="text-center text-xl">
-            {maxSize?.x}x{maxSize?.y}
-          </p>
-        </div>
-        <div className="rounded-md bg-slate-800 p-2">
-          <p className="text-sm text-slate-400">maksymalna wysokość towarów</p>
-          <p className="text-center text-xl">{maxHeight} cm</p>
-        </div>
+        <p className="text-sm text-slate-400">
+          wymiary podane są w euro paletach <span className="text-white">(120x80cm)</span>
+        </p>
       </div>
     </div>
   );

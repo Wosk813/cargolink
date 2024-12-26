@@ -8,9 +8,10 @@ import { useEffect } from 'react';
 interface MapProps {
   center: [number, number];
   zoom?: number;
+  className?: string;
 }
 
-export default function Map({ center, zoom = 13 }: MapProps) {
+export default function Map({ center, zoom = 13, className }: MapProps) {
   useEffect(() => {
     delete (Icon.Default.prototype as any)._getIconUrl;
     Icon.Default.mergeOptions({
@@ -21,7 +22,7 @@ export default function Map({ center, zoom = 13 }: MapProps) {
   }, []);
 
   return (
-    <MapContainer center={center} zoom={zoom} scrollWheelZoom={true} className="h-screen w-full">
+    <MapContainer center={center} zoom={zoom} scrollWheelZoom={true} className={`${className} h-screen w-full`}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
