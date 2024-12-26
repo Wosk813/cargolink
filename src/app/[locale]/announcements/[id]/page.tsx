@@ -18,6 +18,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           to={annoucement?.toCity}
           departureDate={annoucement?.departureDate}
           arrivalDate={annoucement?.arrivalDate}
+          fromGeography={annoucement?.fromGeography}
+          toGeography={annoucement?.toGeography}
         />
         <div className="flex flex-col justify-between gap-4 md:w-min">
           <Description desc={annoucement?.desc} />

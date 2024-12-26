@@ -9,16 +9,27 @@ const Map = dynamic(() => import('@/src/app/ui/posts/map'), {
   loading: () => <div className="h-[500px] w-full bg-gray-100">Ładowanie mapy...</div>,
 });
 import { useTranslations } from 'next-intl';
+import { GeoPoint } from '../../lib/definitions';
 
 type RoadDetailsProps = {
   from: string | undefined;
   to: string | undefined;
   departureDate: Date | undefined;
   arrivalDate: Date | undefined;
-  className?: string
+  className?: string;
+  fromGeography?: GeoPoint;
+  toGeography?: GeoPoint;
 };
 
-export default function RoadDetails({ from, to, departureDate, arrivalDate, className }: RoadDetailsProps) {
+export default function RoadDetails({
+  from,
+  to,
+  departureDate,
+  arrivalDate,
+  className,
+  fromGeography,
+  toGeography,
+}: RoadDetailsProps) {
   const t = useTranslations('posts');
   return (
     <div className={`${className} flex flex-col gap-2 rounded-md bg-slate-700 p-2`}>
@@ -44,7 +55,12 @@ export default function RoadDetails({ from, to, departureDate, arrivalDate, clas
           <FormattedDate date={arrivalDate} />
         </div>
       </div>
-      <Map className="h-64 rounded-md" center={[52.2297, 21.0122]} zoom={13} />
+      <Map
+        className="h-64 rounded-md"
+        from={fromGeography}
+        to={toGeography}
+        zoom={5}
+      />
     </div>
   );
 }

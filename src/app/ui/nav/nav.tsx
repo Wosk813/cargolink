@@ -47,7 +47,7 @@ export default function Nav({ links, onLogout, isAuth }: ClientNavigationProps) 
         data-testid="page-title"
         className="flex w-full justify-between px-5 py-8 text-4xl font-bold text-white md:hidden"
       >
-        <p>{t(currentPath)}</p>
+        <p>{currentPath}</p>
         <Bars3Icon data-testid="menu-button" onClick={handleOpenMenu} className="w-10 text-white" />
       </div>
 

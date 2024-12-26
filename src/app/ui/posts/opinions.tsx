@@ -5,7 +5,7 @@ import { StarIcon as EmptyStar } from '@heroicons/react/24/outline';
 
 export default function Opinions() {
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <div className="rounded-md bg-slate-700 p-2">
         <div className="flex flex-col gap-2">
           <p className="text-xl">Opinie</p>

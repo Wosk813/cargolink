@@ -23,7 +23,7 @@ export default function CarInfo({ brand, model, maxWeight, maxSize, maxHeight }:
             <p>{model}</p>
           </div>
         </div>
-        <div className="flex flex-col gap-2 md:flex-row md:gap-4">
+        <div className="flex flex-col gap-2 md:flex-row">
           <div className="rounded-md bg-slate-800 p-2 md:w-full">
             <p className="text-sm text-slate-400">Maksymalna waga towarów</p>
             <p className="text-center text-xl">{formatWeight(maxWeight)}</p>

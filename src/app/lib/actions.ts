@@ -11,6 +11,7 @@ import {
   ValidationErrors,
   AnnoucementProps,
   User,
+  GeoPoint,
 } from '@/src/app/lib/definitions';
 import { getTranslations } from 'next-intl/server';
 
@@ -221,28 +222,50 @@ export async function getAnnouncements(sortBy: SortDirection, filterOptions: Fil
 }
 
 export async function getAnnouncementsById(id: string): Promise<AnnoucementProps | null> {
-  let row = await sql('SELECT * FROM announcements WHERE announcement_id=$1', [id]);
-  return dbRowToObject(row[0], 'annoucement') as AnnoucementProps;
+  const result = await sql`
+    SELECT 
+      *,
+      ST_X(from_geography::geometry) as from_longitude,
+      ST_Y(from_geography::geometry) as from_latitude,
+      ST_X(to_geography::geometry) as to_longitude,
+      ST_Y(to_geography::geometry) as to_latitude
+    FROM announcements 
+    WHERE announcement_id = ${id}
+  `;
+
+  if (result.length === 0) return null;
+
+  return dbRowToObject(result[0], 'annoucement') as AnnoucementProps;
 }
 
 function dbRowToObject(row: any, object: string) {
   switch (object) {
     case 'annoucement':
-      let annoucement: AnnoucementProps = {
+      const fromGeoPoint: GeoPoint = {
+        type: 'Point',
+        coordinates: [Number(row['from_longitude']), Number(row['from_latitude'])],
+      };
+
+      const toGeoPoint: GeoPoint = {
+        type: 'Point',
+        coordinates: [Number(row['to_longitude']), Number(row['to_latitude'])],
+      };
+
+      const announcement: AnnoucementProps = {
         id: row['announcement_id'],
         title: row['title'],
         fromCity: row['from_city'],
         toCity: row['to_city'],
-        fromGeography: row['from_geography'],
-        toGeography: row['to_geography'],
-        departureDate: row['start_date'],
-        arrivalDate: row['arrive_date'],
+        fromGeography: fromGeoPoint,
+        toGeography: toGeoPoint,
+        departureDate: new Date(row['start_date']),
+        arrivalDate: new Date(row['arrive_date']),
         carProps: {
-          maxWeight: row['max_weight'],
+          maxWeight: Number(row['max_weight']),
           maxSize: {
-            x: row['size_x'],
-            y: row['size_y'],
-            height: row['max_height'],
+            x: Number(row['size_x']),
+            y: Number(row['size_y']),
+            height: Number(row['max_height']),
           },
           brand: row['vehicle_brand'],
           model: row['vehicle_model'],
@@ -251,9 +274,9 @@ function dbRowToObject(row: any, object: string) {
         isAccepted: row['is_accepted'],
         desc: row['desc'],
       };
-      return annoucement;
+      return announcement;
     case 'user':
-      let user: User = {
+      const user: User = {
         firstname: row['first_name'],
         lastname: row['last_name'],
         email: row['email'],

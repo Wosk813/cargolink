@@ -123,8 +123,8 @@ export type AnnoucementProps = {
   title: string;
   fromCity?: string;
   toCity?: string;
-  fromGeography?: string;
-  toGeography?: string;
+  fromGeography?: GeoPoint;
+  toGeography?: GeoPoint;
   departureDate: Date;
   arrivalDate: Date;
   carProps: {
@@ -207,4 +207,9 @@ export type User = {
   languages: string[] | null;
   userDesc: string | null;
   isPhisicalPerson: boolean | null;
+};
+
+export type GeoPoint = {
+  type: string;
+  coordinates: [number, number];
 };
