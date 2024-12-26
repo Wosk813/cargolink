@@ -123,8 +123,8 @@ export type AnnoucementProps = {
   title: string;
   fromCity?: string;
   toCity?: string;
-  fromGeography?: string;
-  toGeography?: string;
+  fromGeography?: GeoPoint;
+  toGeography?: GeoPoint;
   departureDate: Date;
   arrivalDate: Date;
   carProps: {
@@ -135,6 +135,7 @@ export type AnnoucementProps = {
   };
   authorId?: string;
   isAccepted?: boolean;
+  desc?: string;
 };
 
 export enum GoodsCategory {
@@ -192,4 +193,23 @@ export type FilterProps = {
     };
     category?: GoodsCategory;
   };
+};
+
+export type User = {
+  firstname: string | null;
+  lastname: string | null;
+  email: string | null;
+  role: Role | null;
+  accountType: AccountType | null;
+  lastSeen: Date | null;
+  createdAt: Date | null;
+  companyId: string | null;
+  languages: string[] | null;
+  userDesc: string | null;
+  isPhisicalPerson: boolean | null;
+};
+
+export type GeoPoint = {
+  type: string;
+  coordinates: [number, number];
 };

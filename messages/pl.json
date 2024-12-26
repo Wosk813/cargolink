@@ -10,7 +10,9 @@
     "messages": "Wiadomości",
     "moderation": "Panel moderatora",
     "admin": "Panel administratora",
-    "logoutPending": "Wylogowywanie ..."
+    "logoutPending": "Wylogowywanie ...",
+    "close": "Zamknij",
+    "announcement": "Planowana trasa"
   },
   "login": {
     "login": "Zaloguj się",
@@ -77,7 +79,7 @@
     "to": "do",
     "plannedDepartureDate": "planowana data rozpoczęcia trasy",
     "plannedArrivalDate": "planowana data dotarcia do celu",
-    "maxiumWeight": "maksymalna waga towarów",
+    "maximumWeight": "maksymalna waga towarów",
     "maximumSize": "maksymalny wymiar towarów",
     "maximumHeight": "maksymalna wysokość towarów",
     "deadline": "Termin",
@@ -102,6 +104,26 @@
     "other": "Inne",
     "electronicts": "Elektronika",
     "furniture": "Meble",
-    "food": "Żywność"
+    "food": "Żywność",
+    "roadDetails": "Szczegóły trasy",
+    "desc": "Opis",
+    "carInfo": "Informacje o pojeździe",
+    "brand": "marka",
+    "model": "model",
+    "sizeInfo": "Wymiary są podane w euro paletach"
+  },
+  "opinions": {
+    "opinions": "Opinie",
+    "carrier": "Przewoźnik",
+    "avgRate": "Średnia ocen",
+    "goToProfile": "Przejdź do profilu",
+    "lastComments": "Ostatnie komentarze",
+    "showMore": "Pokaż więcej",
+    "contact": "Konakt",
+    "goToChat": "Przejdź do czatu"
+  },
+  "map": {
+    "startPoint": "Punkt początkowy",
+    "endPoint": "Punkt końcowy"
   }
 }
