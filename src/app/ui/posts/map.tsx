@@ -66,7 +66,7 @@ export default function Map({ zoom = 13, className, from, to }: MapProps) {
         </Marker>
       )}
 
-      {to.coordinates && (
+      {to?.coordinates && (
         <Marker position={to.coordinates}>
           <Popup>Punkt końcowy</Popup>
         </Marker>
