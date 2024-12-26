@@ -49,7 +49,7 @@ export default function Map({ zoom = 13, className, from, to }: MapProps) {
       center={from?.coordinates}
       zoom={zoom}
       scrollWheelZoom={true}
-      className={`${className} h-screen w-full`}
+      className={`${className} h-screen w-full z-10`}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
