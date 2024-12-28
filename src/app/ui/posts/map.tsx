@@ -82,7 +82,21 @@ export default function Map({ zoom = 13, className, roads = [] }: MapProps) {
         (points, index) =>
           points &&
           points.length > 0 && (
-            <Polyline key={index} positions={points} color="blue" weight={3} opacity={0.5} />
+            <Polyline
+              key={index}
+              positions={points}
+              color="blue"
+              weight={3}
+              opacity={0.5}
+              eventHandlers={{
+                click: () => {
+                  console.log(`Kliknięto trasę ${index}`);
+                },
+                mouseover: () => {
+                  console.log('Najechano na trasę');
+                },
+              }}
+            />
           ),
       )}
     </MapContainer>
