@@ -17,8 +17,8 @@ type RoadDetailsProps = {
   departureDate: Date | undefined;
   arrivalDate: Date | undefined;
   className?: string;
-  fromGeography?: GeoPoint;
-  toGeography?: GeoPoint;
+  fromGeography?: GeoPoint | undefined;
+  toGeography?: GeoPoint | undefined;
 };
 
 export default function RoadDetails({
@@ -55,7 +55,11 @@ export default function RoadDetails({
           <FormattedDate date={arrivalDate} />
         </div>
       </div>
-      <Map className="!h-64 rounded-md" from={fromGeography} to={toGeography} zoom={5} />
+      <Map
+        className="!h-64 rounded-md"
+        roads={[{ from: fromGeography, to: toGeography }]}
+        zoom={5}
+      />
     </div>
   );
 }
