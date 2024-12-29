@@ -47,7 +47,7 @@ async function getNavLinks(
     if (accountType === AccountType.Carrier)
       links.push({
         name: t('addAnnoucement'),
-        href: '/annoucements/add',
+        href: '/announcements/add',
         highlighted: true,
       });
     else if (accountType === AccountType.Principal)
