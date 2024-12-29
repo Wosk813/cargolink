@@ -136,6 +136,7 @@ export type AnnoucementProps = {
   authorId?: string;
   isAccepted?: boolean;
   desc?: string;
+  roadColor?: string;
 };
 
 export enum GoodsCategory {
@@ -217,4 +218,6 @@ export type GeoPoint = {
 export type Road = {
   from?: GeoPoint | undefined;
   to?: GeoPoint | undefined;
+  postId?: string | undefined;
+  color?: string | undefined;
 };

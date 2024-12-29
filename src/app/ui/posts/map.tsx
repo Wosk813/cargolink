@@ -5,9 +5,9 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css';
 import 'leaflet-defaulticon-compatibility';
 import { useEffect, useState } from 'react';
-import { GeoPoint } from '../../lib/definitions';
 import { useTranslations } from 'next-intl';
 import { Road } from '../../lib/definitions';
+import { Link } from '@/src/i18n/routing';
 
 type MapProps = {
   zoom?: number;
@@ -17,6 +17,7 @@ type MapProps = {
 
 export default function Map({ zoom = 13, className, roads = [] }: MapProps) {
   const [routesPoints, setRoutesPoints] = useState<[number, number][][]>([]);
+  const [selectedRoute, setSelectedRoute] = useState<number | null>(null);
   const t = useTranslations('map');
 
   useEffect(() => {
@@ -66,7 +67,11 @@ export default function Map({ zoom = 13, className, roads = [] }: MapProps) {
         (road: Road, index) =>
           road.from?.coordinates && (
             <Marker key={index} position={road.from.coordinates}>
-              <Popup>{t('startPoint')}</Popup>
+              <Popup>
+                {t('startPoint')}
+                <br />
+                <Link href={`/announcements/${roads[index].postId}`}>Przejdź do ogłoszenia</Link>
+              </Popup>
             </Marker>
           ),
       )}
@@ -74,7 +79,11 @@ export default function Map({ zoom = 13, className, roads = [] }: MapProps) {
         (road: Road, index) =>
           road.to?.coordinates && (
             <Marker key={index} position={road.to.coordinates}>
-              <Popup>{t('endPoint')}</Popup>
+              <Popup>
+                {t('endPoint')}
+                <br />
+                <Link href={`/announcements/${roads[index].postId}`}>Przejdź do ogłoszenia</Link>
+              </Popup>
             </Marker>
           ),
       )}
@@ -82,21 +91,34 @@ export default function Map({ zoom = 13, className, roads = [] }: MapProps) {
         (points, index) =>
           points &&
           points.length > 0 && (
-            <Polyline
-              key={index}
-              positions={points}
-              color="blue"
-              weight={3}
-              opacity={0.5}
-              eventHandlers={{
-                click: () => {
-                  console.log(`Kliknięto trasę ${index}`);
-                },
-                mouseover: () => {
-                  console.log('Najechano na trasę');
-                },
-              }}
-            />
+            <div key={index}>
+              <Polyline
+                key={index}
+                positions={points}
+                color={roads[index].color}
+                weight={3}
+                opacity={0.5}
+                eventHandlers={{
+                  click: () => {
+                    setSelectedRoute(index);
+                  },
+                }}
+              />
+              {selectedRoute === index && (
+                <Popup
+                  position={points[Math.floor(points.length / 2)]}
+                  eventHandlers={{
+                    remove: () => setSelectedRoute(null),
+                  }}
+                >
+                  <div>
+                    <Link href={`/announcements/${roads[index].postId}`}>
+                      Przejdź do ogłoszenia
+                    </Link>
+                  </div>
+                </Popup>
+              )}
+            </div>
           ),
       )}
     </MapContainer>

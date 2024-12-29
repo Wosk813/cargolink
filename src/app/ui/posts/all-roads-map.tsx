@@ -17,6 +17,8 @@ export default function AllRoadsMap() {
         const newRoads = announcements.map((announcement: AnnoucementProps) => ({
           from: announcement.fromGeography,
           to: announcement.toGeography,
+          postId: announcement.id,
+          color: announcement.roadColor,
         }));
         setRoads(newRoads);
       })
@@ -25,5 +27,9 @@ export default function AllRoadsMap() {
       });
   }, []);
 
-  return <Map className="!h-96 rounded-md" zoom={5} roads={roads} />;
+  return (
+    <div className="h-full bg-yellow-50 md:relative">
+      <Map className="!h-96 rounded-md md:absolute md:!h-full" zoom={5} roads={roads} />
+    </div>
+  );
 }

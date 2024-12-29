@@ -289,6 +289,7 @@ function dbRowToObject(row: any, object: string) {
         authorId: row['author_id'],
         isAccepted: row['is_accepted'],
         desc: row['desc'],
+        roadColor: row['road_color'],
       };
       return announcement;
     case 'user':

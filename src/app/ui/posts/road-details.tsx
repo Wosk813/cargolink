@@ -19,6 +19,8 @@ type RoadDetailsProps = {
   className?: string;
   fromGeography?: GeoPoint | undefined;
   toGeography?: GeoPoint | undefined;
+  postId?: string | undefined;
+  roadColor?: string | undefined;
 };
 
 export default function RoadDetails({
@@ -29,6 +31,8 @@ export default function RoadDetails({
   className,
   fromGeography,
   toGeography,
+  postId,
+  roadColor,
 }: RoadDetailsProps) {
   const t = useTranslations('posts');
   return (
@@ -57,7 +61,7 @@ export default function RoadDetails({
       </div>
       <Map
         className="!h-64 rounded-md"
-        roads={[{ from: fromGeography, to: toGeography }]}
+        roads={[{ from: fromGeography, to: toGeography, postId: postId, color: roadColor }]}
         zoom={5}
       />
     </div>

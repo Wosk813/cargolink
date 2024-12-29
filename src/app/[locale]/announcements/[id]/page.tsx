@@ -19,6 +19,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           arrivalDate={annoucement?.arrivalDate}
           fromGeography={annoucement?.fromGeography}
           toGeography={annoucement?.toGeography}
+          postId={annoucement?.id}
+          roadColor={annoucement?.roadColor}
         />
         <div className="flex flex-col justify-between gap-4 md:w-min">
           <Description desc={annoucement?.desc} />
