@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { decrypt } from '@/src/app/lib/session';
 import { cache } from 'react';
 import { redirect } from '@/src/i18n/routing';
-import { Role } from './definitions';
+import { AccountType, Role } from './definitions';
 
 export const verifySession = cache(async () => {
   const cookie = (await cookies()).get('session')?.value;
@@ -12,11 +12,11 @@ export const verifySession = cache(async () => {
 
   if (!session?.userId) {
     console.log('No session found');
-    return { isAuth: false, userId: '', role: undefined };
+    return { isAuth: false, userId: '', role: undefined, accountType: undefined };
     // redirect({ href: '/auth/login', locale: 'pl' });
   }
 
-  return { isAuth: true, userId: session?.userId, role: session?.role as Role };
+  return { isAuth: true, userId: session?.userId, role: session?.role as Role, accountType: session?.accountType as AccountType };
 });
 
 // export const getUser = cache(async () => {

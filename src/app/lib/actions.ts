@@ -28,7 +28,7 @@ export async function handleLogin(state: { errors: string } | undefined, formDat
     return { errors: credentialsErrors.errors };
   }
   const user = await getUserByEmail(formData.get('email') as string);
-  await createSession(user['user_id'], user['role']);
+  await createSession(user['user_id'], user['role'], user['account_type']);
   redirect({ href: '/announcements', locale: 'pl' });
 }
 
@@ -69,7 +69,7 @@ export async function register(formData: SignupFormData) {
     );
   }
   const user = await sql('SELECT * FROM users WHERE email = $1', [email]);
-  await createSession(user[0]['user_id'], user[0]['role']);
+  await createSession(user[0]['user_id'], user[0]['role'], user[0]['account_type']);
   redirect({ href: '/', locale: 'pl' });
 }
 

@@ -12,7 +12,8 @@
     "admin": "Panel administratora",
     "logoutPending": "Wylogowywanie ...",
     "close": "Zamknij",
-    "announcement": "Planowana trasa"
+    "announcement": "Planowana trasa",
+    "addAnnoucement": "Dodaj ogłoszenie o planowanej trasie"
   },
   "login": {
     "login": "Zaloguj się",

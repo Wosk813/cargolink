@@ -116,6 +116,7 @@ export type SessionPayload = {
   userId?: string;
   role?: Role;
   expiresAt?: Date;
+  accountType?: AccountType;
 };
 
 export type AnnoucementProps = {

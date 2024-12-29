@@ -12,7 +12,8 @@
     "admin": "Admin panel",
     "logoutPending": "Logging out ...",
     "close": "Close",
-    "announcement": "Planned route"
+    "announcement": "Planned route",
+    "addAnnoucement": "Add an announcement about your planned route"
   },
   "login": {
     "login": "Log in",

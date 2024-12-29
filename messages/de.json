@@ -12,7 +12,8 @@
     "admin": "Admin-Panel",
     "logoutPending": "Ausloggen ...",
     "close": "schließen",
-    "announcement": "Geplante Route"
+    "announcement": "Geplante Route",
+    "addAnnoucement": "Fügen Sie eine Ankündigung zu Ihrer geplanten Route hinzu"
   },
   "login": {
     "login": "Einloggen",
