@@ -9,7 +9,6 @@ import { SortDirection, FilterProps } from '../../lib/definitions';
 import { Select } from '../select';
 import AnnoucmentsWrapper from './annoucements-wrapper';
 import AnnoucementsMapButt from './annoucments-map';
-import AnnoucmentsWrapperSkeleton from '../skeletons/annoucments';
 import { useTranslations } from 'next-intl';
 
 interface SortButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

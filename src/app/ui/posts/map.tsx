@@ -5,48 +5,56 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css';
 import 'leaflet-defaulticon-compatibility';
 import { useEffect, useState } from 'react';
-import { GeoPoint } from '../../lib/definitions';
 import { useTranslations } from 'next-intl';
+import { Road } from '../../lib/definitions';
+import { Link } from '@/src/i18n/routing';
 
 type MapProps = {
   zoom?: number;
   className?: string;
-  from?: GeoPoint | undefined;
-  to?: GeoPoint | undefined;
+  roads?: Road[];
 };
 
-export default function Map({ zoom = 13, className, from, to }: MapProps) {
-  const [routePoints, setRoutePoints] = useState<[number, number][]>([]);
+export default function Map({ zoom = 13, className, roads = [] }: MapProps) {
+  const [routesPoints, setRoutesPoints] = useState<[number, number][][]>([]);
+  const [selectedRoute, setSelectedRoute] = useState<number | null>(null);
   const t = useTranslations('map');
 
   useEffect(() => {
-    const fetchRoute = async () => {
-      if (!from?.coordinates || !to?.coordinates) return;
+    const fetchRoutes = async () => {
+      const newRoutes: [number, number][][] = [];
 
-      try {
-        const response = await fetch(
-          `https://router.project-osrm.org/route/v1/driving/${from.coordinates[1]},${from.coordinates[0]};${to.coordinates[1]},${to.coordinates[0]}?overview=full&geometries=geojson`,
-        );
+      for (const road of roads) {
+        if (!road.from?.coordinates || !road.to?.coordinates) continue;
 
-        const data = await response.json();
-
-        if (data.routes?.[0]?.geometry?.coordinates) {
-          const points = data.routes[0].geometry.coordinates.map(
-            (coord: [number, number]) => [coord[1], coord[0]] as [number, number],
+        try {
+          const response = await fetch(
+            `https://router.project-osrm.org/route/v1/driving/${road.from.coordinates[1]},${road.from.coordinates[0]};${road.to.coordinates[1]},${road.to.coordinates[0]}?overview=full&geometries=geojson`,
           );
-          setRoutePoints(points);
+
+          const data = await response.json();
+
+          if (data.routes?.[0]?.geometry?.coordinates) {
+            const points = data.routes[0].geometry.coordinates.map(
+              (coord: [number, number]) => [coord[1], coord[0]] as [number, number],
+            );
+            newRoutes.push(points);
+          }
+        } catch (error) {
+          console.error('Błąd podczas pobierania trasy:', error);
+          newRoutes.push([]);
         }
-      } catch (error) {
-        console.error('Błąd podczas pobierania trasy:', error);
       }
+
+      setRoutesPoints(newRoutes);
     };
 
-    fetchRoute();
-  }, [from, to]);
+    fetchRoutes();
+  }, [roads]);
 
   return (
     <MapContainer
-      center={from?.coordinates}
+      center={roads[0]?.from?.coordinates}
       zoom={zoom}
       scrollWheelZoom={true}
       className={`${className} z-10 h-screen w-full`}
@@ -55,21 +63,63 @@ export default function Map({ zoom = 13, className, from, to }: MapProps) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-
-      {from?.coordinates && (
-        <Marker position={from.coordinates}>
-          <Popup>{t('startPoint')}</Popup>
-        </Marker>
+      {roads.map(
+        (road: Road, index) =>
+          road.from?.coordinates && (
+            <Marker key={index} position={road.from.coordinates}>
+              <Popup>
+                {t('startPoint')}
+                <br />
+                <Link href={`/announcements/${roads[index].postId}`}>Przejdź do ogłoszenia</Link>
+              </Popup>
+            </Marker>
+          ),
       )}
-
-      {to?.coordinates && (
-        <Marker position={to.coordinates}>
-          <Popup>{t('endPoint')}</Popup>
-        </Marker>
+      {roads.map(
+        (road: Road, index) =>
+          road.to?.coordinates && (
+            <Marker key={index} position={road.to.coordinates}>
+              <Popup>
+                {t('endPoint')}
+                <br />
+                <Link href={`/announcements/${roads[index].postId}`}>Przejdź do ogłoszenia</Link>
+              </Popup>
+            </Marker>
+          ),
       )}
-
-      {routePoints.length > 0 && (
-        <Polyline positions={routePoints} color="blue" weight={3} opacity={0.5} />
+      {routesPoints.map(
+        (points, index) =>
+          points &&
+          points.length > 0 && (
+            <div key={index}>
+              <Polyline
+                key={index}
+                positions={points}
+                color={roads[index].color}
+                weight={3}
+                opacity={0.5}
+                eventHandlers={{
+                  click: () => {
+                    setSelectedRoute(index);
+                  },
+                }}
+              />
+              {selectedRoute === index && (
+                <Popup
+                  position={points[Math.floor(points.length / 2)]}
+                  eventHandlers={{
+                    remove: () => setSelectedRoute(null),
+                  }}
+                >
+                  <div>
+                    <Link href={`/announcements/${roads[index].postId}`}>
+                      Przejdź do ogłoszenia
+                    </Link>
+                  </div>
+                </Popup>
+              )}
+            </div>
+          ),
       )}
     </MapContainer>
   );

@@ -1,17 +1,12 @@
-'use client';
-import dynamic from 'next/dynamic';
-const Map = dynamic(() => import('@/src/app/ui/posts/map'), {
-  ssr: false,
-  loading: () => <div className="h-[500px] w-full bg-gray-100">Ładowanie mapy...</div>,
-});
-import { useTranslations } from 'next-intl';
+import AllRoadsMap from '@/src/app/ui/posts/all-roads-map';
 import { Link } from '@/src/i18n/routing';
+import { getTranslations } from 'next-intl/server';
 
-export default function Page() {
-  const t = useTranslations('nav');
+export default async function Page() {
+  const t = await getTranslations('nav');
   return (
-    <div className="p-4">
-      <Map zoom={13} />
+    <div className="h-full bg-red-200">
+      <AllRoadsMap />
       <Link
         className="block w-full rounded-md bg-slate-600 p-4 text-center text-xl"
         href={'/announcements'}

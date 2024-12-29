@@ -209,15 +209,31 @@ function filterOptionsToSQL(filterOptions: FilterProps): string {
   return `WHERE ${conditions.join(' AND ')}`;
 }
 
-export async function getAnnouncements(sortBy: SortDirection, filterOptions: FilterProps) {
-  let sqlString = `SELECT * FROM announcements ${filterOptionsToSQL(filterOptions)} ${sortDirectionToSQL(sortBy)}`;
+export async function getAnnouncements(
+  sortBy: SortDirection = SortDirection.ByNewest,
+  filterOptions: FilterProps,
+) {
+  let sqlString = `
+    SELECT 
+      *,
+      ST_X(from_geography::geometry) as from_longitude,
+      ST_Y(from_geography::geometry) as from_latitude,
+      ST_X(to_geography::geometry) as to_longitude,
+      ST_Y(to_geography::geometry) as to_latitude 
+    FROM announcements 
+    ${filterOptionsToSQL(filterOptions)} 
+    ${sortDirectionToSQL(sortBy)}
+  `;
+
   const dbrows = await sql(sqlString);
   const announcements: Array<AnnoucementProps | null> = [];
+
   dbrows.map((dbrow) => {
     if (!dbrow['is_accepted']) return;
     let row: AnnoucementProps | null = dbRowToObject(dbrow, 'annoucement') as AnnoucementProps;
     announcements.push(row);
   });
+
   return announcements;
 }
 
@@ -273,6 +289,7 @@ function dbRowToObject(row: any, object: string) {
         authorId: row['author_id'],
         isAccepted: row['is_accepted'],
         desc: row['desc'],
+        roadColor: row['road_color'],
       };
       return announcement;
     case 'user':
