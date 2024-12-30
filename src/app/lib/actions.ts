@@ -2,7 +2,7 @@
 
 import { createSession, deleteSession } from './session';
 import { redirect } from '@/src/i18n/routing';
-import { neon, NeonQueryPromise } from '@neondatabase/serverless';
+import { neon } from '@neondatabase/serverless';
 import {
   FilterProps,
   GoodsCategory,
@@ -12,8 +12,11 @@ import {
   AnnoucementProps,
   User,
   GeoPoint,
+  newAnnouncementSchema,
+  NewAnnouncementFormState,
 } from '@/src/app/lib/definitions';
 import { getTranslations } from 'next-intl/server';
+import { verifySession } from './dal';
 
 const sql = neon(
   `postgres://neondb_owner:zZD3Rg6YXVMn@ep-soft-firefly-a2gmv5of-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require`,
@@ -288,7 +291,7 @@ function dbRowToObject(row: any, object: string) {
         },
         authorId: row['author_id'],
         isAccepted: row['is_accepted'],
-        desc: row['desc'],
+        desc: row['description'],
         roadColor: row['road_color'],
       };
       return announcement;
@@ -310,4 +313,56 @@ function dbRowToObject(row: any, object: string) {
   }
 
   return null;
+}
+
+export async function addAnnouncement(state: NewAnnouncementFormState, formData: FormData) {
+  const t = await getTranslations('addPost');
+  const validatedFields = newAnnouncementSchema(t).safeParse({
+    title: formData.get('title'),
+    brand: formData.get('brand'),
+    model: formData.get('model'),
+    maxWeight: formData.get('maxWeight'),
+    maxSize: formData.get('maxSize'),
+    maxHeight: formData.get('maxHeight'),
+    fromCity: formData.get('fromCity'),
+    toCity: formData.get('toCity'),
+    departureDate: formData.get('departureDate'),
+    arrivalDate: formData.get('arrivalDate'),
+    desc: formData.get('desc'),
+    fromLatitude: formData.get('fromLatitude'),
+    fromLongitude: formData.get('fromLongitude'),
+    toLatitude: formData.get('toLatitude'),
+    toLongitude: formData.get('toLongitude'),
+  });
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+  const data = validatedFields.data;
+  let [size_x, size_y] = data.maxSize.split('x').map(Number);
+  const { userId } = await verifySession();
+  await sql(
+    'INSERT INTO announcements (title, description, start_date, arrive_date, max_weight, size_x, size_y, max_height, author_id, is_accepted, vehicle_brand, vehicle_model, from_geography, to_geography, from_city, to_city, road_color) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)',
+    [
+      data.title,
+      data.desc,
+      data.departureDate,
+      data.arrivalDate,
+      data.maxWeight,
+      size_x,
+      size_y,
+      data.maxHeight,
+      userId,
+      false,
+      data.brand,
+      data.model,
+      `POINT(${data.fromLatitude} ${data.fromLongitude})`,
+      `POINT(${data.toLatitude} ${data.toLongitude})`,
+      data.fromCity,
+      data.toCity,
+      '#' + ((Math.random() * 0xffffff) << 0).toString(16),
+    ],
+  );
+  redirect({ locale: 'pl', href: '/announcements' });
 }

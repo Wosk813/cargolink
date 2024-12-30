@@ -126,5 +126,31 @@
   "map": {
     "startPoint": "Starting point",
     "endPoint": "Ending point"
+  },
+  "addPost": {
+    "roadInfo": "Route information",
+    "startingPoint": "Starting point",
+    "selectCountry": "Select country",
+    "selectState": "Select state",
+    "selectCity": "Select city",
+    "endPoint": "Destination point",
+    "post": "Post",
+    "carInfo": "Vehicle information",
+    "departureDateAndTime": "Departure date and time",
+    "arrivalDateAndTime": "Arrival date and time",
+    "postTitle": "Post title",
+    "postDesc": "Post description (optional)",
+    "brand": "Brand",
+    "model": "Model",
+    "maxWeight": "Maximum goods weight (kg)",
+    "maxSize": "Maximum goods dimensions",
+    "maxHeight": "Maximum goods height (cm)",
+    "sizeInfo": "Provide dimensions in euro pallets",
+    "sizeInfoExample": "(e.g., 2x1)",
+    "acceptInfo": "Before your planned route announcement becomes public, it must be approved by one of the moderators.",
+    "addAnnoucement": "Add planned route announcement",
+    "mustNotBeEmpty": "This field cannot be empty",
+    "valueBetween": "Select a value within the range",
+    "formatIssue": "The format must be in the form LxW (e.g., 2x1), with numbers greater than 0"
   }
 }

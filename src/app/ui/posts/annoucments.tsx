@@ -3,7 +3,7 @@
 import { Button } from '../button';
 import { ButtonTypes, GoodsCategory } from '../../lib/definitions';
 import { ArrowsUpDownIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
-import { Input } from '../input';
+import Input from '../input';
 import { useState } from 'react';
 import { SortDirection, FilterProps } from '../../lib/definitions';
 import { Select } from '../select';
@@ -181,7 +181,7 @@ export default function Annoucments() {
               <h2>{t('departureDate')}</h2>
               <div className="flex gap-2">
                 <Input
-                  containerStytles="bg-slate-800"
+                  containerStyles="bg-slate-800"
                   className="bg-slate-800"
                   title={t('from')}
                   type="date"
@@ -193,7 +193,7 @@ export default function Annoucments() {
                   onChange={(e) => handleDateChange('departureDate', 'from', e.target.value)}
                 />
                 <Input
-                  containerStytles="bg-slate-800"
+                  containerStyles="bg-slate-800"
                   className="bg-slate-800"
                   title={t('to')}
                   type="date"
@@ -208,7 +208,7 @@ export default function Annoucments() {
               <h2>{t('arrivalDate')}</h2>
               <div className="flex gap-2">
                 <Input
-                  containerStytles="bg-slate-800"
+                  containerStyles="bg-slate-800"
                   className="bg-slate-800"
                   title={t('from')}
                   type="date"
@@ -220,7 +220,7 @@ export default function Annoucments() {
                   onChange={(e) => handleDateChange('arrivalDate', 'from', e.target.value)}
                 />
                 <Input
-                  containerStytles="bg-slate-800"
+                  containerStyles="bg-slate-800"
                   className="bg-slate-800"
                   title={t('to')}
                   type="date"
@@ -236,7 +236,7 @@ export default function Annoucments() {
             <div className="flex flex-col gap-2">
               <h1 className="text-xl">{t('cities')}</h1>
               <Input
-                containerStytles="bg-slate-800"
+                containerStyles="bg-slate-800"
                 className="bg-slate-800"
                 title="z"
                 value={filters.cities.from ? filters.cities.from : ''}
@@ -244,7 +244,7 @@ export default function Annoucments() {
                 placeholder="Wrocław"
               />
               <Input
-                containerStytles="bg-slate-800"
+                containerStyles="bg-slate-800"
                 className="bg-slate-800"
                 title={t('to')}
                 value={filters.cities.to ? filters.cities.to : ''}
@@ -257,7 +257,7 @@ export default function Annoucments() {
               <h2>{t('weight')}</h2>
               <div className="flex gap-2">
                 <Input
-                  containerStytles="bg-slate-800"
+                  containerStyles="bg-slate-800"
                   className="bg-slate-800"
                   title={t('from')}
                   type="number"
@@ -265,7 +265,7 @@ export default function Annoucments() {
                   onChange={(e) => handleWeightChange('from', e.target.value)}
                 />
                 <Input
-                  containerStytles="bg-slate-800"
+                  containerStyles="bg-slate-800"
                   className="bg-slate-800"
                   title={t('to')}
                   type="number"
@@ -276,7 +276,7 @@ export default function Annoucments() {
               <h2>{t('width')}</h2>
               <div className="flex gap-2">
                 <Input
-                  containerStytles="bg-slate-800"
+                  containerStyles="bg-slate-800"
                   className="bg-slate-800"
                   title={t('from')}
                   type="number"
@@ -284,7 +284,7 @@ export default function Annoucments() {
                   onChange={(e) => handleSizeChange('x', 'from', e.target.value)}
                 />
                 <Input
-                  containerStytles="bg-slate-800"
+                  containerStyles="bg-slate-800"
                   className="bg-slate-800"
                   title={t('to')}
                   type="number"
@@ -295,7 +295,7 @@ export default function Annoucments() {
               <h2>{t('length')}</h2>
               <div className="flex gap-2">
                 <Input
-                  containerStytles="bg-slate-800"
+                  containerStyles="bg-slate-800"
                   className="bg-slate-800"
                   title={t('from')}
                   type="number"
@@ -303,7 +303,7 @@ export default function Annoucments() {
                   onChange={(e) => handleSizeChange('y', 'from', e.target.value)}
                 />
                 <Input
-                  containerStytles="bg-slate-800"
+                  containerStyles="bg-slate-800"
                   className="bg-slate-800"
                   title={t('to')}
                   type="number"
@@ -314,7 +314,7 @@ export default function Annoucments() {
               <h2>{t('height')}</h2>
               <div className="flex gap-2">
                 <Input
-                  containerStytles="bg-slate-800"
+                  containerStyles="bg-slate-800"
                   className="bg-slate-800"
                   title={t('from')}
                   type="number"
@@ -322,7 +322,7 @@ export default function Annoucments() {
                   onChange={(e) => handleSizeChange('height', 'from', e.target.value)}
                 />
                 <Input
-                  containerStytles="bg-slate-800"
+                  containerStyles="bg-slate-800"
                   className="bg-slate-800"
                   title={t('to')}
                   type="number"

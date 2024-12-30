@@ -2,7 +2,7 @@
 
 import { handleLogin } from '../../lib/actions';
 import { Button } from '../button';
-import { Input } from '../input';
+import Input from '../input';
 import { useTranslations } from 'next-intl';
 import { useActionState } from 'react';
 

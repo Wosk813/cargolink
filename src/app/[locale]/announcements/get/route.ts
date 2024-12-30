@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { FilterProps, GoodsCategory, SortDirection } from '@/src/app/lib/definitions';
 import { getAnnouncements } from '../../../lib/actions';
 
@@ -44,5 +45,6 @@ export async function GET(request: Request) {
   };
 
   const data = await getAnnouncements(sortBy, filterOptions);
+  // console.log(data);
   return Response.json(data);
 }
