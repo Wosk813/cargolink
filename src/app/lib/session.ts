@@ -1,6 +1,6 @@
 import 'server-only';
 import { SignJWT, jwtVerify } from 'jose';
-import { Role, SessionPayload } from '@/src/app/lib/definitions';
+import { AccountType, Role, SessionPayload } from '@/src/app/lib/definitions';
 import { cookies } from 'next/headers';
 
 const secretKey = process.env.SESSION_SECRET;
@@ -25,9 +25,9 @@ export async function decrypt(session: string | undefined = '') {
   }
 }
 
-export async function createSession(userId: string, role: Role) {
+export async function createSession(userId: string, role: Role, accountType: AccountType) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-  const payload = { userId: userId, expiresAt: expiresAt, role: role };
+const payload = { userId: userId, expiresAt: expiresAt, role: role, accountType: accountType };
   const session = await encrypt(payload);
   const cookieStore = await cookies();
 

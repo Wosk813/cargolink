@@ -1,5 +1,65 @@
 import { z } from 'zod';
 
+const inRange = (min: number, max: number) => (value: number) => value >= min && value <= max;
+
+export const newAnnouncementSchema = (t: any) =>
+  z.object({
+    title: z
+      .string()
+      .min(1, { message: t('mustNotBeEmpty') })
+      .trim(),
+    brand: z
+      .string()
+      .min(1, { message: t('mustNotBeEmpty') })
+      .trim(),
+    model: z
+      .string()
+      .min(1, { message: t('mustNotBeEmpty') })
+      .trim(),
+    maxWeight: z.coerce
+      .number()
+      .refine(inRange(1, 50_000), { message: t('valueBetween') + ' 1 - 50 000' }),
+    maxSize: z.string().regex(/^[1-9][0-9]*x[1-9][0-9]*$/, {
+      message: t('formatIssue'),
+    }),
+    maxHeight: z.coerce
+      .number()
+      .refine(inRange(1, 1_000), { message: t('valueBetween') + ' 1 - 1000' }),
+    fromCity: z
+      .string()
+      .min(1, { message: t('mustNotBeEmpty') })
+      .trim(),
+    toCity: z
+      .string()
+      .min(1, { message: t('mustNotBeEmpty') })
+      .trim(),
+    desc: z.string().trim(),
+    departureDate: z.coerce.date(),
+    arrivalDate: z.coerce.date(),
+    fromLatitude: z.coerce.number(),
+    fromLongitude: z.coerce.number(),
+    toLatitude: z.coerce.number(),
+    toLongitude: z.coerce.number(),
+  });
+
+export type NewAnnouncementFormState =
+  | {
+      errors?: {
+        title?: string[];
+        brand?: string[];
+        model?: string[];
+        maxWeight?: string[];
+        maxSize?: string[];
+        maxHeight?: string[];
+        fromCity?: string[];
+        toCity?: string[];
+        departureDate?: string[];
+        arrivalDate?: string[];
+      };
+      message?: string;
+    }
+  | undefined;
+
 export const SignupFormFirstStepSchema = (t: any) =>
   z
     .object({
@@ -116,6 +176,7 @@ export type SessionPayload = {
   userId?: string;
   role?: Role;
   expiresAt?: Date;
+  accountType?: AccountType;
 };
 
 export type AnnoucementProps = {

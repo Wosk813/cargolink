@@ -4,7 +4,7 @@ import { Link } from '@/src/i18n/routing';
 import { useTranslations } from 'next-intl';
 
 type NavLinksProps = {
-  links: Array<{ name: string; href: string }>;
+  links: Array<{ name: string; href: string; highlighted: boolean }>;
   handleClickLink: () => void;
 };
 
@@ -16,7 +16,11 @@ export default function NavLinks({ links, handleClickLink }: NavLinksProps) {
       {links.map((link) => {
         return (
           <Link key={link.name} href={link.href} onClick={handleClickLink}>
-            <p className="my-4 rounded-md bg-slate-700 px-2 py-2 text-center">{link.name}</p>
+            <p
+              className={`my-4 rounded-md ${link.highlighted ? 'bg-yellow-300 text-black' : 'bg-slate-700'} px-2 py-2 text-center`}
+            >
+              {link.name}
+            </p>
           </Link>
         );
       })}

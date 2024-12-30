@@ -12,7 +12,8 @@
     "admin": "Admin-Panel",
     "logoutPending": "Ausloggen ...",
     "close": "schließen",
-    "announcement": "Geplante Route"
+    "announcement": "Geplante Route",
+    "addAnnoucement": "Fügen Sie eine Ankündigung zu Ihrer geplanten Route hinzu"
   },
   "login": {
     "login": "Einloggen",
@@ -125,5 +126,31 @@
   "map": {
     "startPoint": "Startpunkt",
     "endPoint": "Endpunkt"
+  },
+  "addPost": {
+    "roadInfo": "Routeninformationen",
+    "startingPoint": "Startpunkt",
+    "selectCountry": "Land auswählen",
+    "selectState": "Bundesland auswählen",
+    "selectCity": "Stadt auswählen",
+    "endPoint": "Zielpunkt",
+    "post": "Anzeige",
+    "carInfo": "Fahrzeuginformationen",
+    "departureDateAndTime": "Abfahrtsdatum und -uhrzeit",
+    "arrivalDateAndTime": "Ankunftsdatum und -uhrzeit",
+    "postTitle": "Titel der Anzeige",
+    "postDesc": "Beschreibung der Anzeige (optional)",
+    "brand": "Marke",
+    "model": "Modell",
+    "maxWeight": "Maximales Warengewicht (kg)",
+    "maxSize": "Maximale Warengröße",
+    "maxHeight": "Maximale Warenhöhe (cm)",
+    "sizeInfo": "Geben Sie die Maße in Europaletten an",
+    "sizeInfoExample": "(z. B. 2x1)",
+    "acceptInfo": "Bevor Ihre geplante Routenanzeige veröffentlicht wird, muss sie von einem der Moderatoren genehmigt werden.",
+    "addAnnoucement": "Geplante Routenanzeige hinzufügen",
+    "mustNotBeEmpty": "Dieses Feld darf nicht leer sein",
+    "valueBetween": "Wählen Sie einen Wert innerhalb des Bereichs",
+    "formatIssue": "Das Format muss in der Form LxW (z. B. 2x1) vorliegen, mit Zahlen größer als 0"
   }
 }

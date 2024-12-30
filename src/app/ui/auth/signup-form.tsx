@@ -7,7 +7,7 @@ import {
   SignupFormData,
   ValidationErrors,
 } from '../../lib/definitions';
-import { Input } from '../input';
+import Input from '../input';
 import { Button } from '../button';
 import React, { useState } from 'react';
 import { InputRadio } from '../inputRadio';

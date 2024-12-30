@@ -12,7 +12,8 @@
     "admin": "Panel administratora",
     "logoutPending": "Wylogowywanie ...",
     "close": "Zamknij",
-    "announcement": "Planowana trasa"
+    "announcement": "Planowana trasa",
+    "addAnnoucement": "Dodaj ogłoszenie o planowanej trasie"
   },
   "login": {
     "login": "Zaloguj się",
@@ -125,5 +126,31 @@
   "map": {
     "startPoint": "Punkt początkowy",
     "endPoint": "Punkt końcowy"
+  },
+  "addPost": {
+    "roadInfo": "Informacje o trasie",
+    "startingPoint": "Punkt początkowy",
+    "selectCountry": "Wybierz państwo",
+    "selectState": "Wybierz stan",
+    "selectCity": "Wybierz miasto",
+    "endPoint": "Punkt docelowy",
+    "post": "Ogłoszenie",
+    "carInfo": "Informacje o pojeździe",
+    "departureDateAndTime": "Data i godzina wyjazdu",
+    "arrivalDateAndTime": "Data i godzina dotarcia",
+    "postTitle": "Tytuł ogłoszenia",
+    "postDesc": "Opis ogłoszenia (niewymagane)",
+    "brand": "marka",
+    "model": "model",
+    "maxWeight": "Maksymalna waga towaru (kg)",
+    "maxSize": "Maksymalne wymiary towaru",
+    "maxHeight": "Maksymalna wysokość towaru (cm)",
+    "sizeInfo": "Podaj wymiary w euro paletach",
+    "sizeInfoExample": "(np. 2x1)",
+    "acceptInfo": "Zanim Twoje ogłoszenie o planowanej trasie trafi do informacji publicznej, musi zostać ono zatwierdzone przez jednego z moderatorów.",
+    "addAnnoucement":"Dodaj ogłoszenie o planowanej trasie",
+    "mustNotBeEmpty":"To pole nie może być puste",
+    "valueBetween": "Wybierz wartość z przedziału",
+    "formatIssue": "Format musi być w postaci LxW (np. 2x1), liczby większe od 0"
   }
 }

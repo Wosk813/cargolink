@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useState } from 'react';
 import { SortDirection, FilterProps, AnnoucementProps } from '../../lib/definitions';
 import Annoucement from './annoucment';
@@ -86,7 +88,7 @@ export default function AnnoucmentsWrapper({ sortDirection, filterOptions }: Wra
     router.push(`/${currentLocale}/announcements?${params.toString()}`, { scroll: false });
 
     setLoading(true);
-    fetch(`/pl/announcements/get?${params.toString()}`)
+    fetch(`/pl/announcements/get?${params.toString()}`, { cache: 'no-store' })
       .then((res) => res.json())
       .then((data) => {
         setAnnoucements(data);

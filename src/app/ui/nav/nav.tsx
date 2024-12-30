@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
 type ClientNavigationProps = {
-  links: Array<{ name: string; href: string }>;
+  links: Array<{ name: string; href: string; highlighted: boolean }>;
   onLogout: () => Promise<void>;
   isAuth: boolean;
 };

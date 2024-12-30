@@ -1,4 +1,4 @@
-import { Input } from '../input';
+import Input from '../input';
 import { Button } from '../button';
 
 export default function SearchForm() {
