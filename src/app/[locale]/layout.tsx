@@ -14,7 +14,7 @@ const inter = Inter({ subsets: ['latin'] });
 async function getNavLinks(
   role: Role | undefined,
   accountType: AccountType | undefined,
-): Promise<{ name: string; href: string }[]> {
+): Promise<{ name: string; href: string; highlighted: boolean }[]> {
   const t = await getTranslations('nav');
   const links = [
     {
