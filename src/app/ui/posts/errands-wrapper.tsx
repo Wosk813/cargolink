@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic';
 
 import { useEffect, useState } from 'react';
 import { SortDirection, FilterProps, AnnoucementProps, GoodsCategory } from '../../lib/definitions';
-import Annoucement from './annoucment';
 import { Link } from '@/src/i18n/routing';
 import { useRouter } from 'next/navigation';
 import AnnouncementsWrapperSkeleton from '../skeletons/annoucments';

@@ -37,10 +37,16 @@ export default function Errand({
           <FormattedDate date={new Date(arrivalDate)} />
         </div>
       </div>
+      <div className="flex flex-col justify-between rounded-md bg-slate-800 p-4">
+        <p className="text-sm text-slate-400">Kategoria</p>
+        <h2 className="text-2xl">{ware.category}</h2>
+        <p className="text-sm text-slate-400">Nazwa towaru</p>
+        <h2 className="text-2xl">{ware.name}</h2>
+      </div>
       <div className="flex flex-wrap gap-2 md:flex-nowrap md:gap-4">
         <div className="flex w-full flex-col justify-between gap-2 rounded-md bg-slate-800 p-4">
           <p className="text-sm text-slate-400">{t('maximumWeight')}</p>
-          <p className="text-center text-xl md:text-2xl">{ware.weight}</p>
+          <p className="text-center text-xl md:text-2xl">{formatWeight(ware.weight)}</p>
         </div>
         <div className="flex w-full flex-col justify-between gap-2 rounded-md bg-slate-800 p-4">
           <p className="text-sm text-slate-400">{t('maximumSize')}</p>

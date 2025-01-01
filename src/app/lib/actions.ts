@@ -14,6 +14,9 @@ import {
   GeoPoint,
   newAnnouncementSchema,
   NewAnnouncementFormState,
+  ErrandProps,
+  newErrandSchema,
+  NewErrandFormState,
 } from '@/src/app/lib/definitions';
 import { getTranslations } from 'next-intl/server';
 import { verifySession } from './dal';
@@ -240,6 +243,34 @@ export async function getAnnouncements(
   return announcements;
 }
 
+export async function getErrands(
+  sortBy: SortDirection = SortDirection.ByNewest,
+  filterOptions: FilterProps,
+) {
+  let sqlString = `
+    SELECT 
+      *,
+      ST_X(from_geography::geometry) as from_longitude,
+      ST_Y(from_geography::geometry) as from_latitude,
+      ST_X(to_geography::geometry) as to_longitude,
+      ST_Y(to_geography::geometry) as to_latitude 
+    FROM errands 
+    ${filterOptionsToSQL(filterOptions)} 
+    ${sortDirectionToSQL(sortBy)}
+  `;
+
+  const dbrows = await sql(sqlString);
+  const errands: Array<ErrandProps | null> = [];
+
+  dbrows.map((dbrow) => {
+    if (!dbrow['is_accepted']) return;
+    let row: ErrandProps | null = dbRowToObject(dbrow, 'errand') as ErrandProps;
+    errands.push(row);
+  });
+
+  return errands;
+}
+
 export async function getAnnouncementsById(id: string): Promise<AnnoucementProps | null> {
   const result = await sql`
     SELECT 
@@ -258,14 +289,52 @@ export async function getAnnouncementsById(id: string): Promise<AnnoucementProps
 }
 
 function dbRowToObject(row: any, object: string) {
+  let fromGeoPoint: GeoPoint;
+  let toGeoPoint: GeoPoint;
   switch (object) {
-    case 'annoucement':
-      const fromGeoPoint: GeoPoint = {
+    case 'errand':
+      fromGeoPoint = {
         type: 'Point',
         coordinates: [Number(row['from_longitude']), Number(row['from_latitude'])],
       };
 
-      const toGeoPoint: GeoPoint = {
+      toGeoPoint = {
+        type: 'Point',
+        coordinates: [Number(row['to_longitude']), Number(row['to_latitude'])],
+      };
+
+      const errand: ErrandProps = {
+        id: row['announcement_id'],
+        title: row['title'],
+        fromCity: row['from_city'],
+        toCity: row['to_city'],
+        fromGeography: fromGeoPoint,
+        toGeography: toGeoPoint,
+        departureDate: new Date(row['start_date']),
+        arrivalDate: new Date(row['arrive_date']),
+        ware: {
+          weight: Number(row['max_weight']),
+          size: {
+            x: Number(row['size_x']),
+            y: Number(row['size_y']),
+            height: Number(row['max_height']),
+          },
+          name: row['name'],
+          category: row['category'],
+        },
+        authorId: row['author_id'],
+        isAccepted: row['is_accepted'],
+        desc: row['description'],
+        roadColor: row['road_color'],
+      };
+      return errand;
+    case 'annoucement':
+      fromGeoPoint = {
+        type: 'Point',
+        coordinates: [Number(row['from_longitude']), Number(row['from_latitude'])],
+      };
+
+      toGeoPoint = {
         type: 'Point',
         coordinates: [Number(row['to_longitude']), Number(row['to_latitude'])],
       };
@@ -359,6 +428,74 @@ export async function addAnnouncement(state: NewAnnouncementFormState, formData:
       data.model,
       `POINT(${data.fromLatitude} ${data.fromLongitude})`,
       `POINT(${data.toLatitude} ${data.toLongitude})`,
+      data.fromCity,
+      data.toCity,
+      '#' + ((Math.random() * 0xffffff) << 0).toString(16),
+    ],
+  );
+  redirect({ locale: 'pl', href: '/announcements' });
+}
+
+export async function addErrand(state: NewErrandFormState, formData: FormData) {
+  const t = await getTranslations('addPost');
+  const validatedFields = newErrandSchema(t).safeParse({
+    title: formData.get('title'),
+    wareWeight: formData.get('wareWeight'),
+    wareSize: formData.get('wareSize'),
+    wareHeight: formData.get('wareHeight'),
+    wareName: formData.get('wareName'),
+    fromCity: formData.get('fromCity'),
+    toCity: formData.get('toCity'),
+    earliestAt: formData.get('earliestAt'),
+    latestAt: formData.get('latestAt'),
+    desc: formData.get('desc'),
+    fromLatitude: formData.get('fromLatitude'),
+    fromLongitude: formData.get('fromLongitude'),
+    toLatitude: formData.get('toLatitude'),
+    toLongitude: formData.get('toLongitude'),
+    category: formData.get('wareCategory'),
+    specialConditions: formData.get('specialConditions'),
+  });
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+  const data = validatedFields.data;
+  let [size_x, size_y] = data.wareSize.split('x').map(Number);
+  const { userId } = await verifySession();
+
+  const category = await sql('SELECT category_id FROM goods_categories WHERE name=$1', [
+    data.category,
+  ]);
+  const result = await sql(
+    'INSERT INTO goods (name, category_id, weight, size_x, size_y, height, special_conditions) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING good_id',
+    [
+      data.wareName,
+      category[0].category_id,
+      data.wareWeight,
+      size_x,
+      size_y,
+      data.wareHeight,
+      data.specialConditions,
+    ],
+  );
+
+  const goodId = result[0].good_id;
+
+  console.log(data)
+  await sql(
+    'INSERT INTO errands (title, description, from_geography, to_geography, earliest_at, latest_at, good_id, author_id, is_accepted, from_city, to_city, road_color) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)',
+    [
+      data.title,
+      data.desc,
+      `POINT(${data.fromLatitude} ${data.fromLongitude})`,
+      `POINT(${data.toLatitude} ${data.toLongitude})`,
+      data.earliestAt,
+      data.latestAt,
+      goodId,
+      userId,
+      false,
       data.fromCity,
       data.toCity,
       '#' + ((Math.random() * 0xffffff) << 0).toString(16),
