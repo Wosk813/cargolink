@@ -200,6 +200,32 @@ export type AnnoucementProps = {
   roadColor?: string;
 };
 
+export type ErrandProps = {
+  id?: string;
+  title: string;
+  fromCity: string;
+  toCity: string;
+  fromGeography?: GeoPoint;
+  toGeography?: GeoPoint;
+  departureDate: Date;
+  arrivalDate: Date;
+  ware: {
+    category: GoodsCategory;
+    name: string;
+    weight: number;
+    size: {
+      x: number;
+      y: number;
+      height: number;
+    };
+    desc?: string;
+  };
+  desc?: string;
+  isAccepted?: boolean;
+  authorId?: string;
+  roadColor?: string;
+};
+
 export enum GoodsCategory {
   Electronics = 'electronics',
   Furniture = 'furniture',
