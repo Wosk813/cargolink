@@ -2,6 +2,65 @@ import { z } from 'zod';
 
 const inRange = (min: number, max: number) => (value: number) => value >= min && value <= max;
 
+export const newErrandSchema = (t: any) =>
+  z.object({
+    title: z
+      .string()
+      .min(1, { message: t('mustNotBeEmpty') })
+      .trim(),
+    wareWeight: z.coerce
+      .number()
+      .refine(inRange(1, 50_000), { message: t('valueBetween') + ' 1 - 50 000' }),
+    wareSize: z.string().regex(/^[1-9][0-9]*x[1-9][0-9]*$/, {
+      message: t('formatIssue'),
+    }),
+    wareHeight: z.coerce
+      .number()
+      .refine(inRange(1, 1_000), { message: t('valueBetween') + ' 1 - 1000' }),
+    fromCity: z
+      .string()
+      .min(1, { message: t('mustNotBeEmpty') })
+      .trim(),
+    toCity: z
+      .string()
+      .min(1, { message: t('mustNotBeEmpty') })
+      .trim(),
+    desc: z.string().trim(),
+    earliestAt: z.coerce.date(),
+    latestAt: z.coerce.date(),
+    fromLatitude: z.coerce.number(),
+    fromLongitude: z.coerce.number(),
+    toLatitude: z.coerce.number(),
+    toLongitude: z.coerce.number(),
+    wareName: z
+      .string()
+      .min(1, { message: t('mustNotBeEmpty') })
+      .trim(),
+    category: z
+      .string()
+      .min(1, { message: t('mustNotBeEmpty') })
+      .trim(),
+    specialConditions: z.string(),
+  });
+
+export type NewErrandFormState =
+  | {
+      errors?: {
+        title?: string[];
+        wareName?: string[];
+        wareWeight?: string[];
+        wareSize?: string[];
+        wareHeight?: string[];
+        fromCity?: string[];
+        toCity?: string[];
+        earliestAt?: string[];
+        latestAt?: string[];
+        category?: string[];
+      };
+      message?: string;
+    }
+  | undefined;
+
 export const newAnnouncementSchema = (t: any) =>
   z.object({
     title: z
@@ -207,8 +266,8 @@ export type ErrandProps = {
   toCity: string;
   fromGeography?: GeoPoint;
   toGeography?: GeoPoint;
-  departureDate: Date;
-  arrivalDate: Date;
+  earliestAt: Date;
+  latestAt: Date;
   ware: {
     category: GoodsCategory;
     name: string;
@@ -218,7 +277,7 @@ export type ErrandProps = {
       y: number;
       height: number;
     };
-    desc?: string;
+    specialConditions?: string;
   };
   desc?: string;
   isAccepted?: boolean;
@@ -232,6 +291,18 @@ export enum GoodsCategory {
   Food = 'food',
   Other = 'other',
   All = 'all',
+  Textiles = 'textiles',
+  Construction = 'construction',
+  Industrial = 'industrial',
+  Chemicals = 'chemicals',
+  Agriculture = 'agriculture',
+  Fuel = 'fuel',
+  Waste = 'waste',
+  Automotive = 'automotive',
+  Pharma = 'pharma',
+  Metal = 'metal',
+  Paper = 'paper',
+  Plastics = 'plastics',
 }
 
 export enum SortDirection {

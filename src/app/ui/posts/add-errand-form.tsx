@@ -3,18 +3,19 @@
 import { Button } from '../button';
 import Input from '../input';
 import { useActionState } from 'react';
-import { addAnnouncement } from '../../lib/actions';
+import { addErrand } from '../../lib/actions';
 import { CitySelect, CountrySelect, StateSelect } from 'react-country-state-city';
 import 'react-country-state-city/dist/react-country-state-city.css';
 import { useState } from 'react';
 import { City, Country, State } from 'react-country-state-city/dist/esm/types';
 import { useTranslations } from 'next-intl';
+import { Select } from '../select';
 
-export default function AddAnnoucementForm() {
+export default function AddErrandForm() {
   const t = useTranslations('addPost');
   const [countryid, setCountryid] = useState(0);
   const [stateid, setstateid] = useState(0);
-  const [state, action, pending] = useActionState(addAnnouncement, undefined);
+  const [state, action, pending] = useActionState(addErrand, undefined);
   const [fromCoordinates, setFromCoordinates] = useState({ lat: '', lng: '' });
   const [toCoordinates, setToCoordinates] = useState({ lat: '', lng: '' });
 
@@ -59,12 +60,7 @@ export default function AddAnnoucementForm() {
               <div className="mt-1 text-sm text-red-500">{state?.errors?.fromCity}</div>
             )}
           </div>
-          <Input
-            required
-            name="departureDate"
-            title={t('departureDateAndTime')}
-            type="datetime-local"
-          />
+
           <p>{t('endPoint')}</p>
           <div className="text-black">
             <CountrySelect
@@ -101,12 +97,8 @@ export default function AddAnnoucementForm() {
               <div className="mt-1 text-sm text-red-500">{state?.errors?.toCity}</div>
             )}
           </div>
-          <Input
-            required
-            name="arrivalDate"
-            title={t('arrivalDateAndTime')}
-            type="datetime-local"
-          />
+          <Input required name="earliesAt" title={t('earliestAt')} type="datetime-local" />
+          <Input required name="latestAt" title={t('latestAt')} type="datetime-local" />
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
@@ -116,39 +108,68 @@ export default function AddAnnoucementForm() {
           </div>
           <div className="flex flex-col gap-2">
             <p className="text-xl">{t('carInfo')}</p>
-            <div className="flex gap-2">
-              <Input required name="brand" title={t('brand')} error={state?.errors?.brand} />
-              <Input required name="model" title={t('model')} error={state?.errors?.model} />
+            <div className="flex flex-col gap-2">
+              <Select
+                name="wareCategory"
+                containerStytles="bg-slate-800"
+                className="bg-slate-800"
+                title={t('wareCategory')}
+                options={[
+                  { value: 'other', label: t('other') },
+                  { value: 'electronics', label: t('electronics') },
+                  { value: 'furniture', label: t('furniture') },
+                  { value: 'food', label: t('food') },
+                  { value: 'textiles', label: t('textiles') },
+                  { value: 'construction', label: t('construction') },
+                  { value: 'industrial', label: t('industrial') },
+                  { value: 'chemicals', label: t('chemicals') },
+                  { value: 'agriculture', label: t('agriculture') },
+                  { value: 'fuel', label: t('fuel') },
+                  { value: 'waste', label: t('waste') },
+                  { value: 'automotive', label: t('automotive') },
+                  { value: 'pharma', label: t('pharma') },
+                  { value: 'metal', label: t('metal') },
+                  { value: 'paper', label: t('paper') },
+                  { value: 'plastics', label: t('plastics') },
+                ]}
+              />
+              <Input
+                required
+                name="wareName"
+                title={t('wareName')}
+                error={state?.errors?.wareName}
+              />
             </div>
             <div className="flex gap-2">
               <Input
                 required
                 type="number"
-                name="maxWeight"
-                title={t('maxWeight')}
+                name="wareWeight"
+                title={t('wareWeight')}
                 className="text-center text-xl"
-                error={state?.errors?.maxWeight}
+                error={state?.errors?.wareWeight}
               />
               <Input
                 required
-                name="maxSize"
-                title={t('maxSize')}
+                name="wareSize"
+                title={t('wareSize')}
                 className="text-center text-xl"
-                error={state?.errors?.maxSize}
+                error={state?.errors?.wareSize}
               />
               <Input
                 required
                 type="number"
-                name="maxHeight"
-                title={t('maxHeight')}
+                name="wareHeight"
+                title={t('wareHeight')}
                 className="text-center text-xl"
-                error={state?.errors?.maxHeight}
+                error={state?.errors?.wareHeight}
               />
             </div>
+            <Input multiline name="specialConditions" title={t('specialConditions')} />
             <p className="text-center text-sm">
               <span className="text-slate-400">{t('sizeInfo')}</span> {t('sizeInfoExample')}
             </p>
-            <p className="text-center text-sm text-slate-400">{t('acceptInfoAnnouncement')}</p>
+            <p className="text-center text-sm text-slate-400">{t('acceptInfoErrand')}</p>
           </div>
         </div>
       </div>
@@ -156,7 +177,7 @@ export default function AddAnnoucementForm() {
       <input type="hidden" name="fromLongitude" value={fromCoordinates.lng} />
       <input type="hidden" name="toLatitude" value={toCoordinates.lat} />
       <input type="hidden" name="toLongitude" value={toCoordinates.lng} />
-      <Button disabled={pending}>{t('addAnnoucement')}</Button>
+      <Button disabled={pending}>{t('addErrand')}</Button>
     </form>
   );
 }

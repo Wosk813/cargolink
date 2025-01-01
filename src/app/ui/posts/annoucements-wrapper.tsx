@@ -5,7 +5,7 @@ import { SortDirection, FilterProps, AnnoucementProps } from '../../lib/definiti
 import Annoucement from './annoucment';
 import { Link } from '@/src/i18n/routing';
 import { useRouter } from 'next/navigation';
-import AnnouncementsWrapperSkeleton from '../skeletons/annoucments';
+import PostsWrapperSkeleton from '../skeletons/annoucments';
 import { useLocale } from 'next-intl';
 
 type WrapperProps = {
@@ -100,7 +100,7 @@ export default function AnnoucmentsWrapper({ sortDirection, filterOptions }: Wra
       });
   }, [sortDirection, filterOptions, router]);
 
-  if (isLoading) return <AnnouncementsWrapperSkeleton />;
+  if (isLoading) return <PostsWrapperSkeleton />;
   if (!annoucements || annoucements.length === 0) return <p>No announcements</p>;
 
   return (

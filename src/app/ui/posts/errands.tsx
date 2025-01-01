@@ -7,7 +7,7 @@ import Input from '../input';
 import { useState } from 'react';
 import { SortDirection, FilterProps } from '../../lib/definitions';
 import { Select } from '../select';
-import AnnoucementsMapButt from './annoucments-map';
+import AnnoucementsMapButt from './map-button';
 import { useTranslations } from 'next-intl';
 import ErrandsWrapper from './errands-wrapper';
 
@@ -337,9 +337,21 @@ export default function Errands() {
                 title={t('wareCategory')}
                 options={[
                   { value: 'other', label: t('other') },
-                  { value: 'electronics', label: t('electronicts') },
+                  { value: 'electronics', label: t('electronics') },
                   { value: 'furniture', label: t('furniture') },
                   { value: 'food', label: t('food') },
+                  { value: 'textiles', label: t('textiles') },
+                  { value: 'construction', label: t('construction') },
+                  { value: 'industrial', label: t('industrial') },
+                  { value: 'chemicals', label: t('chemicals') },
+                  { value: 'agriculture', label: t('agriculture') },
+                  { value: 'fuel', label: t('fuel') },
+                  { value: 'waste', label: t('waste') },
+                  { value: 'automotive', label: t('automotive') },
+                  { value: 'pharma', label: t('pharma') },
+                  { value: 'metal', label: t('metal') },
+                  { value: 'paper', label: t('paper') },
+                  { value: 'plastics', label: t('plastics') },
                 ]}
                 value={filters.goods.category}
                 onChange={(e) => handleCategoryChange(e.target.value)}
@@ -397,7 +409,7 @@ export default function Errands() {
           />
         </div>
       </div>
-      <AnnoucementsMapButt />
+      <AnnoucementsMapButt postType="errands" />
       <ErrandsWrapper filterOptions={filters} sortDirection={sortDirection} />
     </div>
   );

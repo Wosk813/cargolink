@@ -1,14 +1,14 @@
 'use client';
 
 import { Button } from '../button';
-import { ButtonTypes, GoodsCategory } from '../../lib/definitions';
+import { ButtonTypes } from '../../lib/definitions';
 import { ArrowsUpDownIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 import Input from '../input';
 import { useState } from 'react';
 import { SortDirection, FilterProps } from '../../lib/definitions';
 import { Select } from '../select';
 import AnnoucmentsWrapper from './annoucements-wrapper';
-import AnnoucementsMapButt from './annoucments-map';
+import AnnoucementsMapButt from './map-button';
 import { useTranslations } from 'next-intl';
 
 interface SortButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -80,7 +80,6 @@ export default function Annoucments() {
           to: null,
         },
       },
-      category: GoodsCategory.All,
     },
   });
 
@@ -140,16 +139,6 @@ export default function Annoucments() {
             [field]: Number(value),
           },
         },
-      },
-    }));
-  };
-
-  const handleCategoryChange = (value: string) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      goods: {
-        ...prevFilters.goods,
-        category: value as GoodsCategory,
       },
     }));
   };
@@ -330,20 +319,6 @@ export default function Annoucments() {
                   onChange={(e) => handleSizeChange('height', 'to', e.target.value)}
                 />
               </div>
-              <h2>{t('wareCategory')}</h2>
-              <Select
-                containerStytles="bg-slate-800"
-                className="bg-slate-800"
-                title={t('wareCategory')}
-                options={[
-                  { value: 'other', label: t('other') },
-                  { value: 'electronics', label: t('electronicts') },
-                  { value: 'furniture', label: t('furniture') },
-                  { value: 'food', label: t('food') },
-                ]}
-                value={filters.goods.category}
-                onChange={(e) => handleCategoryChange(e.target.value)}
-              />
             </div>
             <Button
               onClick={() => {
@@ -397,7 +372,7 @@ export default function Annoucments() {
           />
         </div>
       </div>
-      <AnnoucementsMapButt />
+      <AnnoucementsMapButt postType="announcements" />
       <AnnoucmentsWrapper filterOptions={filters} sortDirection={sortDirection} />
     </div>
   );

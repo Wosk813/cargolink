@@ -7,11 +7,11 @@ const Map = dynamic(() => import('@/src/app/ui/posts/map'), {
 import { useEffect, useState } from 'react';
 import { AnnoucementProps, Road } from '@/src/app/lib/definitions';
 
-export default function AllRoadsMap() {
+export default function AllRoadsMap({ postType }: { postType: 'announcements' | 'errands' }) {
   const [roads, setRoads] = useState<Road[]>([]);
 
   useEffect(() => {
-    fetch(`/pl/announcements/get?sort=byNewest&category=all`)
+    fetch(`/pl/${postType}/get?sort=byNewest&category=all`)
       .then((res) => res.json())
       .then((announcements: AnnoucementProps[]) => {
         const newRoads = announcements.map((announcement: AnnoucementProps) => ({

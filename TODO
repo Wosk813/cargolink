@@ -1,3 +1,4 @@
 1. Encrypt password on signup
 2. Fix redirect on verifySession
 3. Lazy loading
+4. Fix errands filters
