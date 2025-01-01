@@ -148,7 +148,7 @@ export default function AddAnnoucementForm() {
             <p className="text-center text-sm">
               <span className="text-slate-400">{t('sizeInfo')}</span> {t('sizeInfoExample')}
             </p>
-            <p className="text-center text-sm text-slate-400">{t('acceptInfo')}</p>
+            <p className="text-center text-sm text-slate-400">{t('acceptInfoAnnouncement')}</p>
           </div>
         </div>
       </div>

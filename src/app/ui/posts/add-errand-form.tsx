@@ -97,8 +97,8 @@ export default function AddErrandForm() {
               <div className="mt-1 text-sm text-red-500">{state?.errors?.toCity}</div>
             )}
           </div>
-          <Input required name="earliesAt" title="Najwcześniej wyjazd o" type="datetime-local" />
-          <Input required name="latestAt" title="Najpóźniej wyjazd o" type="datetime-local" />
+          <Input required name="earliesAt" title={t('earliestAt')} type="datetime-local" />
+          <Input required name="latestAt" title={t('latestAt')} type="datetime-local" />
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
@@ -133,21 +133,26 @@ export default function AddErrandForm() {
                   { value: 'plastics', label: t('plastics') },
                 ]}
               />
-              <Input required name="wareName" title="Nazwa" error={state?.errors?.wareName} />
+              <Input
+                required
+                name="wareName"
+                title={t('wareName')}
+                error={state?.errors?.wareName}
+              />
             </div>
             <div className="flex gap-2">
               <Input
                 required
                 type="number"
                 name="wareWeight"
-                title={t('maxWeight')}
+                title={t('wareWeight')}
                 className="text-center text-xl"
                 error={state?.errors?.wareWeight}
               />
               <Input
                 required
                 name="wareSize"
-                title={t('maxSize')}
+                title={t('wareSize')}
                 className="text-center text-xl"
                 error={state?.errors?.wareSize}
               />
@@ -155,16 +160,16 @@ export default function AddErrandForm() {
                 required
                 type="number"
                 name="wareHeight"
-                title={t('maxHeight')}
+                title={t('wareHeight')}
                 className="text-center text-xl"
                 error={state?.errors?.wareHeight}
               />
             </div>
-            <Input multiline name="specialConditions" title="Specjalne warunki (niewymagane)" />
+            <Input multiline name="specialConditions" title={t('specialConditions')} />
             <p className="text-center text-sm">
               <span className="text-slate-400">{t('sizeInfo')}</span> {t('sizeInfoExample')}
             </p>
-            <p className="text-center text-sm text-slate-400">{t('acceptInfo')}</p>
+            <p className="text-center text-sm text-slate-400">{t('acceptInfoErrand')}</p>
           </div>
         </div>
       </div>
@@ -172,7 +177,7 @@ export default function AddErrandForm() {
       <input type="hidden" name="fromLongitude" value={fromCoordinates.lng} />
       <input type="hidden" name="toLatitude" value={toCoordinates.lat} />
       <input type="hidden" name="toLongitude" value={toCoordinates.lng} />
-      <Button disabled={pending}>{t('addAnnoucement')}</Button>
+      <Button disabled={pending}>{t('addErrand')}</Button>
     </form>
   );
 }
