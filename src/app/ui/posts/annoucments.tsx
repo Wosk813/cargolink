@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { SortDirection, FilterProps } from '../../lib/definitions';
 import { Select } from '../select';
 import AnnoucmentsWrapper from './annoucements-wrapper';
-import AnnoucementsMapButt from './annoucments-map';
+import AnnoucementsMapButt from './map-button';
 import { useTranslations } from 'next-intl';
 
 interface SortButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -372,7 +372,7 @@ export default function Annoucments() {
           />
         </div>
       </div>
-      <AnnoucementsMapButt />
+      <AnnoucementsMapButt postType="announcements" />
       <AnnoucmentsWrapper filterOptions={filters} sortDirection={sortDirection} />
     </div>
   );

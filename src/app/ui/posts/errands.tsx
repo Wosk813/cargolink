@@ -7,7 +7,7 @@ import Input from '../input';
 import { useState } from 'react';
 import { SortDirection, FilterProps } from '../../lib/definitions';
 import { Select } from '../select';
-import AnnoucementsMapButt from './annoucments-map';
+import AnnoucementsMapButt from './map-button';
 import { useTranslations } from 'next-intl';
 import ErrandsWrapper from './errands-wrapper';
 
@@ -409,7 +409,7 @@ export default function Errands() {
           />
         </div>
       </div>
-      <AnnoucementsMapButt />
+      <AnnoucementsMapButt postType="errands" />
       <ErrandsWrapper filterOptions={filters} sortDirection={sortDirection} />
     </div>
   );
