@@ -3,7 +3,7 @@ import { ArrowRightIcon } from '@heroicons/react/24/outline';
 const shimmerEffect = 'animate-[shimmer_3s_infinite]';
 const shimmerGradient = 'bg-gradient-to-r from-transparent via-white/5 to-transparent';
 
-export default function AnnouncementsWrapperSkeleton() {
+export default function PostsWrapperSkeleton() {
   return (
     <div className="flex flex-col gap-4">
       <div className="relative flex flex-col gap-2 overflow-hidden rounded-md bg-slate-700 p-4 md:gap-4">

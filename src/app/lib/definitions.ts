@@ -266,8 +266,8 @@ export type ErrandProps = {
   toCity: string;
   fromGeography?: GeoPoint;
   toGeography?: GeoPoint;
-  departureDate: Date;
-  arrivalDate: Date;
+  earliestAt: Date;
+  latestAt: Date;
   ware: {
     category: GoodsCategory;
     name: string;
@@ -277,7 +277,7 @@ export type ErrandProps = {
       y: number;
       height: number;
     };
-    desc?: string;
+    specialConditions?: string;
   };
   desc?: string;
   isAccepted?: boolean;

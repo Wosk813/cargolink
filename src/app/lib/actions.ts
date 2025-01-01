@@ -117,7 +117,7 @@ export async function getUserByEmail(email: string) {
   return user[0];
 }
 
-function sortDirectionToSQL(sortBy: SortDirection) {
+function sortDirectionToSQL(sortBy: SortDirection, onColumn: string = '') {
   let by = '';
   switch (sortBy) {
     case SortDirection.ByNewest:
@@ -145,10 +145,10 @@ function sortDirectionToSQL(sortBy: SortDirection) {
       by = 'size_x * size_y DESC';
       break;
   }
-  return `ORDER BY ${by}`;
+  return `ORDER BY ${onColumn}${by}`;
 }
 
-function filterOptionsToSQL(filterOptions: FilterProps): string {
+function filterOptionsToSQL(filterOptions: FilterProps, onColumn: string = ''): string {
   const conditions: string[] = [];
 
   // Dates
@@ -212,7 +212,7 @@ function filterOptionsToSQL(filterOptions: FilterProps): string {
     return '';
   }
 
-  return `WHERE ${conditions.join(' AND ')}`;
+  return `WHERE ${onColumn}${conditions.join(' AND ')}`;
 }
 
 export async function getAnnouncements(
@@ -248,15 +248,17 @@ export async function getErrands(
   filterOptions: FilterProps,
 ) {
   let sqlString = `
-    SELECT 
-      *,
-      ST_X(from_geography::geometry) as from_longitude,
-      ST_Y(from_geography::geometry) as from_latitude,
-      ST_X(to_geography::geometry) as to_longitude,
-      ST_Y(to_geography::geometry) as to_latitude 
-    FROM errands 
-    ${filterOptionsToSQL(filterOptions)} 
-    ${sortDirectionToSQL(sortBy)}
+ SELECT e.*, gc.name as ware_Category, g.name as ware_Name, g.size_x as ware_Size_X, g.size_y as ware_Size_Y, g.height as ware_Height, g.weight as ware_weight, g.special_conditions as ware_Special_Conditions,
+  ST_X(e.from_geography::geometry) as from_longitude,
+  ST_Y(e.from_geography::geometry) as from_latitude,
+  ST_X(e.to_geography::geometry) as to_longitude,
+  ST_Y(e.to_geography::geometry) as to_latitude
+  FROM errands e
+  LEFT JOIN goods g
+  ON e.good_id = g.good_id
+  LEFT JOIN goods_categories gc
+  ON gc.category_id = g.category_id
+    ${sortDirectionToSQL(sortBy, 'e.')}
   `;
 
   const dbrows = await sql(sqlString);
@@ -304,23 +306,23 @@ function dbRowToObject(row: any, object: string) {
       };
 
       const errand: ErrandProps = {
-        id: row['announcement_id'],
+        id: row['errand_id'],
         title: row['title'],
         fromCity: row['from_city'],
         toCity: row['to_city'],
         fromGeography: fromGeoPoint,
         toGeography: toGeoPoint,
-        departureDate: new Date(row['start_date']),
-        arrivalDate: new Date(row['arrive_date']),
+        earliestAt: new Date(row['earliest_at']),
+        latestAt: new Date(row['latest_at']),
         ware: {
-          weight: Number(row['max_weight']),
+          weight: Number(row['ware_weight']),
           size: {
-            x: Number(row['size_x']),
-            y: Number(row['size_y']),
-            height: Number(row['max_height']),
+            x: Number(row['ware_size_x']),
+            y: Number(row['ware_size_y']),
+            height: Number(row['ware_height']),
           },
-          name: row['name'],
-          category: row['category'],
+          name: row['ware_name'],
+          category: row['ware_category'],
         },
         authorId: row['author_id'],
         isAccepted: row['is_accepted'],
@@ -483,7 +485,7 @@ export async function addErrand(state: NewErrandFormState, formData: FormData) {
 
   const goodId = result[0].good_id;
 
-  console.log(data)
+  console.log(data);
   await sql(
     'INSERT INTO errands (title, description, from_geography, to_geography, earliest_at, latest_at, good_id, author_id, is_accepted, from_city, to_city, road_color) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)',
     [
@@ -501,5 +503,5 @@ export async function addErrand(state: NewErrandFormState, formData: FormData) {
       '#' + ((Math.random() * 0xffffff) << 0).toString(16),
     ],
   );
-  redirect({ locale: 'pl', href: '/announcements' });
+  redirect({ locale: 'pl', href: '/errands' });
 }

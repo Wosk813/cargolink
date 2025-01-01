@@ -1,10 +1,10 @@
 export const dynamic = 'force-dynamic';
 
 import { useEffect, useState } from 'react';
-import { SortDirection, FilterProps, AnnoucementProps, GoodsCategory } from '../../lib/definitions';
+import { SortDirection, FilterProps, GoodsCategory, ErrandProps } from '../../lib/definitions';
 import { Link } from '@/src/i18n/routing';
 import { useRouter } from 'next/navigation';
-import AnnouncementsWrapperSkeleton from '../skeletons/annoucments';
+import PostsWrapperSkeleton from '../skeletons/annoucments';
 import { useLocale } from 'next-intl';
 import Errand from './errand';
 
@@ -14,7 +14,7 @@ type WrapperProps = {
 };
 
 export default function ErrandsWrapper({ sortDirection, filterOptions }: WrapperProps) {
-  const [errands, setErrands] = useState<Array<AnnoucementProps>>([]);
+  const [errands, setErrands] = useState<Array<ErrandProps>>([]);
   const [isLoading, setLoading] = useState(true);
   const currentLocale = useLocale();
   const router = useRouter();
@@ -95,46 +95,28 @@ export default function ErrandsWrapper({ sortDirection, filterOptions }: Wrapper
         setLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching announcements:', error);
+        console.error('Error fetching errands:', error);
         setLoading(false);
       });
   }, [sortDirection, filterOptions, router]);
 
-  if (isLoading) return <AnnouncementsWrapperSkeleton />;
-  if (!errands || errands.length === 0) return <p>No announcements</p>;
+  if (isLoading) return <PostsWrapperSkeleton />;
+  if (!errands || errands.length === 0) return <p>No errands</p>;
 
   return (
     <div className="flex max-h-full flex-col gap-4 overflow-visible">
-      {/* {errands.map((annoucement: AnnoucementProps, index) => (
-        <Link key={annoucement.id} href={`/announcements/${annoucement.id}`}>
-          <Annoucement
-            title={annoucement.title}
-            fromCity={annoucement.fromCity}
-            toCity={annoucement.toCity}
-            departureDate={annoucement.departureDate}
-            arrivalDate={annoucement.arrivalDate}
-            carProps={annoucement.carProps}
+      {errands.map((errand: ErrandProps, index) => (
+        <Link key={errand.id} href={`/announcements/${errand.id}`}>
+          <Errand
+            title={errand.title}
+            fromCity={errand.fromCity}
+            toCity={errand.toCity}
+            earliestAt={errand.earliestAt}
+            latestAt={errand.latestAt}
+            ware={errand.ware}
           />
         </Link>
-      ))} */}
-      <Errand
-        title="test"
-        fromCity="miasto1"
-        toCity="miasto2"
-        departureDate={new Date()}
-        arrivalDate={new Date()}
-        ware={{
-          category: GoodsCategory.Electronics,
-          name: 'TV',
-          weight: 100,
-          size: {
-            x: 2,
-            y: 1,
-            height: 200,
-          },
-          desc: 'opis opis',
-        }}
-      />
+      ))}
     </div>
   );
 }
