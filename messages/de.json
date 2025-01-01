@@ -123,7 +123,11 @@
     "carInfo": "Fahrzeuginformationen",
     "brand": "Marke",
     "model": "Modell",
-    "sizeInfo": "Die Maße sind in Europaletten angegeben"
+    "sizeInfo": "Die Maße sind in Europaletten angegeben",
+    "earliestAt": "Früheste Abfahrt um",
+    "latestAt": "Späteste Abfahrt um",
+    "wareName": "Warenname",
+    "wareInfo": "Wareninformationen"
   },
   "opinions": {
     "opinions": "Meinungen",

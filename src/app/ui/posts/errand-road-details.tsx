@@ -14,8 +14,8 @@ import { GeoPoint } from '../../lib/definitions';
 type RoadDetailsProps = {
   from: string | undefined;
   to: string | undefined;
-  departureDate: Date | undefined;
-  arrivalDate: Date | undefined;
+  earliestAt: Date | undefined;
+  latestAt: Date | undefined;
   className?: string;
   fromGeography?: GeoPoint | undefined;
   toGeography?: GeoPoint | undefined;
@@ -23,11 +23,11 @@ type RoadDetailsProps = {
   roadColor?: string | undefined;
 };
 
-export default function RoadDetails({
+export default function ErrandRoadDetails({
   from,
   to,
-  departureDate,
-  arrivalDate,
+  earliestAt,
+  latestAt,
   className,
   fromGeography,
   toGeography,
@@ -51,12 +51,12 @@ export default function RoadDetails({
       </div>
       <div className="flex gap-2">
         <div className="flex w-full flex-col gap-2 rounded-md bg-slate-800 p-2">
-          <p className="text-sm text-slate-400">{t('plannedDepartureDate')}</p>
-          <FormattedDate date={departureDate} />
+          <p className="text-sm text-slate-400">{t('earliestAt')}</p>
+          <FormattedDate date={earliestAt} />
         </div>
         <div className="flex w-full flex-col gap-2 rounded-md bg-slate-800 p-2">
-          <p className="text-sm text-slate-400">{t('plannedDepartureDate')}</p>
-          <FormattedDate date={arrivalDate} />
+          <p className="text-sm text-slate-400">{t('latestAt')}</p>
+          <FormattedDate date={latestAt} />
         </div>
       </div>
       <Map

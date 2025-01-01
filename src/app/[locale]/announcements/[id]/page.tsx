@@ -1,7 +1,6 @@
 import { getAnnouncementsById } from '@/src/app/lib/actions';
-import { getTranslations } from 'next-intl/server';
 import Description from '@/src/app/ui/posts/desc';
-import RoadDetails from '@/src/app/ui/posts/road-details';
+import AnnouncementRoadDetails from '@/src/app/ui/posts/announcement-road-details';
 import CarInfo from '@/src/app/ui/posts/car-info';
 import Opinions from '@/src/app/ui/posts/opinions';
 
@@ -11,7 +10,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   return (
     <div className="flex flex-col gap-4 pb-4">
       <div className="flex flex-col gap-4 md:flex-row">
-        <RoadDetails
+        <AnnouncementRoadDetails
           className="w-full"
           from={annoucement?.fromCity}
           to={annoucement?.toCity}

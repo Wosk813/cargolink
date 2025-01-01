@@ -123,7 +123,11 @@
     "pharma": "Farmaceutyczne",
     "metal": "Metal",
     "paper": "Papier",
-    "plastics": "Tworzywa sztuczne"
+    "plastics": "Tworzywa sztuczne",
+    "earliestAt": "Najwcześniej wyjazd o",
+    "latestAt": "Najpóźniej wyjazd o",
+    "wareName": "Nazwa towaru",
+    "wareInfo": "Informacje o towarze"
   },
   "opinions": {
     "opinions": "Opinie",

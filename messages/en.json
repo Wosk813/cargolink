@@ -123,7 +123,11 @@
     "carInfo": "Vehicle information",
     "brand": "Brand",
     "model": "Model",
-    "sizeInfo": "Dimensions are given in euro pallets"
+    "sizeInfo": "Dimensions are given in euro pallets",
+    "earliestAt": "Earliest departure at",
+    "latestAt": "Latest departure at",
+    "wareName": "Goods name",
+    "wareInfo": "Goods information"
   },
   "opinions": {
     "opinions": "Opinions",

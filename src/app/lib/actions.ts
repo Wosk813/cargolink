@@ -290,6 +290,26 @@ export async function getAnnouncementsById(id: string): Promise<AnnoucementProps
   return dbRowToObject(result[0], 'annoucement') as AnnoucementProps;
 }
 
+export async function getErrandById(id: string): Promise<ErrandProps | null> {
+  const result = await sql`
+  SELECT e.*, gc.name as ware_Category, g.name as ware_Name, g.size_x as ware_Size_X, g.size_y as ware_Size_Y, g.height as ware_Height, g.weight as ware_weight, g.special_conditions as ware_Special_Conditions,
+    ST_X(e.from_geography::geometry) as from_longitude,
+    ST_Y(e.from_geography::geometry) as from_latitude,
+    ST_X(e.to_geography::geometry) as to_longitude,
+    ST_Y(e.to_geography::geometry) as to_latitude
+    FROM errands e
+    LEFT JOIN goods g
+    ON e.good_id = g.good_id
+    LEFT JOIN goods_categories gc
+    ON gc.category_id = g.category_id
+    WHERE e.errand_id = ${id}
+  `;
+
+  if (result.length === 0) return null;
+
+  return dbRowToObject(result[0], 'errand') as ErrandProps;
+}
+
 function dbRowToObject(row: any, object: string) {
   let fromGeoPoint: GeoPoint;
   let toGeoPoint: GeoPoint;

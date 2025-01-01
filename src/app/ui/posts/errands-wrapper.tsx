@@ -106,7 +106,7 @@ export default function ErrandsWrapper({ sortDirection, filterOptions }: Wrapper
   return (
     <div className="flex max-h-full flex-col gap-4 overflow-visible">
       {errands.map((errand: ErrandProps, index) => (
-        <Link key={errand.id} href={`/announcements/${errand.id}`}>
+        <Link key={errand.id} href={`/errands/${errand.id}`}>
           <Errand
             title={errand.title}
             fromCity={errand.fromCity}
