@@ -201,5 +201,21 @@
     "wareName": "Goods name",
     "specialConditions": "Special conditions (optional)",
     "addErrand": "Add errand"
+  },
+  "profile": {
+    "aboutMe": "About me",
+    "useLanguages": "Speaks languages",
+    "userInfo": "User information",
+    "accountType": "Account type",
+    "isPhisicalPerson": "Individual",
+    "lastLogged": "Last logged in",
+    "createDate": "Account creation date",
+    "postsCount": "Number of added posts",
+    "carrier": "Carrier",
+    "principal": "Principal",
+    "yes": "Yes",
+    "no": "No",
+    "userDesc": "User description",
+    "saveChanges": "Save changes"
   }
 }

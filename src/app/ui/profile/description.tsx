@@ -3,6 +3,7 @@ import Input from '../input';
 import { Button } from '../button';
 import { useState } from 'react';
 import { updateDescription } from '../../lib/actions';
+import { useTranslations } from 'next-intl';
 
 export default function Description({
   desc,
@@ -16,12 +17,13 @@ export default function Description({
   const [saveHidden, setSaveHidden] = useState(true);
   const [description, setDescription] = useState(desc);
   const [isPending, setIsPending] = useState(false);
+  const t = useTranslations('profile');
 
   if (enabled) {
     return (
       <div>
         <Input
-          title="Opis użytkownika"
+          title={t('userDesc')}
           onChange={(e) => {
             setDescription(e.target.value);
             setSaveHidden(false);
@@ -38,7 +40,7 @@ export default function Description({
           className={`${saveHidden ? 'hidden' : 'block'}`}
           disabled={isPending}
         >
-          Zapisz zmiany
+          {t('saveChanges')}
         </Button>
       </div>
     );

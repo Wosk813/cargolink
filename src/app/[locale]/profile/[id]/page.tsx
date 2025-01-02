@@ -4,6 +4,7 @@ import { getUserById } from '@/src/app/lib/actions';
 import Opinions from '../../../ui/posts/opinions';
 import Description from '../../../ui/profile/description';
 import { verifySession } from '@/src/app/lib/dal';
+import { getTranslations } from 'next-intl/server';
 
 type Language = {
   value: string;
@@ -14,15 +15,16 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const linkUserId = (await params).id;
   const user = await getUserById(linkUserId);
   const { userId } = await verifySession();
+  const t = await getTranslations('profile');
 
   return (
-    <div className="gap-4 flex flex-col md:flex-row">
+    <div className="flex flex-col gap-4 md:flex-row">
       <div className="flex w-full flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <h3>O mnie</h3>
+          <h3>{t('aboutMe')}</h3>
           <Description desc={user.userDesc} userId={linkUserId} enabled={userId == linkUserId} />
           <div className="rounded-md bg-slate-700 p-2">
-            <p className="text-sm text-slate-400">Posługuję się jezykami</p>
+            <p className="text-sm text-slate-400">{t('useLanguages')}</p>
             {user.languages?.map((langString) => {
               const lang: Language = JSON.parse(langString);
               return <p key={lang.value}>{lang.label}</p>;
@@ -30,25 +32,25 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <h3>Informacje o użytkowniku</h3>
+          <h3>{t('userInfo')}</h3>
           <div className="rounded-md bg-slate-700 p-2">
-            <p className="text-sm text-slate-400">Typ użytkownika</p>
-            {user.accountType}
+            <p className="text-sm text-slate-400">{t('accountType')}</p>
+            {t(user.accountType)}
           </div>
           <div className="rounded-md bg-slate-700 p-2">
-            <p className="text-sm text-slate-400">Osoba fizyczna</p>
-            {user.isPhisicalPerson ? 'Tak' : 'Nie'}
+            <p className="text-sm text-slate-400">{t('isPhisicalPerson')}</p>
+            {user.isPhisicalPerson ? t('yes') : t('no')}
           </div>
           <div className="rounded-md bg-slate-700 p-2">
-            <p className="text-sm text-slate-400">Ostatnio zalogowany</p>
+            <p className="text-sm text-slate-400">{t('lastLogged')}</p>
             {user.lastSeen?.toLocaleString()}
           </div>
           <div className="rounded-md bg-slate-700 p-2">
-            <p className="text-sm text-slate-400">Data założenia konta</p>
+            <p className="text-sm text-slate-400">{t('createDate')}</p>
             {user.createdAt?.toLocaleDateString()}
           </div>
           <div className="rounded-md bg-slate-700 p-2">
-            <p className="text-sm text-slate-400">Liczba dodanych ogłoszeń</p>
+            <p className="text-sm text-slate-400">{t('postsCount')}</p>
             {user.postCount}
           </div>
         </div>

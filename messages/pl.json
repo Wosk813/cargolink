@@ -201,5 +201,21 @@
     "wareName": "Nazwa towaru",
     "specialConditions": "Specjalne warunki (niewymagane)",
     "addErrand": "Dodaj zlecenie"
+  },
+  "profile": {
+    "aboutMe": "O mnie",
+    "useLanguages": "Posługuje się językami",
+    "userInfo": "Informacje o użytkowniku",
+    "accountType": "Typ konta",
+    "isPhisicalPerson": "Osoba fizyczna",
+    "lastLogged": "Ostatnio zalogowany",
+    "createDate": "Data założenia konta",
+    "postsCount": "Liczba dodanych ogłoszeń",
+    "carrier": "Przewoźnik",
+    "principal": "Zleceniodawca",
+    "yes": "Tak",
+    "no": "Nie",
+    "userDesc": "Opis użytkownika",
+    "saveChanges": "Zapisz zmiany"
   }
 }
