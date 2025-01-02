@@ -107,9 +107,12 @@ export async function checkCredentials(
   }
 }
 
-export async function getUserById(userId: string) {
-  const user = await sql('SELECT * FROM users WHERE user_id = $1', [userId]);
-  return user[0];
+export async function getUserById(userId: string): Promise<User> {
+  const user = await sql(
+    'SELECT u.*, (SELECT COUNT(*) FROM announcements a WHERE a.author_id = u.user_id) as posts_count FROM users u WHERE u.user_id = $1',
+    [userId],
+  );
+  return dbRowToObject(user[0], 'user') as User;
 }
 
 export async function getUserByEmail(email: string) {
@@ -399,6 +402,7 @@ function dbRowToObject(row: any, object: string) {
         isPhisicalPerson: row['is_psyhical_person'],
         role: row['role'],
         userDesc: row['user_desc'],
+        postCount: row['posts_count'],
       };
       return user;
   }
@@ -524,4 +528,8 @@ export async function addErrand(state: NewErrandFormState, formData: FormData) {
     ],
   );
   redirect({ locale: 'pl', href: '/errands' });
+}
+
+export async function updateDescription(user_id: string, desc: string) {
+  await sql('UPDATE users SET user_desc = $1 WHERE user_id = $2', [desc, user_id]);
 }

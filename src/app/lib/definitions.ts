@@ -366,6 +366,7 @@ export type User = {
   languages: string[] | null;
   userDesc: string | null;
   isPhisicalPerson: boolean | null;
+  postCount: number | null;
 };
 
 export type GeoPoint = {
