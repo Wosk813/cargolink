@@ -14,6 +14,7 @@ const inter = Inter({ subsets: ['latin'] });
 async function getNavLinks(
   role: Role | undefined,
   accountType: AccountType | undefined,
+  userId: string | undefined,
 ): Promise<{ name: string; href: string; highlighted: boolean }[]> {
   const t = await getTranslations('nav');
   const links = [
@@ -36,7 +37,7 @@ async function getNavLinks(
   if (role === Role.User) {
     links.push({
       name: t('profile'),
-      href: '/profile',
+      href: `/profile/${userId}`,
       highlighted: false,
     });
     links.push({
@@ -59,7 +60,7 @@ async function getNavLinks(
   } else if (role === Role.Moderator) {
     links.push({
       name: t('profile'),
-      href: '/profile',
+      href: `/profile/${userId}`,
       highlighted: false,
     });
     links.push({
@@ -75,7 +76,7 @@ async function getNavLinks(
   } else if (role === Role.Admin) {
     links.push({
       name: t('profile'),
-      href: '/profile',
+      href: `/profile/${userId}`,
       highlighted: false,
     });
     links.push({
@@ -112,9 +113,9 @@ export default async function LocaleLayout(props: {
   const { children } = props;
   const messages = await getMessages();
 
-  const { isAuth, role, accountType } = await verifySession();
+  const { isAuth, role, accountType, userId } = await verifySession();
 
-  const links = await getNavLinks(role, accountType);
+  const links = await getNavLinks(role, accountType, userId);
 
   return (
     <html lang={locale}>

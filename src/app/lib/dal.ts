@@ -16,7 +16,7 @@ export const verifySession = cache(async () => {
     // redirect({ href: '/auth/login', locale: 'pl' });
   }
 
-  return { isAuth: true, userId: session?.userId, role: session?.role as Role, accountType: session?.accountType as AccountType };
+  return { isAuth: true, userId: session?.userId as string, role: session?.role as Role, accountType: session?.accountType as AccountType };
 });
 
 // export const getUser = cache(async () => {
