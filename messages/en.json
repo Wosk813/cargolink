@@ -69,7 +69,14 @@
     "mustNotBeEmpty": "This field must not be empty"
   },
   "search": {
-    "searchUser": "Search user"
+    "searchUser": "Search user",
+    "carrier": "Carrier",
+    "principal": "Principal",
+    "search": "Search",
+    "firstname": "First name",
+    "lastname": "Last name",
+    "accountType": "Account type",
+    "resultsCount": "Found {count} results"
   },
   "posts": {
     "sort": "Sort",

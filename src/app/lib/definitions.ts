@@ -355,6 +355,7 @@ export type FilterProps = {
 };
 
 export type User = {
+  id: string | null;
   firstname: string | null;
   lastname: string | null;
   email: string | null;

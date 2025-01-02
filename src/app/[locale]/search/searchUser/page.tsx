@@ -5,7 +5,7 @@ export default function Page() {
   const t = useTranslations('search');
   return (
     <>
-      <h1 className="hidden text-3xl md:block">{t('searchUser')}</h1>
+      <h1 className="hidden text-3xl md:block mb-4">{t('searchUser')}</h1>
       <SearchForm />
     </>
   );

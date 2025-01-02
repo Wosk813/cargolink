@@ -69,7 +69,14 @@
     "mustNotBeEmpty": "Dieses Feld darf nicht leer sein"
   },
   "search": {
-    "searchUser": "Nach einem Benutzer suchen"
+    "searchUser": "Benutzer suchen",
+    "carrier": "Transporteur",
+    "principal": "Auftraggeber",
+    "search": "Suchen",
+    "firstname": "Vorname",
+    "lastname": "Nachname",
+    "accountType": "Kontotyp",
+    "resultsCount": "{count} Ergebnisse gefunden"
   },
   "posts": {
     "sort": "Sortieren",

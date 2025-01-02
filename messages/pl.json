@@ -69,7 +69,14 @@
     "mustNotBeEmpty": "To pole nie może być puste"
   },
   "search": {
-    "searchUser": "Wyszukaj użytkownika"
+    "searchUser": "Wyszukaj użytkownika",
+    "carrier": "Przewoźnik",
+    "principal": "Zleceniodawca",
+    "search": "Szukaj",
+    "firstname": "Imię",
+    "lastname": "Nazwisko",
+    "accountType": "Typ konta",
+    "resultsCount": "Znaleziono {count} wyników"
   },
   "posts": {
     "sort": "Sortuj",

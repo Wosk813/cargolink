@@ -17,6 +17,7 @@ import {
   ErrandProps,
   newErrandSchema,
   NewErrandFormState,
+  AccountType,
 } from '@/src/app/lib/definitions';
 import { getTranslations } from 'next-intl/server';
 import { verifySession } from './dal';
@@ -391,6 +392,7 @@ function dbRowToObject(row: any, object: string) {
       return announcement;
     case 'user':
       const user: User = {
+        id: row['user_id'],
         firstname: row['first_name'],
         lastname: row['last_name'],
         email: row['email'],
@@ -532,4 +534,15 @@ export async function addErrand(state: NewErrandFormState, formData: FormData) {
 
 export async function updateDescription(user_id: string, desc: string) {
   await sql('UPDATE users SET user_desc = $1 WHERE user_id = $2', [desc, user_id]);
+}
+
+export async function searchUsers(state: User[], formData: FormData) {
+  let query = 'SELECT * FROM users';
+  query += ` WHERE first_name ILIKE '%${formData.get('firstName')}%'`;
+  query += ` AND last_name ILIKE '%${formData.get('lastName')}%'`;
+  query += ` AND email ILIKE '%${formData.get('email')}%'`;
+  query += ` AND account_type = '${formData.get('accountType')}'`;
+
+  const users = await sql(query);
+  return users.map((user) => dbRowToObject(user, 'user') as User);
 }
