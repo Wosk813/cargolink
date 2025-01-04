@@ -401,3 +401,8 @@ export type ChatType = {
   interestedUserLanguages: string[];
   messages?: ChatMessage[];
 };
+
+export type Language = {
+  value: string;
+  label: string;
+};

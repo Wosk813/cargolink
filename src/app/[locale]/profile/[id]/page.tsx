@@ -5,11 +5,7 @@ import Opinions from '../../../ui/posts/opinions';
 import Description from '../../../ui/profile/description';
 import { verifySession } from '@/src/app/lib/dal';
 import { getTranslations } from 'next-intl/server';
-
-type Language = {
-  value: string;
-  label: string;
-};
+import { Language } from '@/src/app/lib/definitions';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const linkUserId = (await params).id;
