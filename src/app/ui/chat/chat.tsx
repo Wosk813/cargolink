@@ -19,13 +19,14 @@ export default function Chat({ hidden, showArrow, arrowClick, chat, userId }: Ch
   let languages = userIsAuthor ? chat.interestedUserLanguages : chat.postAuthorUserLanguages;
   return (
     <div className={`flex w-full flex-col justify-between ${hidden ? 'hidden md:block' : ''}`}>
-      <div className="flex w-full flex-col gap-2">
-        {showArrow && (
-          <div onClick={arrowClick} className="flex items-center gap-2">
-            <ArrowLeftIcon className="h-4" />
-            Pokaż czaty
-          </div>
-        )}
+      <div className="flex h-96 w-full flex-col gap-2 overflow-auto">
+        <div
+          onClick={arrowClick}
+          className={`flex items-center gap-2 md:hidden ${showArrow ? '' : 'hidden'}`}
+        >
+          <ArrowLeftIcon className="h-4" />
+          Pokaż czaty
+        </div>
         <h1 className="text-3xl font-bold">
           {userIsAuthor ? chat.interestedUserName : chat.postAuthorUserId}
         </h1>

@@ -19,7 +19,7 @@ export default function ChatComponent({
   const [currentChatId, setCurrentChatId] = useState(chatId);
   return (
     <div className="flex h-full gap-4">
-      <div className={`flex flex-col gap-4 ${chatListHidden ? 'hidden' : 'w-full md:w-fit'}`}>
+      <div className={`flex flex-col gap-4 ${chatListHidden ? 'hidden md:flex' : 'w-full md:w-fit'}`}>
         <h1 className="text-3xl font-bold hidden md:block">Czaty</h1>
         {chats.map((chat) => (
           <ChatCard
