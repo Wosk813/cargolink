@@ -381,3 +381,20 @@ export type Road = {
   postId?: string | undefined;
   color?: string | undefined;
 };
+
+export type ChatMessage = {
+  id: string;
+  authorId: string;
+  content: string;
+  sentAt: Date;
+  readen: boolean;
+};
+
+export type Chat = {
+  id: string;
+  title: string;
+  otherPersonId: string;
+  otherPersonName: string;
+  otherPersonLanguages: string[];
+  messages?: ChatMessage[];
+};

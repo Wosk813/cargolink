@@ -18,6 +18,7 @@ import {
   newErrandSchema,
   NewErrandFormState,
   AccountType,
+  Chat,
 } from '@/src/app/lib/definitions';
 import { getTranslations } from 'next-intl/server';
 import { verifySession } from './dal';
@@ -546,3 +547,11 @@ export async function searchUsers(state: User[], formData: FormData) {
   const users = await sql(query);
   return users.map((user) => dbRowToObject(user, 'user') as User);
 }
+
+// export async function getChats(userId: string): Chat[] {
+//   const chats = await sql(
+//     "SELECT c.*, COALESCE(ua.user_id, ue.user_id) as post_author_id, COALESCE(ua.languages, ue.languages) as post_author_languages, u.first_name || ' ' || u.last_name as interested_user_name, COALESCE(ua.first_name || ' ' || ua.last_name, ue.first_name || ' ' || ue.last_name ) as post_author_name, u.languages as interested_user_languages, COALESCE(a.title, e.title) as title FROM chats c LEFT JOIN announcements a ON c.announcement_id = a.announcement_id LEFT JOIN errands e ON c.errand_id = e.errand_id LEFT JOIN users ua ON a.author_id = ua.user_id LEFT JOIN users ue ON e.author_id = ue.user_id LEFT JOIN users u ON c.interested_user_id = u.user_id WHERE COALESCE(ua.user_id, ue.user_id) = $1 OR u.user_id = $1",
+//     [userId],
+//   );
+//   const messages = await sql('SELECT * FROM messages');
+// }

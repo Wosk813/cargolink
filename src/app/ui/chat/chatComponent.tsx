@@ -14,6 +14,7 @@ export default function ChatComponent() {
         handleClick={() => {
           setChatListHidden(true);
           setChatHidden(false);
+          console.log('click');
         }}
       />
       <Chat
