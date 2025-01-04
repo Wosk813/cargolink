@@ -5,7 +5,7 @@ import ChatComponent from '../../ui/chat/chatComponent';
 
 export default async function Page() {
   const { userId } = await verifySession();
-  const chats: ChatType[] = await getChats(userId);
+  const initialChats: ChatType[] = await getChats(userId);
 
-  return <ChatComponent chats={chats} userId={userId} chatId={chats[0].id} />;
+  return <ChatComponent chats={initialChats} userId={userId} chatId={initialChats[0].id} />;
 }

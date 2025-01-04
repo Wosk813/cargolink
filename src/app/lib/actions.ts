@@ -593,3 +593,11 @@ export async function getChats(userId: string): Promise<ChatType[]> {
 
   return chats;
 }
+
+export async function sendMessage(state: any, formData: FormData) {
+  const { userId } = await verifySession();
+  await sql(
+    'INSERT INTO messages (chat_id, sender_id, content, sent_at, readen) VALUES ($1, $2, $3, $4, $5)',
+    [formData.get('chatId'), userId, formData.get('message'), new Date(), false],
+  );
+}

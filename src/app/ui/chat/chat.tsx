@@ -1,8 +1,10 @@
 import { Button } from '../button';
 import Input from '../input';
 import Message from './message';
-import { ButtonTypes, ChatType, Language } from '../../lib/definitions';
+import { ButtonTypes, ChatType } from '../../lib/definitions';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { useActionState } from 'react';
+import { sendMessage } from '../../lib/actions';
 
 type ChatProps = {
   hidden: boolean;
@@ -13,6 +15,7 @@ type ChatProps = {
 };
 
 export default function Chat({ hidden, showArrow, arrowClick, chat, userId }: ChatProps) {
+  const [state, handleSend, pending] = useActionState(sendMessage, undefined);
   let userIsAuthor = false;
   if (userId == chat.postAuthorUserId) userIsAuthor = true;
 
@@ -48,10 +51,13 @@ export default function Chat({ hidden, showArrow, arrowClick, chat, userId }: Ch
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <div className="flex gap-2">
-          <Input className="w-full p-2" placeholder="Pisz tutaj" />
-          <Button className="w-min p-2">Wyślij</Button>
-        </div>
+        <form action={handleSend} className="flex gap-2">
+          <Input className="w-full p-2" placeholder="Pisz tutaj" name="message" />
+          <Input className="!hidden" name="chatId" value={chat.id} />
+          <Button disabled={pending} type="submit" className="w-min p-2">
+            Wyślij
+          </Button>
+        </form>
         <Button className="border-yellow-300 text-yellow-300" buttType={ButtonTypes.Secondary}>
           Wyślij propozycje umowy
         </Button>
