@@ -384,17 +384,20 @@ export type Road = {
 
 export type ChatMessage = {
   id: string;
-  authorId: string;
+  senderId: string;
   content: string;
   sentAt: Date;
   readen: boolean;
 };
 
-export type Chat = {
+export type ChatType = {
   id: string;
   title: string;
-  otherPersonId: string;
-  otherPersonName: string;
-  otherPersonLanguages: string[];
+  postAuthorUserId: string;
+  postAuthorUserName: string;
+  postAuthorUserLanguages: string[];
+  interestedUserId: string;
+  interestedUserName: string;
+  interestedUserLanguages: string[];
   messages?: ChatMessage[];
 };

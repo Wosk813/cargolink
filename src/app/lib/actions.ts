@@ -18,7 +18,8 @@ import {
   newErrandSchema,
   NewErrandFormState,
   AccountType,
-  Chat,
+  ChatType,
+  ChatMessage,
 } from '@/src/app/lib/definitions';
 import { getTranslations } from 'next-intl/server';
 import { verifySession } from './dal';
@@ -408,6 +409,27 @@ function dbRowToObject(row: any, object: string) {
         postCount: row['posts_count'],
       };
       return user;
+    case 'chat':
+      const chat: ChatType = {
+        id: row['chat_id'],
+        interestedUserId: row['interested_user_id'],
+        postAuthorUserId: row['post_author_id'],
+        interestedUserName: row['interested_user_name'],
+        postAuthorUserName: row['post_author_name'],
+        interestedUserLanguages: row['interested_user_languages'],
+        postAuthorUserLanguages: row['post_author_languages'],
+        title: row['title'],
+      };
+      return chat;
+    case 'message':
+      const message: ChatMessage = {
+        id: row['message_id'],
+        senderId: row['sender_id'],
+        content: row['content'],
+        sentAt: row['sent_at'],
+        readen: row['readen'],
+      };
+      return message;
   }
 
   return null;
@@ -548,10 +570,26 @@ export async function searchUsers(state: User[], formData: FormData) {
   return users.map((user) => dbRowToObject(user, 'user') as User);
 }
 
-// export async function getChats(userId: string): Chat[] {
-//   const chats = await sql(
-//     "SELECT c.*, COALESCE(ua.user_id, ue.user_id) as post_author_id, COALESCE(ua.languages, ue.languages) as post_author_languages, u.first_name || ' ' || u.last_name as interested_user_name, COALESCE(ua.first_name || ' ' || ua.last_name, ue.first_name || ' ' || ue.last_name ) as post_author_name, u.languages as interested_user_languages, COALESCE(a.title, e.title) as title FROM chats c LEFT JOIN announcements a ON c.announcement_id = a.announcement_id LEFT JOIN errands e ON c.errand_id = e.errand_id LEFT JOIN users ua ON a.author_id = ua.user_id LEFT JOIN users ue ON e.author_id = ue.user_id LEFT JOIN users u ON c.interested_user_id = u.user_id WHERE COALESCE(ua.user_id, ue.user_id) = $1 OR u.user_id = $1",
-//     [userId],
-//   );
-//   const messages = await sql('SELECT * FROM messages');
-// }
+export async function getChats(userId: string): Promise<ChatType[]> {
+  let chats: ChatType[] = [];
+  const dbChats = await sql(
+    "SELECT c.*, COALESCE(ua.user_id, ue.user_id) as post_author_id, COALESCE(ua.languages, ue.languages) as post_author_languages, u.first_name || ' ' || u.last_name as interested_user_name, COALESCE(ua.first_name || ' ' || ua.last_name, ue.first_name || ' ' || ue.last_name ) as post_author_name, u.languages as interested_user_languages, COALESCE(a.title, e.title) as title FROM chats c LEFT JOIN announcements a ON c.announcement_id = a.announcement_id LEFT JOIN errands e ON c.errand_id = e.errand_id LEFT JOIN users ua ON a.author_id = ua.user_id LEFT JOIN users ue ON e.author_id = ue.user_id LEFT JOIN users u ON c.interested_user_id = u.user_id WHERE COALESCE(ua.user_id, ue.user_id) = $1 OR u.user_id = $1",
+    [userId],
+  );
+  await Promise.all(
+    dbChats.map(async (dbChat) => {
+      let chat: ChatType = dbRowToObject(dbChat, 'chat') as ChatType;
+      const dbMessages = await sql('SELECT * FROM messages WHERE chat_id = $1', [
+        dbChat['chat_id'],
+      ]);
+
+      chat.messages = dbMessages.map(
+        (dbMessage) => dbRowToObject(dbMessage, 'message') as ChatMessage,
+      );
+
+      chats.push(chat);
+    }),
+  );
+
+  return chats;
+}
