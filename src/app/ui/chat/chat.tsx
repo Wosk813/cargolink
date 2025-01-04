@@ -35,7 +35,6 @@ export default function Chat({ hidden, showArrow, arrowClick, chat, userId }: Ch
         </h1>
         <p className="text-sm text-slate-400">Ta osoba posługuje się jezykami</p>
         <p>
-          {' '}
           {languages?.length
             ? languages.map((langString) => JSON.parse(langString).label).join(', ')
             : 'Brak informacji'}
@@ -43,6 +42,7 @@ export default function Chat({ hidden, showArrow, arrowClick, chat, userId }: Ch
         <div className="flex w-full flex-col gap-4">
           {chat.messages?.map((message) => (
             <Message
+              key={message.id}
               date={message.sentAt}
               message={message.content}
               myMessage={message.senderId == userId}
