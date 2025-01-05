@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Chat from './chat';
 import { ChatMessage, ChatType } from '../../lib/definitions';
-import ChatCard from './chatCard';
+import ChatCard from './chat-card';
 import { getMessages } from '../../lib/actions';
 
 export default function ChatComponent({
@@ -39,6 +39,8 @@ export default function ChatComponent({
     return () => clearInterval(interval);
   }, [currentChatId]);
 
+  if (!chatId) return <h1 className="text-2xl">Brak dostępnych czatów</h1>;
+
   return (
     <div className="flex h-full gap-4">
       <div
@@ -54,8 +56,7 @@ export default function ChatComponent({
               setCurrentChatId(chat.id);
             }}
             chatTitle={chat.title}
-            lastMessage={chat.messages && chat.messages[chat.messages.length - 1].content}
-            notificationCount={
+            lastMessage={chat.messages && chat.messages.length > 1 ? chat.messages[chat.messages.length - 1].content : ''}            notificationCount={
               chat.messages ? chat.messages.filter((message) => !message.readen).length : 0
             }
           />

@@ -6,6 +6,7 @@ import Opinions from '@/src/app/ui/posts/opinions';
 import { verifySession } from '@/src/app/lib/dal';
 import { Button } from '@/src/app/ui/button';
 import { getTranslations } from 'next-intl/server';
+import GoToChatButton from '@/src/app/ui/posts/go-to-chat-butt';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const annoucementId = (await params).id;
@@ -42,7 +43,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         className={`flex flex-col gap-2 rounded-md bg-slate-700 p-2 ${annoucement?.authorId == userId ? 'hidden' : ''}`}
       >
         <p className="text-xl">{t('contact')}</p>
-        <Button>{t('goToChat')}</Button>
+        <GoToChatButton postId={annoucement?.id} />
       </div>
     </div>
   );

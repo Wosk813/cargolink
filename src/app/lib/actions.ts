@@ -609,3 +609,29 @@ export async function sendMessage(state: any, formData: FormData) {
     [formData.get('chatId'), userId, formData.get('message'), new Date(), false],
   );
 }
+
+export async function startNewChat(state: any, postId: string) {
+  const { userId } = await verifySession();
+
+  const chat = await sql(
+    'SELECT * FROM chats WHERE announcement_id = $1 OR errand_id = $1 AND interested_user_id = $2',
+    [postId, userId],
+  );
+  if (chat.length > 0) redirect({ locale: 'pl', href: '/chats' });
+
+  const annoucements = await sql(
+    'SELECT announcement_id FROM announcements WHERE announcement_id = $1',
+    [postId],
+  );
+  if (annoucements.length > 0)
+    await sql('INSERT INTO chats (announcement_id, interested_user_id) VALUES ($1, $2)', [
+      annoucements[0]['announcement_id'],
+      userId,
+    ]);
+  else
+    await sql('INSERT INTO chats (errand_id, interested_user_id) VALUES ($1, $2)', [
+      postId,
+      userId,
+    ]);
+  redirect({ locale: 'pl', href: '/chats' });
+}
