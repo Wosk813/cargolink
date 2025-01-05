@@ -3,10 +3,15 @@ import Description from '@/src/app/ui/posts/desc';
 import Opinions from '@/src/app/ui/posts/opinions';
 import ErrandRoadDetails from '@/src/app/ui/posts/errand-road-details';
 import WareInfo from '@/src/app/ui/posts/ware-info';
+import { Button } from '@/src/app/ui/button';
+import { getTranslations } from 'next-intl/server';
+import { verifySession } from '@/src/app/lib/dal';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const errandId = (await params).id;
   const errand = await getErrandById(errandId);
+  const { userId } = await verifySession();
+  const t = await getTranslations('posts');
 
   return (
     <div className="flex flex-col gap-4 pb-4">
@@ -33,6 +38,12 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         </div>
       </div>
       <Opinions />
+      <div
+        className={`flex flex-col gap-2 rounded-md bg-slate-700 p-2 ${errand?.authorId == userId ? 'hidden' : ''}`}
+      >
+        <p className="text-xl">{t('contact')}</p>
+        <Button>{t('goToChat')}</Button>
+      </div>
     </div>
   );
 }

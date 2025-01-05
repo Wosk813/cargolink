@@ -134,7 +134,9 @@
     "earliestAt": "Earliest departure at",
     "latestAt": "Latest departure at",
     "wareName": "Goods name",
-    "wareInfo": "Goods information"
+    "wareInfo": "Goods information",
+    "goToChat": "Go to chat",
+    "contact": "Contact"
   },
   "opinions": {
     "opinions": "Opinions",
@@ -142,9 +144,7 @@
     "avgRate": "Average rating",
     "goToProfile": "Go to profile",
     "lastComments": "Latest comments",
-    "showMore": "Show more",
-    "contact": "Contact",
-    "goToChat": "Go to chat"
+    "showMore": "Show more"
   },
   "map": {
     "startPoint": "Starting point",

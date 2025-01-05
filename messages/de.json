@@ -134,7 +134,9 @@
     "earliestAt": "Früheste Abfahrt um",
     "latestAt": "Späteste Abfahrt um",
     "wareName": "Warenname",
-    "wareInfo": "Wareninformationen"
+    "wareInfo": "Wareninformationen",
+    "goToChat": "Zum Chat",
+    "contact": "Kontakt"
   },
   "opinions": {
     "opinions": "Meinungen",
@@ -142,9 +144,7 @@
     "avgRate": "Durchschnittliche Bewertung",
     "goToProfile": "Zum Profil",
     "lastComments": "Neueste Kommentare",
-    "showMore": "Mehr anzeigen",
-    "contact": "Kontakt",
-    "goToChat": "Zum Chat"
+    "showMore": "Mehr anzeigen"
   },
   "map": {
     "startPoint": "Startpunkt",
