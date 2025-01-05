@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Chat from './chat';
 import { ChatMessage, ChatType } from '../../lib/definitions';
 import ChatCard from './chat-card';
-import { getMessages } from '../../lib/actions';
+import { getMessages, setAsReaden } from '../../lib/actions';
 
 export default function ChatComponent({
   chats,
@@ -27,6 +27,7 @@ export default function ChatComponent({
       try {
         const newMessages = await getMessages(currentChatId);
         setMessages(newMessages);
+        setAsReaden(newMessages)
       } catch (error) {
         console.error('Error fetching messages:', error);
       } finally {

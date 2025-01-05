@@ -635,3 +635,10 @@ export async function startNewChat(state: any, postId: string) {
     ]);
   redirect({ locale: 'pl', href: '/chats' });
 }
+
+export async function setAsReaden(messages: ChatMessage[]) {
+  messages.map(async (message: ChatMessage) => {
+    if (!message.readen)
+    await sql('UPDATE messages SET readen = true WHERE message_id = $1', [message.id]);
+  });
+}
