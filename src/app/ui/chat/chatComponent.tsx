@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Chat from './chat';
-import { ChatType } from '../../lib/definitions';
+import { ChatMessage, ChatType } from '../../lib/definitions';
 import ChatCard from './chatCard';
+import { getMessages } from '../../lib/actions';
 
 export default function ChatComponent({
   chats,
@@ -17,10 +18,33 @@ export default function ChatComponent({
   const [chatListHidden, setChatListHidden] = useState(false);
   const [chatHidden, setChatHidden] = useState(true);
   const [currentChatId, setCurrentChatId] = useState(chatId);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      setIsLoading(true);
+      try {
+        const newMessages = await getMessages(currentChatId);
+        setMessages(newMessages);
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const interval = setInterval(fetchMessages, 3000);
+
+    return () => clearInterval(interval);
+  }, [currentChatId]);
+
   return (
     <div className="flex h-full gap-4">
-      <div className={`flex flex-col gap-4 ${chatListHidden ? 'hidden md:flex' : 'w-full md:w-fit'}`}>
-        <h1 className="text-3xl font-bold hidden md:block">Czaty</h1>
+      <div
+        className={`flex flex-col gap-4 ${chatListHidden ? 'hidden md:flex' : 'w-full md:w-fit'}`}
+      >
+        <h1 className="hidden text-3xl font-bold md:block">Czaty</h1>
         {chats.map((chat) => (
           <ChatCard
             key={chat.id}
@@ -42,6 +66,8 @@ export default function ChatComponent({
         chat={chats.find((chat) => chat.id === currentChatId) || ({} as ChatType)}
         hidden={chatHidden}
         showArrow={chatListHidden}
+        messages={messages}
+        isLoading={isLoading}
         arrowClick={() => {
           setChatHidden(true);
           setChatListHidden(false);

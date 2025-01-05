@@ -534,7 +534,6 @@ export async function addErrand(state: NewErrandFormState, formData: FormData) {
 
   const goodId = result[0].good_id;
 
-  console.log(data);
   await sql(
     'INSERT INTO errands (title, description, from_geography, to_geography, earliest_at, latest_at, good_id, author_id, is_accepted, from_city, to_city, road_color) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)',
     [
@@ -592,6 +591,15 @@ export async function getChats(userId: string): Promise<ChatType[]> {
   );
 
   return chats;
+}
+
+export async function getMessages(chatId: string) {
+  let messages: ChatMessage[] = [];
+  const dbMessages = await sql('SELECT * FROM messages WHERE chat_id = $1', [chatId]);
+  dbMessages.map((dbMessage) => {
+    messages.push(dbRowToObject(dbMessage, 'message') as ChatMessage);
+  });
+  return messages;
 }
 
 export async function sendMessage(state: any, formData: FormData) {
