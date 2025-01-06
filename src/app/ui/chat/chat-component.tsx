@@ -22,6 +22,8 @@ export default function ChatComponent({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const t = useTranslations('chat');
+
   useEffect(() => {
     const fetchMessages = async () => {
       setIsLoading(true);
@@ -42,8 +44,6 @@ export default function ChatComponent({
   }, [currentChatId]);
 
   if (!chatId) return <h1 className="text-2xl">Brak dostępnych czatów</h1>;
-
-  const t = useTranslations('chat');
 
   return (
     <div className="flex h-full gap-4">
