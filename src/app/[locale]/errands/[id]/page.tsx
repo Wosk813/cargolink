@@ -1,6 +1,6 @@
 import { getErrandById } from '@/src/app/lib/actions';
 import Description from '@/src/app/ui/posts/desc';
-import Opinions from '@/src/app/ui/posts/opinions';
+import Opinions from '@/src/app/ui/opinions/opinions';
 import ErrandRoadDetails from '@/src/app/ui/posts/errand-road-details';
 import WareInfo from '@/src/app/ui/posts/ware-info';
 import { Button } from '@/src/app/ui/button';
@@ -38,7 +38,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           />
         </div>
       </div>
-      <Opinions />
+      <Opinions userId={errand?.authorId ?? ''} />
       <div
         className={`flex flex-col gap-2 rounded-md bg-slate-700 p-2 ${errand?.authorId == userId ? 'hidden' : ''}`}
       >

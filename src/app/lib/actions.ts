@@ -20,6 +20,7 @@ import {
   AccountType,
   ChatType,
   ChatMessage,
+  Opinion,
 } from '@/src/app/lib/definitions';
 import { getTranslations } from 'next-intl/server';
 import { verifySession } from './dal';
@@ -430,6 +431,15 @@ function dbRowToObject(row: any, object: string) {
         readen: row['readen'],
       };
       return message;
+    case 'opinion':
+      const opinion: Opinion = {
+        id: row['opinion_id'],
+        stars: row['stars'],
+        desc: row['desc'],
+        authorId: row['author_id'],
+        createdAt: row['created_at'],
+      };
+      return opinion;
   }
 
   return null;
@@ -642,4 +652,13 @@ export async function setAsReaden(messages: ChatMessage[]) {
     if (!message.readen && message.senderId != userId)
       await sql('UPDATE messages SET readen = true WHERE message_id = $1', [message.id]);
   });
+}
+
+export async function getOpinions(userId: string) {
+  let opinions: Opinion[] = [];
+  const dbOpinions = await sql('SELECT * FROM opinions WHERE for_user_id = $1', [userId]);
+  dbOpinions.map((dbOpinion) => {
+    opinions.push(dbRowToObject(dbOpinion, 'opinion') as Opinion);
+  });
+  return opinions;
 }

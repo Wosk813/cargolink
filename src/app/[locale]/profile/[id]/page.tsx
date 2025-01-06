@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { getUserById } from '@/src/app/lib/actions';
-import Opinions from '../../../ui/posts/opinions';
+import Opinions from '../../../ui/opinions/opinions';
 import Description from '../../../ui/profile/description';
 import { verifySession } from '@/src/app/lib/dal';
 import { getTranslations } from 'next-intl/server';
@@ -51,7 +51,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           </div>
         </div>
       </div>
-      <Opinions />
+      {user.id && <Opinions userId={user.id} />}
     </div>
   );
 }

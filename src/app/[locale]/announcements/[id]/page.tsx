@@ -2,7 +2,7 @@ import { getAnnouncementsById } from '@/src/app/lib/actions';
 import Description from '@/src/app/ui/posts/desc';
 import AnnouncementRoadDetails from '@/src/app/ui/posts/announcement-road-details';
 import CarInfo from '@/src/app/ui/posts/car-info';
-import Opinions from '@/src/app/ui/posts/opinions';
+import Opinions from '@/src/app/ui/opinions/opinions';
 import { verifySession } from '@/src/app/lib/dal';
 import { Button } from '@/src/app/ui/button';
 import { getTranslations } from 'next-intl/server';
@@ -11,6 +11,7 @@ import GoToChatButton from '@/src/app/ui/posts/go-to-chat-butt';
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const annoucementId = (await params).id;
   const annoucement = await getAnnouncementsById(annoucementId);
+  if (!annoucement) return <h1>Error</h1>;
   const { userId } = await verifySession();
   const t = await getTranslations('posts');
   return (
@@ -38,7 +39,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           />
         </div>
       </div>
-      <Opinions />
+      <Opinions userId={annoucement?.authorId ?? ''} />
       <div
         className={`flex flex-col gap-2 rounded-md bg-slate-700 p-2 ${annoucement?.authorId == userId ? 'hidden' : ''}`}
       >
