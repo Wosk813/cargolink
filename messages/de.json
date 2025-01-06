@@ -217,5 +217,14 @@
     "no": "Nein",
     "userDesc": "Benutzerbeschreibung",
     "saveChanges": "Änderungen speichern"
+  },
+  "chat": {
+    "showChats": "Chats anzeigen",
+    "thisPersonSpeaksLanguages": "Diese Person spricht Sprachen",
+    "noInfo": "Keine Informationen",
+    "send": "Senden",
+    "sendContractProposals": "Vertragsvorschläge senden",
+    "writeHere": "Hier schreiben",
+    "chats": "Chats"
   }
 }

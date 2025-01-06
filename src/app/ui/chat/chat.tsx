@@ -5,6 +5,7 @@ import { ButtonTypes, ChatMessage, ChatType } from '../../lib/definitions';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useActionState } from 'react';
 import { sendMessage } from '../../lib/actions';
+import { useTranslations } from 'next-intl';
 
 type ChatProps = {
   hidden: boolean;
@@ -26,7 +27,7 @@ export default function Chat({
   isLoading,
 }: ChatProps) {
   const [state, handleSend, pending] = useActionState(sendMessage, undefined);
-
+  const t = useTranslations('chat');
   let userIsAuthor = false;
   if (userId == chat.postAuthorUserId) userIsAuthor = true;
 
@@ -41,16 +42,16 @@ export default function Chat({
             className={`flex items-center gap-2 md:hidden ${showArrow ? '' : 'hidden'}`}
           >
             <ArrowLeftIcon className="h-4" />
-            Pokaż czaty
+            {t('showChats')}
           </div>
           <h1 className="text-3xl font-bold">
             {userIsAuthor ? chat.interestedUserName : chat.postAuthorUserName}
           </h1>
-          <p className="text-sm text-slate-400">Ta osoba posługuje się jezykami</p>
+          <p className="text-sm text-slate-400">{t('thisPersonSpeaksLanguages')}</p>
           <p>
             {languages?.length
               ? languages.map((langString) => JSON.parse(langString).label).join(', ')
-              : 'Brak informacji'}
+              : t('noInfo')}
           </p>
         </div>
         <div className="flex w-full flex-col gap-4 overflow-auto">
@@ -66,14 +67,14 @@ export default function Chat({
       </div>
       <div className="flex flex-col gap-2">
         <form action={handleSend} className="flex gap-2">
-          <Input className="w-full p-2" placeholder="Pisz tutaj" name="message" />
+          <Input className="w-full p-2" placeholder={t('writeHere')} name="message" />
           <input type="hidden" name="chatId" value={chat.id} />
           <Button disabled={pending} type="submit" className="w-min p-2">
-            Wyślij
+            {t('send')}
           </Button>
         </form>
         <Button className="border-yellow-300 text-yellow-300" buttType={ButtonTypes.Secondary}>
-          Wyślij propozycje umowy
+          {t('sendContractProposals')}
         </Button>
       </div>
     </div>

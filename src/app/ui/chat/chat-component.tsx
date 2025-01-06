@@ -5,6 +5,7 @@ import Chat from './chat';
 import { ChatMessage, ChatType } from '../../lib/definitions';
 import ChatCard from './chat-card';
 import { getMessages, setAsReaden } from '../../lib/actions';
+import { useTranslations } from 'next-intl';
 
 export default function ChatComponent({
   chats,
@@ -27,7 +28,7 @@ export default function ChatComponent({
       try {
         const newMessages = await getMessages(currentChatId);
         setMessages(newMessages);
-        setAsReaden(newMessages)
+        if (!chatHidden) setAsReaden(newMessages);
       } catch (error) {
         console.error('Error fetching messages:', error);
       } finally {
@@ -42,12 +43,14 @@ export default function ChatComponent({
 
   if (!chatId) return <h1 className="text-2xl">Brak dostępnych czatów</h1>;
 
+  const t = useTranslations('chat');
+
   return (
     <div className="flex h-full gap-4">
       <div
         className={`flex flex-col gap-4 ${chatListHidden ? 'hidden md:flex' : 'w-full md:w-fit'}`}
       >
-        <h1 className="hidden text-3xl font-bold md:block">Czaty</h1>
+        <h1 className="hidden text-3xl font-bold md:block">{t('chats')}</h1>
         {chats.map((chat) => (
           <ChatCard
             key={chat.id}
@@ -57,7 +60,12 @@ export default function ChatComponent({
               setCurrentChatId(chat.id);
             }}
             chatTitle={chat.title}
-            lastMessage={chat.messages && chat.messages.length > 0 ? chat.messages[chat.messages.length - 1].content : ''}            notificationCount={
+            lastMessage={
+              chat.messages && chat.messages.length > 0
+                ? chat.messages[chat.messages.length - 1].content
+                : ''
+            }
+            notificationCount={
               chat.messages ? chat.messages.filter((message) => !message.readen).length : 0
             }
           />
