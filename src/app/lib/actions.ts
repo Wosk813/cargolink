@@ -637,8 +637,9 @@ export async function startNewChat(state: any, postId: string) {
 }
 
 export async function setAsReaden(messages: ChatMessage[]) {
+  const { userId } = await verifySession();
   messages.map(async (message: ChatMessage) => {
-    if (!message.readen)
-    await sql('UPDATE messages SET readen = true WHERE message_id = $1', [message.id]);
+    if (!message.readen && message.senderId != userId)
+      await sql('UPDATE messages SET readen = true WHERE message_id = $1', [message.id]);
   });
 }
