@@ -57,7 +57,7 @@ export default function ChatComponent({
               setCurrentChatId(chat.id);
             }}
             chatTitle={chat.title}
-            lastMessage={chat.messages && chat.messages.length > 1 ? chat.messages[chat.messages.length - 1].content : ''}            notificationCount={
+            lastMessage={chat.messages && chat.messages.length > 0 ? chat.messages[chat.messages.length - 1].content : ''}            notificationCount={
               chat.messages ? chat.messages.filter((message) => !message.readen).length : 0
             }
           />
