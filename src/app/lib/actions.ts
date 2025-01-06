@@ -18,6 +18,8 @@ import {
   newErrandSchema,
   NewErrandFormState,
   AccountType,
+  ChatType,
+  ChatMessage,
 } from '@/src/app/lib/definitions';
 import { getTranslations } from 'next-intl/server';
 import { verifySession } from './dal';
@@ -407,6 +409,27 @@ function dbRowToObject(row: any, object: string) {
         postCount: row['posts_count'],
       };
       return user;
+    case 'chat':
+      const chat: ChatType = {
+        id: row['chat_id'],
+        interestedUserId: row['interested_user_id'],
+        postAuthorUserId: row['post_author_id'],
+        interestedUserName: row['interested_user_name'],
+        postAuthorUserName: row['post_author_name'],
+        interestedUserLanguages: row['interested_user_languages'],
+        postAuthorUserLanguages: row['post_author_languages'],
+        title: row['title'],
+      };
+      return chat;
+    case 'message':
+      const message: ChatMessage = {
+        id: row['message_id'],
+        senderId: row['sender_id'],
+        content: row['content'],
+        sentAt: row['sent_at'],
+        readen: row['readen'],
+      };
+      return message;
   }
 
   return null;
@@ -511,7 +534,6 @@ export async function addErrand(state: NewErrandFormState, formData: FormData) {
 
   const goodId = result[0].good_id;
 
-  console.log(data);
   await sql(
     'INSERT INTO errands (title, description, from_geography, to_geography, earliest_at, latest_at, good_id, author_id, is_accepted, from_city, to_city, road_color) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)',
     [
@@ -545,4 +567,79 @@ export async function searchUsers(state: User[], formData: FormData) {
 
   const users = await sql(query);
   return users.map((user) => dbRowToObject(user, 'user') as User);
+}
+
+export async function getChats(userId: string): Promise<ChatType[]> {
+  let chats: ChatType[] = [];
+  const dbChats = await sql(
+    "SELECT c.*, COALESCE(ua.user_id, ue.user_id) as post_author_id, COALESCE(ua.languages, ue.languages) as post_author_languages, u.first_name || ' ' || u.last_name as interested_user_name, COALESCE(ua.first_name || ' ' || ua.last_name, ue.first_name || ' ' || ue.last_name ) as post_author_name, u.languages as interested_user_languages, COALESCE(a.title, e.title) as title FROM chats c LEFT JOIN announcements a ON c.announcement_id = a.announcement_id LEFT JOIN errands e ON c.errand_id = e.errand_id LEFT JOIN users ua ON a.author_id = ua.user_id LEFT JOIN users ue ON e.author_id = ue.user_id LEFT JOIN users u ON c.interested_user_id = u.user_id WHERE COALESCE(ua.user_id, ue.user_id) = $1 OR u.user_id = $1",
+    [userId],
+  );
+  await Promise.all(
+    dbChats.map(async (dbChat) => {
+      let chat: ChatType = dbRowToObject(dbChat, 'chat') as ChatType;
+      const dbMessages = await sql('SELECT * FROM messages WHERE chat_id = $1', [
+        dbChat['chat_id'],
+      ]);
+
+      chat.messages = dbMessages.map(
+        (dbMessage) => dbRowToObject(dbMessage, 'message') as ChatMessage,
+      );
+
+      chats.push(chat);
+    }),
+  );
+
+  return chats;
+}
+
+export async function getMessages(chatId: string) {
+  let messages: ChatMessage[] = [];
+  const dbMessages = await sql('SELECT * FROM messages WHERE chat_id = $1', [chatId]);
+  dbMessages.map((dbMessage) => {
+    messages.push(dbRowToObject(dbMessage, 'message') as ChatMessage);
+  });
+  return messages;
+}
+
+export async function sendMessage(state: any, formData: FormData) {
+  const { userId } = await verifySession();
+  await sql(
+    'INSERT INTO messages (chat_id, sender_id, content, sent_at, readen) VALUES ($1, $2, $3, $4, $5)',
+    [formData.get('chatId'), userId, formData.get('message'), new Date(), false],
+  );
+}
+
+export async function startNewChat(state: any, postId: string) {
+  const { userId } = await verifySession();
+
+  const chat = await sql(
+    'SELECT * FROM chats WHERE announcement_id = $1 OR errand_id = $1 AND interested_user_id = $2',
+    [postId, userId],
+  );
+  if (chat.length > 0) redirect({ locale: 'pl', href: '/chats' });
+
+  const annoucements = await sql(
+    'SELECT announcement_id FROM announcements WHERE announcement_id = $1',
+    [postId],
+  );
+  if (annoucements.length > 0)
+    await sql('INSERT INTO chats (announcement_id, interested_user_id) VALUES ($1, $2)', [
+      annoucements[0]['announcement_id'],
+      userId,
+    ]);
+  else
+    await sql('INSERT INTO chats (errand_id, interested_user_id) VALUES ($1, $2)', [
+      postId,
+      userId,
+    ]);
+  redirect({ locale: 'pl', href: '/chats' });
+}
+
+export async function setAsReaden(messages: ChatMessage[]) {
+  const { userId } = await verifySession();
+  messages.map(async (message: ChatMessage) => {
+    if (!message.readen && message.senderId != userId)
+      await sql('UPDATE messages SET readen = true WHERE message_id = $1', [message.id]);
+  });
 }

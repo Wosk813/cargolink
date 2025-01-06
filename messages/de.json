@@ -7,7 +7,7 @@
     "signup": "Registrieren",
     "profile": "Profil",
     "logout": "Ausloggen",
-    "messages": "Nachrichten",
+    "chats": "Chats",
     "moderation": "Moderationspanel",
     "admin": "Admin-Panel",
     "logoutPending": "Ausloggen ...",
@@ -134,7 +134,9 @@
     "earliestAt": "Früheste Abfahrt um",
     "latestAt": "Späteste Abfahrt um",
     "wareName": "Warenname",
-    "wareInfo": "Wareninformationen"
+    "wareInfo": "Wareninformationen",
+    "goToChat": "Zum Chat",
+    "contact": "Kontakt"
   },
   "opinions": {
     "opinions": "Meinungen",
@@ -142,9 +144,7 @@
     "avgRate": "Durchschnittliche Bewertung",
     "goToProfile": "Zum Profil",
     "lastComments": "Neueste Kommentare",
-    "showMore": "Mehr anzeigen",
-    "contact": "Kontakt",
-    "goToChat": "Zum Chat"
+    "showMore": "Mehr anzeigen"
   },
   "map": {
     "startPoint": "Startpunkt",
@@ -217,5 +217,14 @@
     "no": "Nein",
     "userDesc": "Benutzerbeschreibung",
     "saveChanges": "Änderungen speichern"
+  },
+  "chat": {
+    "showChats": "Chats anzeigen",
+    "thisPersonSpeaksLanguages": "Diese Person spricht Sprachen",
+    "noInfo": "Keine Informationen",
+    "send": "Senden",
+    "sendContractProposals": "Vertragsvorschläge senden",
+    "writeHere": "Hier schreiben",
+    "chats": "Chats"
   }
 }

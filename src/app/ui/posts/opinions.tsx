@@ -62,10 +62,7 @@ export default async function Opinions() {
           </Button>
         </div>
       </div>
-      <div className="flex flex-col gap-2 rounded-md bg-slate-700 p-2">
-        <p className="text-xl">{t('contact')}</p>
-        <Button>{t('goToChat')}</Button>
-      </div>
+
     </div>
   );
 }

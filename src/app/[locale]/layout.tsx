@@ -41,8 +41,8 @@ async function getNavLinks(
       highlighted: false,
     });
     links.push({
-      name: t('messages'),
-      href: '/messages',
+      name: t('chats'),
+      href: '/chats',
       highlighted: false,
     });
     if (accountType === AccountType.Carrier)
@@ -64,8 +64,8 @@ async function getNavLinks(
       highlighted: false,
     });
     links.push({
-      name: t('messages'),
-      href: '/messages',
+      name: t('chats'),
+      href: '/chats',
       highlighted: false,
     });
     links.push({
@@ -80,8 +80,8 @@ async function getNavLinks(
       highlighted: false,
     });
     links.push({
-      name: t('messages'),
-      href: '/messages',
+      name: t('chats'),
+      href: '/chats',
       highlighted: false,
     });
     links.push({
