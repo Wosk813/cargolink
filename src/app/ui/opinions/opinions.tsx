@@ -22,7 +22,7 @@ function calculateAverageStars(opinions: Opinion[]): number {
 }
 
 export default async function Opinions({ forUserId, onProfile }: OpinionsProps) {
-  const { userId } = await verifySession();
+  const { userId, isAuth } = await verifySession();
   const user = await getUserById(forUserId);
   const opinions = await getOpinions(forUserId);
   const t = await getTranslations('opinions');
@@ -57,7 +57,7 @@ export default async function Opinions({ forUserId, onProfile }: OpinionsProps) 
           )}
           <p className="text-xl">{t('lastComments')}</p>
           <LastComments opinions={opinions} />
-          {forUserId != userId && (
+          {isAuth && forUserId != userId && (
             <Link
               className="rounded-md bg-yellow-300 p-2 text-center text-black"
               href={`/pl/addOpinion/${forUserId}`}

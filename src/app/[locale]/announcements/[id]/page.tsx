@@ -12,7 +12,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const annoucementId = (await params).id;
   const annoucement = await getAnnouncementsById(annoucementId);
   if (!annoucement) return <h1>Error</h1>;
-  const { userId } = await verifySession();
+  const { userId, isAuth } = await verifySession();
   const t = await getTranslations('posts');
   return (
     <div className="flex flex-col gap-4 pb-4">
@@ -40,12 +40,14 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         </div>
       </div>
       <Opinions forUserId={annoucement?.authorId ?? ''} />
-      <div
-        className={`flex flex-col gap-2 rounded-md bg-slate-700 p-2 ${annoucement?.authorId == userId ? 'hidden' : ''}`}
-      >
-        <p className="text-xl">{t('contact')}</p>
-        <GoToChatButton postId={annoucement?.id} />
-      </div>
+      {isAuth && (
+        <div
+          className={`flex flex-col gap-2 rounded-md bg-slate-700 p-2 ${annoucement?.authorId == userId ? 'hidden' : ''}`}
+        >
+          <p className="text-xl">{t('contact')}</p>
+          <GoToChatButton postId={annoucement?.id} />
+        </div>
+      )}
     </div>
   );
 }

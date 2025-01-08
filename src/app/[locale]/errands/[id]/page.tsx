@@ -11,7 +11,7 @@ import GoToChatButton from '@/src/app/ui/posts/go-to-chat-butt';
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const errandId = (await params).id;
   const errand = await getErrandById(errandId);
-  const { userId } = await verifySession();
+  const { userId, isAuth } = await verifySession();
   const t = await getTranslations('posts');
 
   return (
@@ -39,12 +39,14 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         </div>
       </div>
       <Opinions forUserId={errand?.authorId ?? ''} />
-      <div
-        className={`flex flex-col gap-2 rounded-md bg-slate-700 p-2 ${errand?.authorId == userId ? 'hidden' : ''}`}
-      >
-        <p className="text-xl">{t('contact')}</p>
-        <GoToChatButton postId={errand?.id} />
-      </div>
+      {isAuth && (
+        <div
+          className={`flex flex-col gap-2 rounded-md bg-slate-700 p-2 ${errand?.authorId == userId ? 'hidden' : ''}`}
+        >
+          <p className="text-xl">{t('contact')}</p>
+          <GoToChatButton postId={errand?.id} />
+        </div>
+      )}
     </div>
   );
 }
