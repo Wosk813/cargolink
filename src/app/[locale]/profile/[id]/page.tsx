@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { getUserById } from '@/src/app/lib/actions';
-import Opinions from '../../../ui/posts/opinions';
+import Opinions from '../../../ui/opinions/opinions';
 import Description from '../../../ui/profile/description';
 import { verifySession } from '@/src/app/lib/dal';
 import { getTranslations } from 'next-intl/server';
@@ -21,10 +21,16 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           <Description desc={user.userDesc} userId={linkUserId} enabled={userId == linkUserId} />
           <div className="rounded-md bg-slate-700 p-2">
             <p className="text-sm text-slate-400">{t('useLanguages')}</p>
-            {user.languages?.map((langString) => {
-              const lang: Language = JSON.parse(langString);
-              return <p key={lang.value}>{lang.label}</p>;
-            })}
+            {user.languages && user.languages.length > 0 ? (
+              <>
+                {user.languages?.map((langString) => {
+                  const lang: Language = JSON.parse(langString);
+                  return <p key={lang.value}>{lang.label}</p>;
+                })}
+              </>
+            ) : (
+              <p>{t('noInfo')}</p>
+            )}
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -51,7 +57,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           </div>
         </div>
       </div>
-      <Opinions />
+      {user.id && <Opinions forUserId={user.id} onProfile={true} />}
     </div>
   );
 }

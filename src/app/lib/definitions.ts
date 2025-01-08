@@ -406,3 +406,13 @@ export type Language = {
   value: string;
   label: string;
 };
+
+export type Opinion = {
+  id?: string;
+  stars?: 1 | 2 | 3 | 4 | 5;
+  desc?: string;
+  authorId?: string;
+  createdAt?: Date;
+  authorFirstName?: string;
+  authorLastName?: string;
+};

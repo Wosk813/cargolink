@@ -48,7 +48,7 @@ export default function Description({
     return (
       <div className="rounded-md bg-slate-700 p-2">
         <p className="text-sm text-slate-400">Opis użytkownika</p>
-        {description ? description : 'Brak opisu'}
+        {description ? description : t('noDesc')}
       </div>
     );
   }

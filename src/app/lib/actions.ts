@@ -20,6 +20,7 @@ import {
   AccountType,
   ChatType,
   ChatMessage,
+  Opinion,
 } from '@/src/app/lib/definitions';
 import { getTranslations } from 'next-intl/server';
 import { verifySession } from './dal';
@@ -430,6 +431,17 @@ function dbRowToObject(row: any, object: string) {
         readen: row['readen'],
       };
       return message;
+    case 'opinion':
+      const opinion: Opinion = {
+        id: row['opinion_id'],
+        stars: row['stars'],
+        desc: row['desc'],
+        authorId: row['author_id'],
+        createdAt: row['created_at'],
+        authorFirstName: row['first_name'],
+        authorLastName: row['last_name'],
+      };
+      return opinion;
   }
 
   return null;
@@ -642,4 +654,26 @@ export async function setAsReaden(messages: ChatMessage[]) {
     if (!message.readen && message.senderId != userId)
       await sql('UPDATE messages SET readen = true WHERE message_id = $1', [message.id]);
   });
+}
+
+export async function getOpinions(userId: string) {
+  let opinions: Opinion[] = [];
+  const dbOpinions = await sql(
+    'SELECT opinions.*, users.first_name, users.last_name FROM opinions LEFT JOIN users ON opinions.author_id=users.user_id WHERE for_user_id = $1',
+    [userId],
+  );
+  dbOpinions.map((dbOpinion) => {
+    opinions.push(dbRowToObject(dbOpinion, 'opinion') as Opinion);
+  });
+  return opinions;
+}
+
+export async function addOpinion(state: any, formData: FormData) {
+  const { userId } = await verifySession();
+
+  await sql(
+    'INSERT INTO opinions (for_user_id, stars, "desc", author_id) VALUES ($1, $2, $3, $4)',
+    [formData.get('forUserId'), formData.get('stars'), formData.get('desc'), userId],
+  );
+  redirect({ locale: 'pl', href: `/profile/${formData.get('forUserId')}` });
 }

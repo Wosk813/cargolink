@@ -144,7 +144,12 @@
     "avgRate": "Durchschnittliche Bewertung",
     "goToProfile": "Zum Profil",
     "lastComments": "Neueste Kommentare",
-    "showMore": "Mehr anzeigen"
+    "showMore": "Mehr anzeigen",
+    "noOpinions": "Keine Meinungen",
+    "addOpinion": "Meinung hinzufügen",
+    "yourMark": "Ihre Bewertung",
+    "principal": "Auftraggeber",
+    "yourComment": "Ihr Kommentar"
   },
   "map": {
     "startPoint": "Startpunkt",
@@ -216,7 +221,9 @@
     "yes": "Ja",
     "no": "Nein",
     "userDesc": "Benutzerbeschreibung",
-    "saveChanges": "Änderungen speichern"
+    "saveChanges": "Änderungen speichern",
+    "noInfo": "Keine Informationen",
+    "noDesc": "keine Beschreibung"
   },
   "chat": {
     "showChats": "Chats anzeigen",
