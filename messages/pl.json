@@ -144,7 +144,12 @@
     "avgRate": "Średnia ocen",
     "goToProfile": "Przejdź do profilu",
     "lastComments": "Ostatnie komentarze",
-    "showMore": "Pokaż więcej"
+    "showMore": "Pokaż więcej",
+    "noOpinions": "Brak opinii",
+    "addOpinion": "Dodaj opinie",
+    "yourMark": "Twoja ocena",
+    "principal": "Zleceniodawca",
+    "yourComment": "Twój komentarz"
   },
   "map": {
     "startPoint": "Punkt początkowy",
@@ -216,7 +221,9 @@
     "yes": "Tak",
     "no": "Nie",
     "userDesc": "Opis użytkownika",
-    "saveChanges": "Zapisz zmiany"
+    "saveChanges": "Zapisz zmiany",
+    "noInfo": "Brak informacji",
+    "noDesc": "Brak opisu"
   },
   "chat": {
     "showChats": "Pokaż czaty",

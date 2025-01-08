@@ -144,7 +144,12 @@
     "avgRate": "Average rating",
     "goToProfile": "Go to profile",
     "lastComments": "Latest comments",
-    "showMore": "Show more"
+    "showMore": "Show more",
+    "noOpinions": "No opinions",
+    "addOpinion": "Add opinion",
+    "yourMark": "Your rating",
+    "principal": "Principal",
+    "yourComment": "Your comment"
   },
   "map": {
     "startPoint": "Starting point",
@@ -216,7 +221,9 @@
     "yes": "Yes",
     "no": "No",
     "userDesc": "User description",
-    "saveChanges": "Save changes"
+    "saveChanges": "Save changes",
+    "noInfo": "No information",
+    "noDesc": "No description"
   },
   "chat": {
     "showChats": "Show chats",

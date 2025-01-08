@@ -413,4 +413,6 @@ export type Opinion = {
   desc?: string;
   authorId?: string;
   createdAt?: Date;
+  authorFirstName?: string;
+  authorLastName?: string;
 };

@@ -38,7 +38,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           />
         </div>
       </div>
-      <Opinions userId={errand?.authorId ?? ''} />
+      <Opinions forUserId={errand?.authorId ?? ''} />
       <div
         className={`flex flex-col gap-2 rounded-md bg-slate-700 p-2 ${errand?.authorId == userId ? 'hidden' : ''}`}
       >
