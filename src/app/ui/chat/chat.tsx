@@ -6,6 +6,7 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useActionState } from 'react';
 import { sendMessage } from '../../lib/actions';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/src/i18n/routing';
 
 type ChatProps = {
   hidden: boolean;
@@ -73,9 +74,12 @@ export default function Chat({
             {t('send')}
           </Button>
         </form>
-        <Button className="border-yellow-300 text-yellow-300" buttType={ButtonTypes.Secondary}>
+        <Link
+          href="/chats/sendContract"
+          className="rounded-md border border-yellow-300 p-2 text-center text-yellow-300"
+        >
           {t('sendContractProposals')}
-        </Button>
+        </Link>
       </div>
     </div>
   );
