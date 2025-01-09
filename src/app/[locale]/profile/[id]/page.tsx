@@ -18,7 +18,11 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       <div className="flex w-full flex-col gap-4">
         <div className="flex flex-col gap-2">
           <h3>{t('aboutMe')}</h3>
-          <Description desc={user.userDesc} userId={linkUserId} enabled={userId == linkUserId} />
+          <Description
+            desc={user.userDesc ? user.userDesc : ''}
+            userId={linkUserId}
+            enabled={userId == linkUserId}
+          />
           <div className="rounded-md bg-slate-700 p-2">
             <p className="text-sm text-slate-400">{t('useLanguages')}</p>
             {user.languages && user.languages.length > 0 ? (

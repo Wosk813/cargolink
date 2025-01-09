@@ -1,397 +1,448 @@
 'use client';
 
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
-import Input from '../../input';
-import { Button } from '../../button';
+import { useState } from 'react';
 import { CitySelect, CountrySelect, StateSelect } from 'react-country-state-city';
 import { City, Country, State } from 'react-country-state-city/dist/esm/types';
 import 'react-country-state-city/dist/react-country-state-city.css';
-import { useState } from 'react';
+import Input from '../../input';
 import InputRadio from '../../inputRadio';
-import { AccountType } from '@/src/app/lib/definitions';
+import { Button } from '../../button';
 
-type CityAddres = {
+interface CityAddress {
   countryId: number;
   stateId: number;
   countryName: string;
   city: string;
+}
+
+interface FormState {
+  principal: {
+    isCompany: boolean;
+    address: CityAddress;
+    companyDetails?: {
+      name: string;
+      taxId: string;
+      address: CityAddress;
+      street: string;
+    };
+  };
+  carrier: {
+    isCompany: boolean;
+    address: CityAddress;
+    companyDetails?: {
+      name: string;
+      taxId: string;
+      address: CityAddress;
+      street: string;
+    };
+  };
+  route: {
+    from: CityAddress;
+    to: CityAddress;
+    showChangeForm: boolean;
+    earliestTime: Date;
+    latestTime: Date;
+  };
+  cargo: {
+    category: string;
+    name: string;
+    weight: string;
+    dimensions: string;
+    height: string;
+  };
+}
+
+const AddressSelect = ({
+  value,
+  onChange,
+  label,
+}: {
+  value: CityAddress;
+  onChange: (address: CityAddress) => void;
+  label?: string;
+}) => {
+  return (
+    <div className="flex flex-col gap-2">
+      {label && <p className="text-slate-400">{label}</p>}
+      <div className="flex gap-2 text-black">
+        <CountrySelect
+          required
+          className="w-full"
+          onChange={(e) => {
+            e = e as Country;
+            onChange({
+              ...value,
+              countryId: e.id,
+              countryName: e.name,
+              stateId: 0,
+              city: '',
+            });
+          }}
+          placeHolder="Wybierz kraj"
+          region="Europe"
+        />
+        <StateSelect
+          required
+          countryid={value.countryId}
+          onChange={(e) => {
+            e = e as State;
+            onChange({
+              ...value,
+              stateId: e.id,
+              city: '',
+            });
+          }}
+          placeHolder="Wybierz stan"
+        />
+        <CitySelect
+          required
+          countryid={value.countryId}
+          stateid={value.stateId}
+          onChange={(e) => {
+            e = e as City;
+            onChange({
+              ...value,
+              city: e.name,
+            });
+          }}
+          placeHolder="Wybierz miasto"
+        />
+      </div>
+    </div>
+  );
 };
 
+const CompanyForm = ({
+  value,
+  onChange,
+}: {
+  value: NonNullable<FormState['principal']['companyDetails']>;
+  onChange: (details: NonNullable<FormState['principal']['companyDetails']>) => void;
+}) => {
+  return (
+    <div className="flex flex-col gap-2">
+      <Input
+        title="Pełna nazwa firmy"
+        value={value.name}
+        onChange={(e) => onChange({ ...value, name: e.target.value })}
+      />
+      <Input
+        title="NIP"
+        value={value.taxId}
+        onChange={(e) => onChange({ ...value, taxId: e.target.value })}
+      />
+      <AddressSelect
+        value={value.address}
+        onChange={(address) => onChange({ ...value, address })}
+      />
+      <Input
+        title="Ulica"
+        value={value.street}
+        onChange={(e) => onChange({ ...value, street: e.target.value })}
+      />
+    </div>
+  );
+};
+
+const RouteDisplay = ({
+  from,
+  to,
+  showChange,
+  onChangeClick,
+}: {
+  from: CityAddress;
+  to: CityAddress;
+  showChange: boolean;
+  onChangeClick: () => void;
+}) => (
+  <div className="flex flex-col gap-2">
+    <div className="flex items-center gap-2">
+      <p>Informacje o trasie</p>
+      <button className="text-yellow-300" onClick={onChangeClick}>
+        <u>Zmień</u>
+      </button>
+    </div>
+    <div className="flex justify-between rounded-md bg-slate-700 p-2">
+      <div className="flex flex-col">
+        <p className="text-sm text-slate-400">z</p>
+        <h2 className="text-xl">{`${from.countryName}, ${from.city}`}</h2>
+      </div>
+      <ArrowRightIcon className="w-8 text-slate-400" />
+      <div className="flex flex-col">
+        <p className="text-sm text-slate-400">do</p>
+        <h2 className="text-xl">{`${to.countryName}, ${to.city}`}</h2>
+      </div>
+    </div>
+  </div>
+);
+
 export default function ContractForm() {
-  const [principalCity, setPrincipalCity] = useState<CityAddres>({
-    countryId: 0,
-    stateId: 0,
-    countryName: '',
-    city: '',
-  });
-  const [principalCompanyCity, setPrincipalCompanyCity] = useState<CityAddres>({
-    countryId: 0,
-    stateId: 0,
-    countryName: '',
-    city: '',
-  });
-
-  const [carrierCity, setCarrierCity] = useState<CityAddres>({
-    countryId: 0,
-    stateId: 0,
-    countryName: '',
-    city: '',
-  });
-
-  const [carrierCompanyCity, setCarrierCompanyCity] = useState<CityAddres>({
-    countryId: 0,
-    stateId: 0,
-    countryName: '',
-    city: '',
+  const [formState, setFormState] = useState<FormState>({
+    principal: {
+      isCompany: false,
+      address: { countryId: 0, stateId: 0, countryName: '', city: '' },
+    },
+    carrier: {
+      isCompany: true,
+      address: { countryId: 0, stateId: 0, countryName: '', city: '' },
+    },
+    route: {
+      from: { countryId: 0, stateId: 0, countryName: '', city: '' },
+      to: { countryId: 0, stateId: 0, countryName: '', city: '' },
+      showChangeForm: false,
+      earliestTime: new Date(Date.now()),
+      latestTime: new Date(Date.now()),
+    },
+    cargo: {
+      category: '',
+      name: '',
+      weight: '',
+      dimensions: '',
+      height: '',
+    },
   });
 
-  const [principalAsCompany, setPrincipalAsCompany] = useState(false);
-  const [carrierAsCompany, setCarrierAsCompany] = useState(true);
-
-  const [road, setRoad] = useState<{ fromCity: string; toCity: string }>({
-    fromCity: '',
-    toCity: '',
-  });
-
-  const [showChangeRoad, setShowChangeRoad] = useState(false);
-
-  const [fromCity, setFromCity] = useState<CityAddres>({
-    countryId: 0,
-    stateId: 0,
-    countryName: '',
-    city: '',
-  });
-  const [toCity, setToCity] = useState<CityAddres>({
-    countryId: 0,
-    stateId: 0,
-    countryName: '',
-    city: '',
-  });
-
-  function CompanyAddres({ accountType }: { accountType: AccountType }) {
-    return (
-      <div className="flex flex-col gap-2">
-        <Input title="Pełna nazwa firmy" />
-        <Input title="NIP" />
-        <div className="flex flex-col gap-2 text-black md:flex-row">
-          <div className="w-full">
-            <CountrySelect
-              required
-              className="w-full"
-              onChange={(e) => {
-                e = e as Country;
-                accountType == AccountType.Principal
-                  ? setPrincipalCompanyCity((prev) => ({
-                      ...prev,
-                      countryId: e.id,
-                      stateId: 0,
-                      city: '',
-                    }))
-                  : setCarrierCompanyCity((prev) => ({
-                      ...prev,
-                      countryId: e.id,
-                      stateId: 0,
-                      city: '',
-                    }));
-              }}
-              placeHolder="Wybierz kraj"
-              region={'Europe'}
-            />
-          </div>
-          <div className="w-full">
-            <StateSelect
-              required
-              countryid={
-                accountType == AccountType.Principal
-                  ? principalCompanyCity.countryId
-                  : carrierCompanyCity.countryId
-              }
-              onChange={(e) => {
-                e = e as State;
-                accountType == AccountType.Principal
-                  ? setPrincipalCompanyCity((prev) => ({
-                      ...prev,
-                      stateId: e.id,
-                      city: '',
-                    }))
-                  : setCarrierCompanyCity((prev) => ({
-                      ...prev,
-                      stateId: e.id,
-                      city: '',
-                    }));
-              }}
-              placeHolder="Wybierz stan"
-            />
-          </div>
-          <div className="w-full">
-            <CitySelect
-              required
-              name="fromCity"
-              countryid={
-                accountType == AccountType.Principal
-                  ? principalCompanyCity.countryId
-                  : carrierCompanyCity.countryId
-              }
-              stateid={
-                accountType == AccountType.Principal
-                  ? principalCompanyCity.stateId
-                  : carrierCompanyCity.stateId
-              }
-              onChange={(e) => {
-                e = e as City;
-                accountType == AccountType.Principal
-                  ? setPrincipalCity((prev) => ({
-                      ...prev,
-                      city: e.name,
-                    }))
-                  : setCarrierCity((prev) => ({
-                      ...prev,
-                      city: e.name,
-                    }));
-              }}
-              placeHolder="Wybierz miasto"
-            />
-          </div>
-          <Input title="Ulica" />
-        </div>
-      </div>
-    );
-  }
-
-  function PhisicalPersonAddres() {
-    return (
-      <div className="flex flex-col gap-2">
-        <Input title="Imię i nazwisko" />
-        <div className="flex gap-2 text-black">
-          <div className="w-full">
-            <CountrySelect
-              required
-              className="w-full"
-              onChange={(e) => {
-                e = e as Country;
-                setFromCity((prev) => ({
-                  ...prev,
-                  countryId: e.id,
-                  countryName: e.name,
-                  stateId: 0,
-                  city: '',
-                }));
-              }}
-              placeHolder="Wybierz kraj"
-              region={'Europe'}
-            />
-          </div>
-          <div className="w-full">
-            <StateSelect
-              required
-              countryid={fromCity.countryId}
-              onChange={(e) => {
-                e = e as State;
-                setFromCity((prev) => ({
-                  ...prev,
-                  stateId: e.id,
-                  city: '',
-                }));
-              }}
-              placeHolder="Wybierz stan"
-            />
-          </div>
-          <div className="w-full">
-            <CitySelect
-              required
-              name="fromCity"
-              countryid={fromCity.countryId}
-              stateid={fromCity.stateId}
-              onChange={(e) => {
-                e = e as City;
-                setFromCity((prev) => ({
-                  ...prev,
-                  city: e.name,
-                }));
-              }}
-              placeHolder="Wybierz miasto"
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  function ChangeRoad() {
-    return (
-      <div className="flex justify-between rounded-md bg-slate-700 p-2">
-        <div className="flex flex-col gap-2 text-black">
-          <p className="text-slate-400">Z</p>
-          <CountrySelect
-            required
-            className="w-full"
-            onChange={(e) => {
-              e = e as Country;
-              setFromCity((prev) => ({
-                ...prev,
-                countryId: e.id,
-                countryName: e.name,
-                stateId: 0,
-                city: '',
-              }));
-            }}
-            placeHolder="Wybierz kraj"
-            region={'Europe'}
-          />
-          <StateSelect
-            required
-            countryid={fromCity.countryId}
-            onChange={(e) => {
-              e = e as State;
-              setFromCity((prev) => ({
-                ...prev,
-                stateId: e.id,
-                city: '',
-              }));
-            }}
-            placeHolder="Wybierz stan"
-          />
-          <CitySelect
-            required
-            name="fromCity"
-            countryid={fromCity.countryId}
-            stateid={fromCity.stateId}
-            onChange={(e) => {
-              e = e as City;
-              setFromCity((prev) => ({
-                ...prev,
-                city: e.name,
-              }));
-            }}
-            placeHolder="Wybierz miasto"
-          />
-        </div>
-        <div className="flex flex-col gap-2 text-black">
-          <p className="text-slate-400">Do</p>
-          <CountrySelect
-            required
-            className="w-full"
-            onChange={(e) => {
-              e = e as Country;
-              setToCity((prev) => ({
-                ...prev,
-                countryId: e.id,
-                countryName: e.name,
-                stateId: 0,
-                city: '',
-              }));
-            }}
-            placeHolder="Wybierz kraj"
-            region={'Europe'}
-          />
-          <StateSelect
-            required
-            countryid={toCity.countryId}
-            onChange={(e) => {
-              e = e as State;
-              setToCity((prev) => ({
-                ...prev,
-                stateId: e.id,
-                city: '',
-              }));
-            }}
-            placeHolder="Wybierz stan"
-          />
-          <CitySelect
-            required
-            name="fromCity"
-            countryid={toCity.countryId}
-            stateid={toCity.stateId}
-            onChange={(e) => {
-              e = e as City;
-              setToCity((prev) => ({
-                ...prev,
-                city: e.name,
-              }));
-            }}
-            placeHolder="Wybierz miasto"
-          />
-        </div>
-      </div>
-    );
-  }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Walidacja i wysyłka formularza
+    console.log(formState);
+  };
 
   return (
-    <form className="flex flex-col gap-4">
-      {principalCity.city}
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-2">
         <p>Zleceniodawca</p>
         <div className="flex flex-col gap-2 md:flex-row">
           <InputRadio
-            onChange={() => setPrincipalAsCompany(false)}
+            onChange={() =>
+              setFormState((prev) => ({
+                ...prev,
+                principal: { ...prev.principal, isCompany: false },
+              }))
+            }
             title="Jako osoba fizyczna"
             name="principalEntityType"
-            checked={!principalAsCompany}
+            checked={!formState.principal.isCompany}
           />
           <InputRadio
-            onChange={() => setPrincipalAsCompany(true)}
+            onChange={() =>
+              setFormState((prev) => ({
+                ...prev,
+                principal: { ...prev.principal, isCompany: true },
+              }))
+            }
             title="Jako działalność gospodarcza"
             name="principalEntityType"
-            checked={principalAsCompany}
+            checked={formState.principal.isCompany}
           />
         </div>
-        {principalAsCompany && <CompanyAddres accountType={AccountType.Principal} />}
-        {!principalAsCompany && <PhisicalPersonAddres />}
+
+        {formState.principal.isCompany ? (
+          <CompanyForm
+            value={
+              formState.principal.companyDetails ?? {
+                name: '',
+                taxId: '',
+                address: { countryId: 0, stateId: 0, countryName: '', city: '' },
+                street: '',
+              }
+            }
+            onChange={(details) =>
+              setFormState((prev) => ({
+                ...prev,
+                principal: { ...prev.principal, companyDetails: details },
+              }))
+            }
+          />
+        ) : (
+          <AddressSelect
+            value={formState.principal.address}
+            onChange={(address) =>
+              setFormState((prev) => ({
+                ...prev,
+                principal: { ...prev.principal, address },
+              }))
+            }
+          />
+        )}
       </div>
 
       <div className="flex flex-col gap-2">
         <p>Przewoźnik</p>
         <div className="flex flex-col gap-2 md:flex-row">
           <InputRadio
-            onChange={() => setCarrierAsCompany(false)}
+            onChange={() =>
+              setFormState((prev) => ({
+                ...prev,
+                carrier: { ...prev.carrier, isCompany: false },
+              }))
+            }
             title="Jako osoba fizyczna"
             name="carrierEntityType"
-            checked={!carrierAsCompany}
+            checked={!formState.carrier.isCompany}
           />
           <InputRadio
-            onChange={() => setCarrierAsCompany(true)}
+            onChange={() =>
+              setFormState((prev) => ({
+                ...prev,
+                carrier: { ...prev.carrier, isCompany: true },
+              }))
+            }
             title="Jako działalność gospodarcza"
             name="carrierEntityType"
-            checked={carrierAsCompany}
+            checked={formState.carrier.isCompany}
           />
         </div>
-        {carrierAsCompany && <CompanyAddres accountType={AccountType.Carrier} />}
-        {!carrierAsCompany && <PhisicalPersonAddres />}
+
+        {formState.carrier.isCompany ? (
+          <CompanyForm
+            value={
+              formState.carrier.companyDetails ?? {
+                name: '',
+                taxId: '',
+                address: { countryId: 0, stateId: 0, countryName: '', city: '' },
+                street: '',
+              }
+            }
+            onChange={(details) =>
+              setFormState((prev) => ({
+                ...prev,
+                carrier: { ...prev.carrier, companyDetails: details },
+              }))
+            }
+          />
+        ) : (
+          <AddressSelect
+            value={formState.carrier.address}
+            onChange={(address) =>
+              setFormState((prev) => ({
+                ...prev,
+                carrier: { ...prev.carrier, address },
+              }))
+            }
+          />
+        )}
       </div>
+
       <div className="flex flex-col gap-2">
         <p>Przedmiot umowy</p>
-        <Input title="Kategoria" />
-        <Input title="Nazwa towaru" />
+        <Input
+          title="Kategoria"
+          value={formState.cargo.category}
+          onChange={(e) =>
+            setFormState((prev) => ({
+              ...prev,
+              cargo: { ...prev.cargo, category: e.target.value },
+            }))
+          }
+        />
+        <Input
+          title="Nazwa towaru"
+          value={formState.cargo.name}
+          onChange={(e) =>
+            setFormState((prev) => ({
+              ...prev,
+              cargo: { ...prev.cargo, name: e.target.value },
+            }))
+          }
+        />
         <div className="flex gap-2">
-          <Input title="Waga towaru" />
-          <Input title="Wymiary towaru" />
-          <Input title="Wysokość towaru" />
+          <Input
+            title="Waga towaru"
+            value={formState.cargo.weight}
+            onChange={(e) =>
+              setFormState((prev) => ({
+                ...prev,
+                cargo: { ...prev.cargo, weight: e.target.value },
+              }))
+            }
+          />
+          <Input
+            title="Wymiary towaru"
+            value={formState.cargo.dimensions}
+            onChange={(e) =>
+              setFormState((prev) => ({
+                ...prev,
+                cargo: { ...prev.cargo, dimensions: e.target.value },
+              }))
+            }
+          />
+          <Input
+            title="Wysokość towaru"
+            value={formState.cargo.height}
+            onChange={(e) =>
+              setFormState((prev) => ({
+                ...prev,
+                cargo: { ...prev.cargo, height: e.target.value },
+              }))
+            }
+          />
         </div>
       </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <p>Informacje o trasie</p>
-          <button className="text-yellow-300" onClick={() => setShowChangeRoad(!showChangeRoad)}>
-            <u>Zmień</u>
-          </button>
-        </div>
+
+      <RouteDisplay
+        from={formState.route.from}
+        to={formState.route.to}
+        showChange={formState.route.showChangeForm}
+        onChangeClick={() =>
+          setFormState((prev) => ({
+            ...prev,
+            route: { ...prev.route, showChangeForm: !prev.route.showChangeForm },
+          }))
+        }
+      />
+
+      {formState.route.showChangeForm && (
         <div className="flex justify-between rounded-md bg-slate-700 p-2">
-          <div className="flex flex-col">
-            <p className="text-sm text-slate-400">z</p>
-            <h2 className="text-xl">{`${fromCity.countryName}, ${fromCity.city}`}</h2>
-          </div>
-          <ArrowRightIcon className="w-8 text-slate-400" />
-          <div className="flex flex-col">
-            <p className="text-sm text-slate-400">do</p>
-            <h2 className="text-xl">{`${toCity.countryName}, ${toCity.city}`}</h2>
-          </div>
+          <AddressSelect
+            value={formState.route.from}
+            onChange={(from) =>
+              setFormState((prev) => ({
+                ...prev,
+                route: { ...prev.route, from },
+              }))
+            }
+            label="Z"
+          />
+          <AddressSelect
+            value={formState.route.to}
+            onChange={(to) =>
+              setFormState((prev) => ({
+                ...prev,
+                route: { ...prev.route, to },
+              }))
+            }
+            label="Do"
+          />
         </div>
-        {showChangeRoad && <ChangeRoad />}
-        <div className="flex flex-col gap-2 md:flex-row">
-          <Input title="Najwcześniej o" type="datetime-local" />
-          <Input title="Najpóźniej o" type="datetime-local" />
-        </div>
+      )}
+
+      <div className="flex flex-col gap-2 md:flex-row">
+        <Input
+          title="Najwcześniej o"
+          type="datetime-local"
+          value={formState.route.earliestTime.toISOString()}
+          onChange={(e) =>
+            setFormState((prev) => ({
+              ...prev,
+              route: { ...prev.route, earliestTime: e.target.value as unknown as Date },
+            }))
+          }
+        />
+        <Input
+          title="Najpóźniej o"
+          type="datetime-local"
+          value={formState.route.latestTime.toISOString()}
+          onChange={(e) =>
+            setFormState((prev) => ({
+              ...prev,
+              route: { ...prev.route, latestTime: e.target.value as unknown as Date },
+            }))
+          }
+        />
       </div>
+
       <Button type="submit">Wyślij propozycje umowy</Button>
     </form>
   );
