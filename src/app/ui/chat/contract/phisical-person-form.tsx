@@ -19,6 +19,7 @@ export default function PhisicalPersonForm({
       <AddressSelect
         value={value.address}
         onChange={(address) => onChange({ ...value, address })}
+        label="Podaj adres"
       />
     </div>
   );

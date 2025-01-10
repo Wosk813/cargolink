@@ -47,9 +47,6 @@ export default function ContractForm() {
     cargo: {
       category: '',
       name: '',
-      weight: '',
-      dimensions: '',
-      height: '',
     },
   });
 
@@ -199,44 +196,11 @@ export default function ContractForm() {
             }))
           }
         />
-        <div className="flex gap-2">
-          <Input
-            title="Waga towaru"
-            value={formState.cargo.weight}
-            onChange={(e) =>
-              setFormState((prev) => ({
-                ...prev,
-                cargo: { ...prev.cargo, weight: e.target.value },
-              }))
-            }
-          />
-          <Input
-            title="Wymiary towaru"
-            value={formState.cargo.dimensions}
-            onChange={(e) =>
-              setFormState((prev) => ({
-                ...prev,
-                cargo: { ...prev.cargo, dimensions: e.target.value },
-              }))
-            }
-          />
-          <Input
-            title="Wysokość towaru"
-            value={formState.cargo.height}
-            onChange={(e) =>
-              setFormState((prev) => ({
-                ...prev,
-                cargo: { ...prev.cargo, height: e.target.value },
-              }))
-            }
-          />
-        </div>
       </div>
 
       <Route
         from={formState.route.from}
         to={formState.route.to}
-        showChange={formState.route.showChangeForm}
         onChangeClick={() =>
           setFormState((prev) => ({
             ...prev,

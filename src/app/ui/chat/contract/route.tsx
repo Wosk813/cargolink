@@ -4,12 +4,10 @@ import { ArrowRightIcon } from '@heroicons/react/24/outline';
 export default function Route({
   from,
   to,
-  showChange,
   onChangeClick,
 }: {
   from: Address;
   to: Address;
-  showChange: boolean;
   onChangeClick: () => void;
 }) {
   return (
@@ -24,11 +22,13 @@ export default function Route({
         <div className="flex flex-col">
           <p className="text-sm text-slate-400">z</p>
           <h2 className="text-xl">{`${from.countryName}, ${from.city}`}</h2>
+          <p>{from.street}</p>
         </div>
         <ArrowRightIcon className="w-8 text-slate-400" />
         <div className="flex flex-col">
           <p className="text-sm text-slate-400">do</p>
           <h2 className="text-xl">{`${to.countryName}, ${to.city}`}</h2>
+          <p>{to.street}</p>
         </div>
       </div>
     </div>

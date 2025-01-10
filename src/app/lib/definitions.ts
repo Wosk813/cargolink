@@ -463,8 +463,5 @@ export type ContractFormState = {
   cargo: {
     category: string;
     name: string;
-    weight: string;
-    dimensions: string;
-    height: string;
   };
 };

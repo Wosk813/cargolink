@@ -1,6 +1,6 @@
-import { ContractFormState } from "@/src/app/lib/definitions";
-import Input from "../../input";
-import AddressSelect from "./address-select";
+import { ContractFormState } from '@/src/app/lib/definitions';
+import Input from '../../input';
+import AddressSelect from './address-select';
 
 export default function CompanyForm({
   value,
@@ -24,6 +24,7 @@ export default function CompanyForm({
       <AddressSelect
         value={value.address}
         onChange={(address) => onChange({ ...value, address })}
+        label="Podaj adres przedsiębiorstwa"
       />
     </div>
   );
