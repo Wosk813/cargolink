@@ -5,13 +5,13 @@ import 'react-country-state-city/dist/react-country-state-city.css';
 import Input from '../../input';
 import InputRadio from '../../inputRadio';
 import { Button } from '../../button';
-import { ContractFormState } from '@/src/app/lib/definitions';
+import { AnnouncementProps, ContractFormState, ErrandProps } from '@/src/app/lib/definitions';
 import AddressSelect from './address-select';
 import Route from './route';
 import CompanyForm from './company-form';
 import PhisicalPersonForm from './phisical-person-form';
 
-export default function ContractForm() {
+export default function ContractForm({ post }: { post: AnnouncementProps | ErrandProps }) {
   const [formState, setFormState] = useState<ContractFormState>({
     principal: {
       isCompany: false,

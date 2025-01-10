@@ -474,3 +474,46 @@ export enum RowMapping {
   ChatType,
   ChatMessage,
 }
+
+export enum PostTypes {
+  Announcement,
+  Errand,
+}
+
+export type Post = {
+  postType: PostTypes;
+  principal?: {
+    isCompany: boolean;
+    companyDetails?: {
+      name: string;
+      taxId: string;
+      address: Address;
+    };
+    personDetails?: {
+      name: string;
+      address: Address;
+    };
+  };
+  carrier?: {
+    isCompany: boolean;
+    companyDetails?: {
+      name: string;
+      taxId: string;
+      address: Address;
+    };
+    personDetails?: {
+      name: string;
+      address: Address;
+    };
+  };
+  goods?: {
+    category: GoodsCategory;
+    name: string;
+  };
+  road: {
+    from: Address;
+    to: Address;
+    departureDate?: Date;
+    arrivalDate?: Date;
+  };
+};

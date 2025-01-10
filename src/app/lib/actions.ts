@@ -3,7 +3,7 @@
 import { createSession, deleteSession } from './session';
 import { redirect } from '@/src/i18n/routing';
 import { neon } from '@neondatabase/serverless';
-import { RowMapping } from '@/src/app/lib/definitions';
+import { Post, PostTypes, RowMapping } from '@/src/app/lib/definitions';
 import {
   FilterProps,
   SignupFormData,
@@ -144,7 +144,10 @@ export async function getAnnouncements(
 
   dbrows.map((dbrow) => {
     if (!dbrow['is_accepted']) return;
-    let row: AnnouncementProps | null = dbRowToObject(dbrow, RowMapping.AnnoucementProps) as AnnouncementProps;
+    let row: AnnouncementProps | null = dbRowToObject(
+      dbrow,
+      RowMapping.AnnoucementProps,
+    ) as AnnouncementProps;
     announcements.push(row);
   });
 
@@ -449,11 +452,22 @@ export async function addOpinion(state: any, formData: FormData) {
   redirect({ locale: 'pl', href: `/profile/${formData.get('forUserId')}` });
 }
 
-export async function getPostById(postId: string) {
+export async function getPost({
+  postId,
+  secoundUserId,
+}: {
+  postId: string;
+  secoundUserId: string;
+  }): Promise<Post | null> {
+  let post: Post = {postType: PostTypes.Announcement, road}
   const annoucements = await sql('SELECT * FROM announcements WHERE announcement_id = $1', [
     postId,
   ]);
   if (annoucements.length > 0) {
-    return dbRowToObject(annoucements[0], RowMapping.AnnoucementProps);
+    post.postType = PostTypes.Announcement
+  } else {
+    const errands = await sql('SELECT * FROM errands WHERE errand_id = $1', [postId]);
+    return dbRowToObject(errands[0], RowMapping.ErrandProps) as ErrandProps;
   }
+  return null;
 }

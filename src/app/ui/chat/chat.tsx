@@ -13,7 +13,7 @@ type ChatProps = {
   showArrow: boolean;
   arrowClick: () => void;
   chat: ChatType;
-  userId: string;
+  currentUserId: string;
   messages: ChatMessage[];
   isLoading: boolean;
 };
@@ -24,15 +24,19 @@ export default function Chat({
   arrowClick,
   chat,
   messages,
-  userId,
+  currentUserId,
   isLoading,
 }: ChatProps) {
   const [state, handleSend, pending] = useActionState(sendMessage, undefined);
   const t = useTranslations('chat');
   let userIsAuthor = false;
-  if (userId == chat.postAuthorUserId) userIsAuthor = true;
+  if (currentUserId == chat.postAuthorUserId) userIsAuthor = true;
 
   let languages = userIsAuthor ? chat.interestedUserLanguages : chat.postAuthorUserLanguages;
+
+  const secoundUserId = (chat.interestedUserId == currentUserId
+    ? chat.postAuthorUserId
+    : chat.interestedUserId);
 
   return (
     <div className={`flex w-full flex-col justify-between ${hidden ? 'hidden md:block' : ''}`}>
@@ -45,9 +49,9 @@ export default function Chat({
             <ArrowLeftIcon className="h-4" />
             {t('showChats')}
           </div>
-          <h1 className="text-3xl font-bold">
+          <Link href={`/profile/${secoundUserId}`} className="text-3xl font-bold">
             {userIsAuthor ? chat.interestedUserName : chat.postAuthorUserName}
-          </h1>
+          </Link>
           <p className="text-sm text-slate-400">{t('thisPersonSpeaksLanguages')}</p>
           <p>
             {languages?.length
@@ -61,7 +65,7 @@ export default function Chat({
               key={message.id}
               date={message.sentAt}
               message={message.content}
-              myMessage={message.senderId == userId}
+              myMessage={message.senderId == currentUserId}
             />
           ))}
         </div>
@@ -75,7 +79,7 @@ export default function Chat({
           </Button>
         </form>
         <Link
-          href={`/chats/sendContract/${chat.announcementId ? chat.announcementId : chat.errandId}`}
+          href={`/chats/sendContract/${chat.announcementId ? chat.announcementId : chat.errandId}/${secoundUserId}`}
           className="rounded-md border border-yellow-300 p-2 text-center text-yellow-300"
         >
           {t('sendContractProposals')}

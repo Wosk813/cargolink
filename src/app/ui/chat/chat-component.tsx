@@ -9,11 +9,11 @@ import { useTranslations } from 'next-intl';
 
 export default function ChatComponent({
   chats,
-  userId,
+  currentUserId,
   chatId,
 }: {
   chats: ChatType[];
-  userId: string;
+  currentUserId: string;
   chatId: string;
 }) {
   const [chatListHidden, setChatListHidden] = useState(false);
@@ -72,7 +72,7 @@ export default function ChatComponent({
         ))}
       </div>
       <Chat
-        userId={userId}
+        currentUserId={currentUserId}
         chat={chats.find((chat) => chat.id === currentChatId) || ({} as ChatType)}
         hidden={chatHidden}
         showArrow={chatListHidden}
