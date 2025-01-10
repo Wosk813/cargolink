@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl';
-import { AnnoucementProps } from '../../lib/definitions';
+import { AnnouncementProps } from '../../lib/definitions';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 
 export const FormattedDate = ({ date }: { date: Date | undefined }) => {
@@ -39,7 +39,7 @@ export default function Annoucement({
   departureDate,
   arrivalDate,
   carProps,
-}: AnnoucementProps) {
+}: AnnouncementProps) {
   const t = useTranslations('posts');
 
   return (

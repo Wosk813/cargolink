@@ -238,7 +238,7 @@ export type SessionPayload = {
   accountType?: AccountType;
 };
 
-export type AnnoucementProps = {
+export type AnnouncementProps = {
   id?: string;
   title: string;
   fromCity?: string;
@@ -465,3 +465,12 @@ export type ContractFormState = {
     name: string;
   };
 };
+
+export enum RowMapping {
+  Opinion,
+  ErrandProps,
+  AnnoucementProps,
+  User,
+  ChatType,
+  ChatMessage,
+}

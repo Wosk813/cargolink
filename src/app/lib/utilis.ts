@@ -1,10 +1,23 @@
-import { AnnoucementProps, ChatMessage, ChatType, ErrandProps, FilterProps, GeoPoint, GoodsCategory, Opinion, SortDirection, User } from "./definitions";
+import Errand from '../ui/posts/errand';
+import {
+  AnnouncementProps,
+  ChatMessage,
+  ChatType,
+  ErrandProps,
+  FilterProps,
+  GeoPoint,
+  GoodsCategory,
+  Opinion,
+  RowMapping,
+  SortDirection,
+  User,
+} from './definitions';
 
-export function dbRowToObject(row: any, object: string) {
+export function dbRowToObject(row: any, object: RowMapping) {
   let fromGeoPoint: GeoPoint;
   let toGeoPoint: GeoPoint;
   switch (object) {
-    case 'errand':
+    case RowMapping.ErrandProps:
       fromGeoPoint = {
         type: 'Point',
         coordinates: [Number(row['from_longitude']), Number(row['from_latitude'])],
@@ -40,7 +53,7 @@ export function dbRowToObject(row: any, object: string) {
         roadColor: row['road_color'],
       };
       return errand;
-    case 'annoucement':
+    case RowMapping.AnnoucementProps:
       fromGeoPoint = {
         type: 'Point',
         coordinates: [Number(row['from_longitude']), Number(row['from_latitude'])],
@@ -51,7 +64,7 @@ export function dbRowToObject(row: any, object: string) {
         coordinates: [Number(row['to_longitude']), Number(row['to_latitude'])],
       };
 
-      const announcement: AnnoucementProps = {
+      const announcement: AnnouncementProps = {
         id: row['announcement_id'],
         title: row['title'],
         fromCity: row['from_city'],
@@ -76,7 +89,7 @@ export function dbRowToObject(row: any, object: string) {
         roadColor: row['road_color'],
       };
       return announcement;
-    case 'user':
+    case RowMapping.User:
       const user: User = {
         id: row['user_id'],
         firstname: row['first_name'],
@@ -93,7 +106,7 @@ export function dbRowToObject(row: any, object: string) {
         postCount: row['posts_count'],
       };
       return user;
-    case 'chat':
+    case RowMapping.ChatType:
       const chat: ChatType = {
         id: row['chat_id'],
         interestedUserId: row['interested_user_id'],
@@ -107,7 +120,7 @@ export function dbRowToObject(row: any, object: string) {
         errandId: row['errand_id'],
       };
       return chat;
-    case 'message':
+    case RowMapping.ChatMessage:
       const message: ChatMessage = {
         id: row['message_id'],
         senderId: row['sender_id'],
@@ -116,7 +129,7 @@ export function dbRowToObject(row: any, object: string) {
         readen: row['readen'],
       };
       return message;
-    case 'opinion':
+    case RowMapping.Opinion:
       const opinion: Opinion = {
         id: row['opinion_id'],
         stars: row['stars'],
@@ -128,8 +141,6 @@ export function dbRowToObject(row: any, object: string) {
       };
       return opinion;
   }
-
-  return null;
 }
 
 export function filterOptionsToSQL(filterOptions: FilterProps, onColumn: string = ''): string {

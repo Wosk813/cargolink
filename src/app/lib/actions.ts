@@ -3,12 +3,13 @@
 import { createSession, deleteSession } from './session';
 import { redirect } from '@/src/i18n/routing';
 import { neon } from '@neondatabase/serverless';
+import { RowMapping } from '@/src/app/lib/definitions';
 import {
   FilterProps,
   SignupFormData,
   SortDirection,
   ValidationErrors,
-  AnnoucementProps,
+  AnnouncementProps,
   User,
   newAnnouncementSchema,
   NewAnnouncementFormState,
@@ -114,7 +115,7 @@ export async function getUserById(userId: string): Promise<User> {
     'SELECT u.*, (SELECT COUNT(*) FROM announcements a WHERE a.author_id = u.user_id) as posts_count FROM users u WHERE u.user_id = $1',
     [userId],
   );
-  return dbRowToObject(user[0], 'user') as User;
+  return dbRowToObject(user[0], RowMapping.User) as User;
 }
 
 export async function getUserByEmail(email: string) {
@@ -139,11 +140,11 @@ export async function getAnnouncements(
   `;
 
   const dbrows = await sql(sqlString);
-  const announcements: Array<AnnoucementProps | null> = [];
+  const announcements: Array<AnnouncementProps | null> = [];
 
   dbrows.map((dbrow) => {
     if (!dbrow['is_accepted']) return;
-    let row: AnnoucementProps | null = dbRowToObject(dbrow, 'annoucement') as AnnoucementProps;
+    let row: AnnouncementProps | null = dbRowToObject(dbrow, RowMapping.AnnoucementProps) as AnnouncementProps;
     announcements.push(row);
   });
 
@@ -173,14 +174,14 @@ export async function getErrands(
 
   dbrows.map((dbrow) => {
     if (!dbrow['is_accepted']) return;
-    let row: ErrandProps | null = dbRowToObject(dbrow, 'errand') as ErrandProps;
+    let row: ErrandProps | null = dbRowToObject(dbrow, RowMapping.ErrandProps) as ErrandProps;
     errands.push(row);
   });
 
   return errands;
 }
 
-export async function getAnnouncementsById(id: string): Promise<AnnoucementProps | null> {
+export async function getAnnouncementsById(id: string): Promise<AnnouncementProps | null> {
   const result = await sql`
     SELECT 
       *,
@@ -194,7 +195,7 @@ export async function getAnnouncementsById(id: string): Promise<AnnoucementProps
 
   if (result.length === 0) return null;
 
-  return dbRowToObject(result[0], 'annoucement') as AnnoucementProps;
+  return dbRowToObject(result[0], RowMapping.AnnoucementProps) as AnnouncementProps;
 }
 
 export async function getErrandById(id: string): Promise<ErrandProps | null> {
@@ -214,7 +215,7 @@ export async function getErrandById(id: string): Promise<ErrandProps | null> {
 
   if (result.length === 0) return null;
 
-  return dbRowToObject(result[0], 'errand') as ErrandProps;
+  return dbRowToObject(result[0], RowMapping.ErrandProps) as ErrandProps;
 }
 
 export async function addAnnouncement(state: NewAnnouncementFormState, formData: FormData) {
@@ -348,7 +349,7 @@ export async function searchUsers(state: User[], formData: FormData) {
   query += ` AND account_type = '${formData.get('accountType')}'`;
 
   const users = await sql(query);
-  return users.map((user) => dbRowToObject(user, 'user') as User);
+  return users.map((user) => dbRowToObject(user, RowMapping.User) as User);
 }
 
 export async function getChats(userId: string): Promise<ChatType[]> {
@@ -359,13 +360,13 @@ export async function getChats(userId: string): Promise<ChatType[]> {
   );
   await Promise.all(
     dbChats.map(async (dbChat) => {
-      let chat: ChatType = dbRowToObject(dbChat, 'chat') as ChatType;
+      let chat: ChatType = dbRowToObject(dbChat, RowMapping.ChatType) as ChatType;
       const dbMessages = await sql('SELECT * FROM messages WHERE chat_id = $1', [
         dbChat['chat_id'],
       ]);
 
       chat.messages = dbMessages.map(
-        (dbMessage) => dbRowToObject(dbMessage, 'message') as ChatMessage,
+        (dbMessage) => dbRowToObject(dbMessage, RowMapping.ChatMessage) as ChatMessage,
       );
 
       chats.push(chat);
@@ -379,7 +380,7 @@ export async function getMessages(chatId: string) {
   let messages: ChatMessage[] = [];
   const dbMessages = await sql('SELECT * FROM messages WHERE chat_id = $1', [chatId]);
   dbMessages.map((dbMessage) => {
-    messages.push(dbRowToObject(dbMessage, 'message') as ChatMessage);
+    messages.push(dbRowToObject(dbMessage, RowMapping.ChatMessage) as ChatMessage);
   });
   return messages;
 }
@@ -433,7 +434,7 @@ export async function getOpinions(userId: string) {
     [userId],
   );
   dbOpinions.map((dbOpinion) => {
-    opinions.push(dbRowToObject(dbOpinion, 'opinion') as Opinion);
+    opinions.push(dbRowToObject(dbOpinion, RowMapping.Opinion) as Opinion);
   });
   return opinions;
 }
@@ -446,4 +447,13 @@ export async function addOpinion(state: any, formData: FormData) {
     [formData.get('forUserId'), formData.get('stars'), formData.get('desc'), userId],
   );
   redirect({ locale: 'pl', href: `/profile/${formData.get('forUserId')}` });
+}
+
+export async function getPostById(postId: string) {
+  const annoucements = await sql('SELECT * FROM announcements WHERE announcement_id = $1', [
+    postId,
+  ]);
+  if (annoucements.length > 0) {
+    return dbRowToObject(annoucements[0], RowMapping.AnnoucementProps);
+  }
 }

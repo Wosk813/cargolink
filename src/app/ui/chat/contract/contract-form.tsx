@@ -236,7 +236,7 @@ export default function ContractForm() {
 
       <div className="flex flex-col gap-2 md:flex-row">
         <Input
-          title="Najwcześniej o"
+          title="Data wyjazdu"
           type="datetime-local"
           value={formState.route.earliestTime.toISOString()}
           onChange={(e) =>
@@ -247,7 +247,7 @@ export default function ContractForm() {
           }
         />
         <Input
-          title="Najpóźniej o"
+          title="Data przyjazdu"
           type="datetime-local"
           value={formState.route.latestTime.toISOString()}
           onChange={(e) =>
