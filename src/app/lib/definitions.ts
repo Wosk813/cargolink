@@ -423,6 +423,7 @@ export type Address = {
   countryName: string;
   city: string;
   street?: string;
+  postalCode?: string;
 };
 
 export type ContractFormState = {
@@ -464,4 +465,4 @@ export type ContractFormState = {
     dimensions: string;
     height: string;
   };
-}
+};

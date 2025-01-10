@@ -8,55 +8,8 @@ import { Button } from '../../button';
 import { ContractFormState } from '@/src/app/lib/definitions';
 import AddressSelect from './address-select';
 import Route from './route';
-
-const CompanyForm = ({
-  value,
-  onChange,
-}: {
-  value: NonNullable<ContractFormState['principal']['companyDetails']>;
-  onChange: (details: NonNullable<ContractFormState['principal']['companyDetails']>) => void;
-}) => {
-  return (
-    <div className="flex flex-col gap-2">
-      <Input
-        title="Pełna nazwa firmy"
-        value={value.name}
-        onChange={(e) => onChange({ ...value, name: e.target.value })}
-      />
-      <Input
-        title="NIP"
-        value={value.taxId}
-        onChange={(e) => onChange({ ...value, taxId: e.target.value })}
-      />
-      <AddressSelect
-        value={value.address}
-        onChange={(address) => onChange({ ...value, address })}
-      />
-    </div>
-  );
-};
-
-const PhisicalPersonForm = ({
-  value,
-  onChange,
-}: {
-  value: NonNullable<ContractFormState['principal']['personDetails']>;
-  onChange: (details: NonNullable<ContractFormState['principal']['personDetails']>) => void;
-}) => {
-  return (
-    <div className="flex flex-col gap-2">
-      <Input
-        title="Imię i nazwisko"
-        value={value.name}
-        onChange={(e) => onChange({ ...value, name: e.target.value })}
-      />
-      <AddressSelect
-        value={value.address}
-        onChange={(address) => onChange({ ...value, address })}
-      />
-    </div>
-  );
-};
+import CompanyForm from './company-form';
+import PhisicalPersonForm from './phisical-person-form';
 
 export default function ContractForm() {
   const [formState, setFormState] = useState<ContractFormState>({
