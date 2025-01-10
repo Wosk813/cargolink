@@ -400,6 +400,8 @@ export type ChatType = {
   interestedUserName: string;
   interestedUserLanguages: string[];
   messages?: ChatMessage[];
+  announcementId?: string;
+  errandId?: string;
 };
 
 export type Language = {

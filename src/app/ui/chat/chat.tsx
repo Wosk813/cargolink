@@ -75,7 +75,7 @@ export default function Chat({
           </Button>
         </form>
         <Link
-          href="/chats/sendContract"
+          href={`/chats/sendContract/${chat.announcementId ? chat.announcementId : chat.errandId}`}
           className="rounded-md border border-yellow-300 p-2 text-center text-yellow-300"
         >
           {t('sendContractProposals')}

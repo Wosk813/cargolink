@@ -420,6 +420,8 @@ function dbRowToObject(row: any, object: string) {
         interestedUserLanguages: row['interested_user_languages'],
         postAuthorUserLanguages: row['post_author_languages'],
         title: row['title'],
+        announcementId: row['announcement_id'],
+        errandId: row['errand_id'],
       };
       return chat;
     case 'message':
