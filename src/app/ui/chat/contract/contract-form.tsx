@@ -1,124 +1,20 @@
 'use client';
 
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
-import { CitySelect, CountrySelect, StateSelect } from 'react-country-state-city';
-import { City, Country, State } from 'react-country-state-city/dist/esm/types';
 import 'react-country-state-city/dist/react-country-state-city.css';
 import Input from '../../input';
 import InputRadio from '../../inputRadio';
 import { Button } from '../../button';
-
-interface CityAddress {
-  countryId: number;
-  stateId: number;
-  countryName: string;
-  city: string;
-}
-
-interface FormState {
-  principal: {
-    isCompany: boolean;
-    address: CityAddress;
-    companyDetails?: {
-      name: string;
-      taxId: string;
-      address: CityAddress;
-      street: string;
-    };
-  };
-  carrier: {
-    isCompany: boolean;
-    address: CityAddress;
-    companyDetails?: {
-      name: string;
-      taxId: string;
-      address: CityAddress;
-      street: string;
-    };
-  };
-  route: {
-    from: CityAddress;
-    to: CityAddress;
-    showChangeForm: boolean;
-    earliestTime: Date;
-    latestTime: Date;
-  };
-  cargo: {
-    category: string;
-    name: string;
-    weight: string;
-    dimensions: string;
-    height: string;
-  };
-}
-
-const AddressSelect = ({
-  value,
-  onChange,
-  label,
-}: {
-  value: CityAddress;
-  onChange: (address: CityAddress) => void;
-  label?: string;
-}) => {
-  return (
-    <div className="flex flex-col gap-2">
-      {label && <p className="text-slate-400">{label}</p>}
-      <div className="flex gap-2 text-black">
-        <CountrySelect
-          required
-          className="w-full"
-          onChange={(e) => {
-            e = e as Country;
-            onChange({
-              ...value,
-              countryId: e.id,
-              countryName: e.name,
-              stateId: 0,
-              city: '',
-            });
-          }}
-          placeHolder="Wybierz kraj"
-          region="Europe"
-        />
-        <StateSelect
-          required
-          countryid={value.countryId}
-          onChange={(e) => {
-            e = e as State;
-            onChange({
-              ...value,
-              stateId: e.id,
-              city: '',
-            });
-          }}
-          placeHolder="Wybierz stan"
-        />
-        <CitySelect
-          required
-          countryid={value.countryId}
-          stateid={value.stateId}
-          onChange={(e) => {
-            e = e as City;
-            onChange({
-              ...value,
-              city: e.name,
-            });
-          }}
-          placeHolder="Wybierz miasto"
-        />
-      </div>
-    </div>
-  );
-};
+import { ContractFormState } from '@/src/app/lib/definitions';
+import AddressSelect from './address-select';
+import Route from './route';
 
 const CompanyForm = ({
   value,
   onChange,
 }: {
-  value: NonNullable<FormState['principal']['companyDetails']>;
-  onChange: (details: NonNullable<FormState['principal']['companyDetails']>) => void;
+  value: NonNullable<ContractFormState['principal']['companyDetails']>;
+  onChange: (details: NonNullable<ContractFormState['principal']['companyDetails']>) => void;
 }) => {
   return (
     <div className="flex flex-col gap-2">
@@ -136,56 +32,57 @@ const CompanyForm = ({
         value={value.address}
         onChange={(address) => onChange({ ...value, address })}
       />
+    </div>
+  );
+};
+
+const PhisicalPersonForm = ({
+  value,
+  onChange,
+}: {
+  value: NonNullable<ContractFormState['principal']['personDetails']>;
+  onChange: (details: NonNullable<ContractFormState['principal']['personDetails']>) => void;
+}) => {
+  return (
+    <div className="flex flex-col gap-2">
       <Input
-        title="Ulica"
-        value={value.street}
-        onChange={(e) => onChange({ ...value, street: e.target.value })}
+        title="Imię i nazwisko"
+        value={value.name}
+        onChange={(e) => onChange({ ...value, name: e.target.value })}
+      />
+      <AddressSelect
+        value={value.address}
+        onChange={(address) => onChange({ ...value, address })}
       />
     </div>
   );
 };
 
-const RouteDisplay = ({
-  from,
-  to,
-  showChange,
-  onChangeClick,
-}: {
-  from: CityAddress;
-  to: CityAddress;
-  showChange: boolean;
-  onChangeClick: () => void;
-}) => (
-  <div className="flex flex-col gap-2">
-    <div className="flex items-center gap-2">
-      <p>Informacje o trasie</p>
-      <button className="text-yellow-300" onClick={onChangeClick}>
-        <u>Zmień</u>
-      </button>
-    </div>
-    <div className="flex justify-between rounded-md bg-slate-700 p-2">
-      <div className="flex flex-col">
-        <p className="text-sm text-slate-400">z</p>
-        <h2 className="text-xl">{`${from.countryName}, ${from.city}`}</h2>
-      </div>
-      <ArrowRightIcon className="w-8 text-slate-400" />
-      <div className="flex flex-col">
-        <p className="text-sm text-slate-400">do</p>
-        <h2 className="text-xl">{`${to.countryName}, ${to.city}`}</h2>
-      </div>
-    </div>
-  </div>
-);
-
 export default function ContractForm() {
-  const [formState, setFormState] = useState<FormState>({
+  const [formState, setFormState] = useState<ContractFormState>({
     principal: {
       isCompany: false,
-      address: { countryId: 0, stateId: 0, countryName: '', city: '' },
+      companyDetails: {
+        address: { countryId: 0, stateId: 0, countryName: '', city: '' },
+        taxId: '',
+        name: '',
+      },
+      personDetails: {
+        name: '',
+        address: { countryId: 0, stateId: 0, countryName: '', city: '' },
+      },
     },
     carrier: {
       isCompany: true,
-      address: { countryId: 0, stateId: 0, countryName: '', city: '' },
+      companyDetails: {
+        address: { countryId: 0, stateId: 0, countryName: '', city: '' },
+        taxId: '',
+        name: '',
+      },
+      personDetails: {
+        name: '',
+        address: { countryId: 0, stateId: 0, countryName: '', city: '' },
+      },
     },
     route: {
       from: { countryId: 0, stateId: 0, countryName: '', city: '' },
@@ -203,14 +100,8 @@ export default function ContractForm() {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Walidacja i wysyłka formularza
-    console.log(formState);
-  };
-
   return (
-    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+    <form className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
         <p>Zleceniodawca</p>
         <div className="flex flex-col gap-2 md:flex-row">
@@ -245,7 +136,6 @@ export default function ContractForm() {
                 name: '',
                 taxId: '',
                 address: { countryId: 0, stateId: 0, countryName: '', city: '' },
-                street: '',
               }
             }
             onChange={(details) =>
@@ -256,12 +146,17 @@ export default function ContractForm() {
             }
           />
         ) : (
-          <AddressSelect
-            value={formState.principal.address}
-            onChange={(address) =>
+          <PhisicalPersonForm
+            value={
+              formState.principal.personDetails ?? {
+                name: '',
+                address: { countryId: 0, stateId: 0, countryName: '', city: '' },
+              }
+            }
+            onChange={(details) =>
               setFormState((prev) => ({
                 ...prev,
-                principal: { ...prev.principal, address },
+                principal: { ...prev.principal, personDetails: details },
               }))
             }
           />
@@ -302,7 +197,6 @@ export default function ContractForm() {
                 name: '',
                 taxId: '',
                 address: { countryId: 0, stateId: 0, countryName: '', city: '' },
-                street: '',
               }
             }
             onChange={(details) =>
@@ -313,12 +207,17 @@ export default function ContractForm() {
             }
           />
         ) : (
-          <AddressSelect
-            value={formState.carrier.address}
-            onChange={(address) =>
+          <PhisicalPersonForm
+            value={
+              formState.carrier.personDetails ?? {
+                name: '',
+                address: { countryId: 0, stateId: 0, countryName: '', city: '' },
+              }
+            }
+            onChange={(details) =>
               setFormState((prev) => ({
                 ...prev,
-                carrier: { ...prev.carrier, address },
+                carrier: { ...prev.carrier, personDetails: details },
               }))
             }
           />
@@ -381,7 +280,7 @@ export default function ContractForm() {
         </div>
       </div>
 
-      <RouteDisplay
+      <Route
         from={formState.route.from}
         to={formState.route.to}
         showChange={formState.route.showChangeForm}

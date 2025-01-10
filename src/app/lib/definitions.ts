@@ -416,3 +416,52 @@ export type Opinion = {
   authorFirstName?: string;
   authorLastName?: string;
 };
+
+export type Address = {
+  countryId: number;
+  stateId: number;
+  countryName: string;
+  city: string;
+  street?: string;
+};
+
+export type ContractFormState = {
+  principal: {
+    isCompany: boolean;
+    companyDetails: {
+      name: string;
+      taxId: string;
+      address: Address;
+    };
+    personDetails: {
+      name: string;
+      address: Address;
+    };
+  };
+  carrier: {
+    isCompany: boolean;
+    companyDetails: {
+      name: string;
+      taxId: string;
+      address: Address;
+    };
+    personDetails: {
+      name: string;
+      address: Address;
+    };
+  };
+  route: {
+    from: Address;
+    to: Address;
+    showChangeForm: boolean;
+    earliestTime: Date;
+    latestTime: Date;
+  };
+  cargo: {
+    category: string;
+    name: string;
+    weight: string;
+    dimensions: string;
+    height: string;
+  };
+}
