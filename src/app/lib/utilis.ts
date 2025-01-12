@@ -12,6 +12,7 @@ import {
   SortDirection,
   User,
 } from './definitions';
+import bcrypt from 'bcrypt';
 
 export function dbRowToObject(row: any, object: RowMapping) {
   let fromGeoPoint: GeoPoint;
@@ -19,13 +20,11 @@ export function dbRowToObject(row: any, object: RowMapping) {
   switch (object) {
     case RowMapping.ErrandProps:
       fromGeoPoint = {
-        type: 'Point',
-        coordinates: [Number(row['from_longitude']), Number(row['from_latitude'])],
+        coordinates: [row['from_longitude'], row['from_latitude']],
       };
 
       toGeoPoint = {
-        type: 'Point',
-        coordinates: [Number(row['to_longitude']), Number(row['to_latitude'])],
+        coordinates: [row['to_longitude'], row['to_latitude']],
       };
 
       const errand: ErrandProps = {
@@ -239,4 +238,8 @@ export function sortDirectionToSQL(sortBy: SortDirection, onColumn: string = '')
       break;
   }
   return `ORDER BY ${onColumn}${by}`;
+}
+
+export async function verifyPassword(plainPassword: string, hashedPassword: string) {
+  return await bcrypt.compare(plainPassword, hashedPassword);
 }

@@ -4,6 +4,7 @@ import { createSession, deleteSession } from './session';
 import { redirect } from '@/src/i18n/routing';
 import { neon } from '@neondatabase/serverless';
 import { Post, PostTypes, RowMapping } from '@/src/app/lib/definitions';
+import bcrypt from 'bcrypt';
 import {
   FilterProps,
   SignupFormData,
@@ -22,7 +23,7 @@ import {
 } from '@/src/app/lib/definitions';
 import { getTranslations } from 'next-intl/server';
 import { verifySession } from './dal';
-import { dbRowToObject, filterOptionsToSQL, sortDirectionToSQL } from './utilis';
+import { dbRowToObject, filterOptionsToSQL, sortDirectionToSQL, verifyPassword } from './utilis';
 
 const sql = neon(
   `postgres://neondb_owner:zZD3Rg6YXVMn@ep-soft-firefly-a2gmv5of-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require`,
@@ -47,26 +48,42 @@ export async function logout() {
 }
 
 export async function register(formData: SignupFormData) {
-  if (!formData) {
+  if (!formData || !formData.password) {
     return;
   }
+
+  const hashedPassword = await bcrypt.hash(formData.password, 10);
   const { firstname, lastname, email, password, accountType, company, languages } = formData;
   if (formData.asCompany && formData.company) {
-    const { companyName, taxId: nip, country, postalCode, street, city } = company;
-    await sql(
-      'INSERT INTO companies (name, nip, country, city, street, postal_code) VALUES ($1, $2, $3, $4, $5, $6)',
-      [companyName, nip, country, city, street, postalCode],
+    const address_id = await sql(
+      'INSERT INTO addresses (country_id, state_id, city_id, city_name, postal_code, street, geography, country_name, country_iso2) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING address_id',
+      [
+        company.address.countryId,
+        company.address.stateId,
+        company.address.cityId,
+        company.address.city,
+        company.address.postalCode,
+        company.address.street,
+        `POINT(${company.address.geography?.coordinates[0]} ${company.address.geography?.coordinates[1]})`,
+        company.address.countryName,
+        company.address.countryIso2,
+      ],
     );
-    const results = await sql('SELECT * FROM companies WHERE nip = $1', [nip]);
+
+    const companyId = await sql(
+      'INSERT INTO companies (name, taxId, address_id) VALUES ($1, $2, $3) RETURNING company_id',
+      [company.companyName, company.taxId, address_id[0]['address_id']],
+    );
+
     await sql(
       'INSERT INTO users (first_name, last_name, email, password, account_type, company_id, languages, is_phisical_person) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
       [
         firstname,
         lastname,
         email,
-        password,
+        hashedPassword,
         accountType,
-        results[0]['company_id'],
+        companyId[0]['company_id'],
         languages,
         false,
       ],
@@ -74,7 +91,7 @@ export async function register(formData: SignupFormData) {
   } else {
     await sql(
       'INSERT INTO users (first_name, last_name, email, password, account_type, company_id, languages, is_phisical_person) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
-      [firstname, lastname, email, password, accountType, null, languages, true],
+      [firstname, lastname, email, hashedPassword, accountType, null, languages, true],
     );
   }
   const user = await sql('SELECT * FROM users WHERE email = $1', [email]);
@@ -98,21 +115,33 @@ export async function checkCredentials(
   password: string,
 ): Promise<{ errors: string } | undefined> {
   const t = await getTranslations('login');
-  const results = await sql('SELECT * FROM users WHERE email = $1 AND password = $2', [
-    email,
-    password,
-  ]);
 
-  if (results.length == 0) {
+  const results = await sql('SELECT * FROM users WHERE email = $1', [email]);
+
+  if (results.length === 0) {
     return {
       errors: t('credentialsError'),
     };
   }
+
+  const user = results[0];
+  const hashedPassword = user.password; 
+
+  const isPasswordValid = await verifyPassword(password, hashedPassword);
+
+  if (!isPasswordValid) {
+    return {
+      errors: t('credentialsError'),
+    };
+  }
+
+  return undefined;
 }
+
 
 export async function getUserById(userId: string): Promise<User> {
   const user = await sql(
-    'SELECT u.*, (SELECT COUNT(*) FROM announcements a WHERE a.author_id = u.user_id) as posts_count FROM users u WHERE u.user_id = $1',
+    'SELECT u.*, COALESCE((SELECT COUNT(*) FROM announcements a WHERE a.author_id = u.user_id), (SELECT COUNT(*) FROM errands e WHERE e.author_id = u.user_id)) AS posts_count FROM users u WHERE u.user_id = $1;',
     [userId],
   );
   return dbRowToObject(user[0], RowMapping.User) as User;
@@ -452,22 +481,22 @@ export async function addOpinion(state: any, formData: FormData) {
   redirect({ locale: 'pl', href: `/profile/${formData.get('forUserId')}` });
 }
 
-export async function getPost({
-  postId,
-  secoundUserId,
-}: {
-  postId: string;
-  secoundUserId: string;
-}): Promise<Post | null> {
-  let post: Post = { postType: PostTypes.Announcement, road };
-  const annoucements = await sql('SELECT * FROM announcements WHERE announcement_id = $1', [
-    postId,
-  ]);
-  if (annoucements.length > 0) {
-    post.postType = PostTypes.Announcement;
-  } else {
-    const errands = await sql('SELECT * FROM errands WHERE errand_id = $1', [postId]);
-    return dbRowToObject(errands[0], RowMapping.ErrandProps) as ErrandProps;
-  }
-  return null;
-}
+// export async function getPost({
+//   postId,
+//   secoundUserId,
+// }: {
+//   postId: string;
+//   secoundUserId: string;
+// }): Promise<Post | null> {
+//   let post: Post = { postType: PostTypes.Announcement, road };
+//   const annoucements = await sql('SELECT * FROM announcements WHERE announcement_id = $1', [
+//     postId,
+//   ]);
+//   if (annoucements.length > 0) {
+//     post.postType = PostTypes.Announcement;
+//   } else {
+//     const errands = await sql('SELECT * FROM errands WHERE errand_id = $1', [postId]);
+//     return dbRowToObject(errands[0], RowMapping.ErrandProps) as ErrandProps;
+//   }
+//   return null;
+// }
