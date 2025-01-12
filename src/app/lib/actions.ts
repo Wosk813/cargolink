@@ -3,7 +3,7 @@
 import { createSession, deleteSession } from './session';
 import { redirect } from '@/src/i18n/routing';
 import { neon } from '@neondatabase/serverless';
-import { Post, PostTypes, RowMapping } from '@/src/app/lib/definitions';
+import { Address, RowMapping } from '@/src/app/lib/definitions';
 import bcrypt from 'bcrypt';
 import {
   FilterProps,
@@ -55,24 +55,11 @@ export async function register(formData: SignupFormData) {
   const hashedPassword = await bcrypt.hash(formData.password, 10);
   const { firstname, lastname, email, password, accountType, company, languages } = formData;
   if (formData.asCompany && formData.company) {
-    const address_id = await sql(
-      'INSERT INTO addresses (country_id, state_id, city_id, city_name, postal_code, street, geography, country_name, country_iso2) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING address_id',
-      [
-        company.address.countryId,
-        company.address.stateId,
-        company.address.cityId,
-        company.address.city,
-        company.address.postalCode,
-        company.address.street,
-        `POINT(${company.address.geography?.coordinates[0]} ${company.address.geography?.coordinates[1]})`,
-        company.address.countryName,
-        company.address.countryIso2,
-      ],
-    );
+    const address_id = await addAddress(formData.company.address);
 
     const companyId = await sql(
       'INSERT INTO companies (name, taxId, address_id) VALUES ($1, $2, $3) RETURNING company_id',
-      [company.companyName, company.taxId, address_id[0]['address_id']],
+      [company.companyName, company.taxId, address_id],
     );
 
     await sql(
@@ -125,7 +112,7 @@ export async function checkCredentials(
   }
 
   const user = results[0];
-  const hashedPassword = user.password; 
+  const hashedPassword = user.password;
 
   const isPasswordValid = await verifyPassword(password, hashedPassword);
 
@@ -137,7 +124,6 @@ export async function checkCredentials(
 
   return undefined;
 }
-
 
 export async function getUserById(userId: string): Promise<User> {
   const user = await sql(
@@ -217,10 +203,6 @@ export async function getAnnouncementsById(id: string): Promise<AnnouncementProp
   const result = await sql`
     SELECT 
       *,
-      ST_X(from_geography::geometry) as from_longitude,
-      ST_Y(from_geography::geometry) as from_latitude,
-      ST_X(to_geography::geometry) as to_longitude,
-      ST_Y(to_geography::geometry) as to_latitude
     FROM announcements 
     WHERE announcement_id = ${id}
   `;
@@ -250,6 +232,24 @@ export async function getErrandById(id: string): Promise<ErrandProps | null> {
   return dbRowToObject(result[0], RowMapping.ErrandProps) as ErrandProps;
 }
 
+export async function addAddress(addres: Address): Promise<string> {
+  const addresses = await sql(
+    'INSERT INTO addresses (country_id, state_id, city_id, city_name, postal_code, street, geography, country_name, country_iso2) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING address_id',
+    [
+      addres.countryId,
+      addres.stateId,
+      addres.cityId,
+      addres.city,
+      addres.postalCode,
+      addres.street,
+      `POINT(${addres.geography?.coordinates[0]} ${addres.geography?.coordinates[1]})`,
+      addres.countryName,
+      addres.countryIso2,
+    ],
+  );
+  return addresses[0]['address_id'];
+}
+
 export async function addAnnouncement(state: NewAnnouncementFormState, formData: FormData) {
   const t = await getTranslations('addPost');
   const validatedFields = newAnnouncementSchema(t).safeParse({
@@ -264,10 +264,8 @@ export async function addAnnouncement(state: NewAnnouncementFormState, formData:
     departureDate: formData.get('departureDate'),
     arrivalDate: formData.get('arrivalDate'),
     desc: formData.get('desc'),
-    fromLatitude: formData.get('fromLatitude'),
-    fromLongitude: formData.get('fromLongitude'),
-    toLatitude: formData.get('toLatitude'),
-    toLongitude: formData.get('toLongitude'),
+    from: JSON.parse(formData.get('from') as string) as Address,
+    to: JSON.parse(formData.get('to') as string) as Address,
   });
   if (!validatedFields.success) {
     return {
@@ -277,8 +275,13 @@ export async function addAnnouncement(state: NewAnnouncementFormState, formData:
   const data = validatedFields.data;
   let [size_x, size_y] = data.maxSize.split('x').map(Number);
   const { userId } = await verifySession();
+
+  const from_address_id = await addAddress(data.from);
+  const to_address_id = await addAddress(data.to);
+
+  console.log(userId);
   await sql(
-    'INSERT INTO announcements (title, description, start_date, arrive_date, max_weight, size_x, size_y, max_height, author_id, is_accepted, vehicle_brand, vehicle_model, from_geography, to_geography, from_city, to_city, road_color) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)',
+    'INSERT INTO announcements (title, description, start_date, arrive_date, max_weight, size_x, size_y, max_height, author_id, is_accepted, vehicle_brand, vehicle_model, from_address_id, to_address_id, road_color) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',
     [
       data.title,
       data.desc,
@@ -292,10 +295,8 @@ export async function addAnnouncement(state: NewAnnouncementFormState, formData:
       false,
       data.brand,
       data.model,
-      `POINT(${data.fromLatitude} ${data.fromLongitude})`,
-      `POINT(${data.toLatitude} ${data.toLongitude})`,
-      data.fromCity,
-      data.toCity,
+      from_address_id,
+      to_address_id,
       '#' + ((Math.random() * 0xffffff) << 0).toString(16),
     ],
   );

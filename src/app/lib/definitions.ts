@@ -84,22 +84,13 @@ export const newAnnouncementSchema = (t: any) =>
     maxHeight: z.coerce
       .number()
       .refine(inRange(1, 1_000), { message: t('valueBetween') + ' 1 - 1000' }),
-    fromCity: z
-      .string()
-      .min(1, { message: t('mustNotBeEmpty') })
-      .trim(),
-    toCity: z
-      .string()
-      .min(1, { message: t('mustNotBeEmpty') })
-      .trim(),
     desc: z.string().trim(),
     departureDate: z.coerce.date(),
     arrivalDate: z.coerce.date(),
-    fromLatitude: z.coerce.number(),
-    fromLongitude: z.coerce.number(),
-    toLatitude: z.coerce.number(),
-    toLongitude: z.coerce.number(),
+    from: AddressSchema(t),
+    to: AddressSchema(t),
   });
+
 
 export type NewAnnouncementFormState =
   | {
@@ -171,9 +162,28 @@ export const SignupFormThirdSchema = (t: any) =>
 
 export const AddressSchema = (t: any) =>
   z.object({
+    countryId: z.number(),
+    stateId: z.number(),
+    cityId: z.number(),
+    countryName: z.string().min(1, { message: t('mustNotBeEmpty') }),
     city: z.string().min(1, { message: t('mustNotBeEmpty') }),
-    postalCode: z.string().regex(/^\d{2}-\d{3}$/, { message: t('invalidPostalCode') }),
-    street: z.string().min(1, { message: t('mustNotBeEmpty') }),
+    geography: z
+      .object({
+        coordinates: z.tuple([
+          z.string().regex(/^\d+\.\d+$/, { message: t('invalidCoordinate') }),
+          z.string().regex(/^\d+\.\d+$/, { message: t('invalidCoordinate') }),
+        ]),
+      })
+      .optional(),
+    street: z
+      .string()
+      .min(1, { message: t('mustNotBeEmpty') })
+      .optional(),
+    postalCode: z
+      .string()
+      .regex(/^\d{2}-\d{3}$/, { message: t('postalCode') })
+      .optional(),
+    countryIso2: z.string().length(2, { message: t('invalidCountryCode') }),
   });
 
 export type ValidationErrors = {
@@ -193,7 +203,7 @@ export type ValidationErrors = {
     street?: string;
   };
   isStatuteAccepted?: string;
-}
+};
 
 export interface SignupFormData {
   firstname?: string;
@@ -243,10 +253,8 @@ export type SessionPayload = {
 export type AnnouncementProps = {
   id?: string;
   title: string;
-  fromCity?: string;
-  toCity?: string;
-  fromGeography?: GeoPoint;
-  toGeography?: GeoPoint;
+  from: Address;
+  to: Address;
   departureDate: Date;
   arrivalDate: Date;
   carProps: {

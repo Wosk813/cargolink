@@ -2,6 +2,7 @@ import { Address } from '@/src/app/lib/definitions';
 import { CitySelect, CountrySelect, StateSelect } from 'react-country-state-city';
 import { City, Country, State } from 'react-country-state-city/dist/esm/types';
 import Input from '../../input';
+import 'react-country-state-city/dist/react-country-state-city.css';
 
 export default function AddressSelect({
   value,
