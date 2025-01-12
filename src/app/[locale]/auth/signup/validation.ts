@@ -52,6 +52,10 @@ export const validateThridStep = (
     return { asCompany: t('selectEntityType') };
   }
 
+  if (!formData.asCompany) {
+    return {};
+  }
+
   const result = SignupFormThirdSchema(t).safeParse(companyData);
 
   if (result.success) {

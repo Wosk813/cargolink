@@ -13,7 +13,8 @@
     "logoutPending": "Ausloggen ...",
     "close": "schließen",
     "announcement": "Geplante Route",
-    "addAnnoucement": "Fügen Sie eine Ankündigung zu Ihrer geplanten Route hinzu"
+    "addAnnoucement": "Fügen Sie eine Ankündigung zu Ihrer geplanten Route hinzu",
+    "addErrand": "Auftrag hinzufügen"
   },
   "login": {
     "login": "Einloggen",

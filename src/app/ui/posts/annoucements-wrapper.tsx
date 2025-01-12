@@ -109,8 +109,8 @@ export default function AnnoucmentsWrapper({ sortDirection, filterOptions }: Wra
         <Link key={annoucement.id} href={`/announcements/${annoucement.id}`}>
           <Annoucement
             title={annoucement.title}
-            fromCity={annoucement.fromCity}
-            toCity={annoucement.toCity}
+            from={annoucement.from}
+            to={annoucement.to}
             departureDate={annoucement.departureDate}
             arrivalDate={annoucement.arrivalDate}
             carProps={annoucement.carProps}

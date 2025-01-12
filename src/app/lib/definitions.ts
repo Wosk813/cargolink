@@ -17,21 +17,9 @@ export const newErrandSchema = (t: any) =>
     wareHeight: z.coerce
       .number()
       .refine(inRange(1, 1_000), { message: t('valueBetween') + ' 1 - 1000' }),
-    fromCity: z
-      .string()
-      .min(1, { message: t('mustNotBeEmpty') })
-      .trim(),
-    toCity: z
-      .string()
-      .min(1, { message: t('mustNotBeEmpty') })
-      .trim(),
     desc: z.string().trim(),
     earliestAt: z.coerce.date(),
     latestAt: z.coerce.date(),
-    fromLatitude: z.coerce.number(),
-    fromLongitude: z.coerce.number(),
-    toLatitude: z.coerce.number(),
-    toLongitude: z.coerce.number(),
     wareName: z
       .string()
       .min(1, { message: t('mustNotBeEmpty') })
@@ -41,6 +29,8 @@ export const newErrandSchema = (t: any) =>
       .min(1, { message: t('mustNotBeEmpty') })
       .trim(),
     specialConditions: z.string(),
+    from: AddressSchema(t),
+    to: AddressSchema(t),
   });
 
 export type NewErrandFormState =
@@ -51,8 +41,8 @@ export type NewErrandFormState =
         wareWeight?: string[];
         wareSize?: string[];
         wareHeight?: string[];
-        fromCity?: string[];
-        toCity?: string[];
+        from?: string[];
+        to?: string[];
         earliestAt?: string[];
         latestAt?: string[];
         category?: string[];
@@ -91,7 +81,6 @@ export const newAnnouncementSchema = (t: any) =>
     to: AddressSchema(t),
   });
 
-
 export type NewAnnouncementFormState =
   | {
       errors?: {
@@ -101,8 +90,8 @@ export type NewAnnouncementFormState =
         maxWeight?: string[];
         maxSize?: string[];
         maxHeight?: string[];
-        fromCity?: string[];
-        toCity?: string[];
+        from?: string[];
+        to?: string[];
         departureDate?: string[];
         arrivalDate?: string[];
       };
@@ -169,10 +158,7 @@ export const AddressSchema = (t: any) =>
     city: z.string().min(1, { message: t('mustNotBeEmpty') }),
     geography: z
       .object({
-        coordinates: z.tuple([
-          z.string().regex(/^\d+\.\d+$/, { message: t('invalidCoordinate') }),
-          z.string().regex(/^\d+\.\d+$/, { message: t('invalidCoordinate') }),
-        ]),
+        coordinates: z.tuple([z.string().regex(/^\d+\.\d+$/), z.string().regex(/^\d+\.\d+$/)]),
       })
       .optional(),
     street: z
@@ -181,9 +167,9 @@ export const AddressSchema = (t: any) =>
       .optional(),
     postalCode: z
       .string()
-      .regex(/^\d{2}-\d{3}$/, { message: t('postalCode') })
+      .regex(/^\d{2}-\d{3}$/, { message: t('invalidPostalCode') })
       .optional(),
-    countryIso2: z.string().length(2, { message: t('invalidCountryCode') }),
+    countryIso2: z.string().length(2),
   });
 
 export type ValidationErrors = {
@@ -272,10 +258,8 @@ export type AnnouncementProps = {
 export type ErrandProps = {
   id?: string;
   title: string;
-  fromCity: string;
-  toCity: string;
-  fromGeography?: GeoPoint;
-  toGeography?: GeoPoint;
+  from: Address;
+  to: Address;
   earliestAt: Date;
   latestAt: Date;
   ware: {
@@ -429,9 +413,9 @@ export type Opinion = {
 };
 
 export type Address = {
-  countryId?: number;
-  stateId?: number;
-  cityId?: number;
+  countryId: number;
+  stateId: number;
+  cityId: number;
   countryName?: string;
   city?: string;
   geography?: GeoPoint;

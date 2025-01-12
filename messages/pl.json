@@ -13,7 +13,8 @@
     "logoutPending": "Wylogowywanie ...",
     "close": "Zamknij",
     "announcement": "Planowana trasa",
-    "addAnnoucement": "Dodaj ogłoszenie o planowanej trasie"
+    "addAnnoucement": "Dodaj ogłoszenie o planowanej trasie",
+    "addErrand": "Dodaj zlecenie"
   },
   "login": {
     "login": "Zaloguj się",

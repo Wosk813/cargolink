@@ -13,7 +13,8 @@
     "logoutPending": "Logging out ...",
     "close": "Close",
     "announcement": "Planned route",
-    "addAnnoucement": "Add an announcement about your planned route"
+    "addAnnoucement": "Add an announcement about your planned route",
+    "addErrand": "Add errand"
   },
   "login": {
     "login": "Log in",

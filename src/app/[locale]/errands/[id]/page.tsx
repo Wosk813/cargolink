@@ -19,12 +19,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       <div className="flex flex-col gap-4 md:flex-row">
         <ErrandRoadDetails
           className="w-full"
-          from={errand?.fromCity}
-          to={errand?.toCity}
+          from={errand?.from}
+          to={errand?.to}
           earliestAt={errand?.earliestAt}
           latestAt={errand?.latestAt}
-          fromGeography={errand?.fromGeography}
-          toGeography={errand?.toGeography}
           postId={errand?.id}
           roadColor={errand?.roadColor}
         />

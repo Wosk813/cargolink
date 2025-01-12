@@ -143,7 +143,7 @@ export async function getAnnouncements(
   filterOptions: FilterProps,
 ) {
   let sqlString = `
-    SELECT announcements.*, a1.country_name as from_country_name, a1.country_iso2 as from_country_iso2, a1.city_name as from_city, a2.country_name as to_country_name, a2.country_iso2 as to_country_iso2, a2.city_name as to_city, ST_X(a1.geography::geometry) as from_longitude, ST_Y(a1.geography::geometry) as from_latitude, ST_X(a2.geography::geometry) as to_longitude, ST_Y(a2.geography::geometry) as to_latitude FROM announcements LEFT JOIN addresses a1 ON announcements.from_address_id = a1.address_id LEFT JOIN addresses a2 ON announcements.to_address_id = a2.address_id
+    SELECT announcements.*, a1.country_id as from_country_id, a1.state_id as from_state_id, a1.city_id as from_city_id, a1.country_name as from_country_name, a1.country_iso2 as from_country_iso2, a1.city_name as from_city, a2.country_id as to_country_id, a2.state_id as to_state_id, a2.city_id as to_city_id, a2.country_name as to_country_name, a2.country_iso2 as to_country_iso2, a2.city_name as to_city, ST_X(a1.geography::geometry) as from_longitude, ST_Y(a1.geography::geometry) as from_latitude, ST_X(a2.geography::geometry) as to_longitude, ST_Y(a2.geography::geometry) as to_latitude FROM announcements LEFT JOIN addresses a1 ON announcements.from_address_id = a1.address_id LEFT JOIN addresses a2 ON announcements.to_address_id = a2.address_id
     ${filterOptionsToSQL(filterOptions)} 
     ${sortDirectionToSQL(sortBy)}
   `;
@@ -168,8 +168,34 @@ export async function getErrands(
   filterOptions: FilterProps,
 ) {
   let sqlString = `
-    SELECT announcements.*, a1.country_name as from_country_name, a1.country_iso2 as from_country_iso2, a1.city_name as from_city, a2.country_name as to_country_name, a2.country_iso2 as to_country_iso2, a2.city_name as to_city, ST_X(a1.geography::geometry) as from_longitude, ST_Y(a1.geography::geometry) as from_latitude, ST_X(a2.geography::geometry) as to_longitude, ST_Y(a2.geography::geometry) as to_latitude FROM announcements LEFT JOIN addresses a1 ON announcements.from_address_id = a1.address_id LEFT JOIN addresses a2 ON announcements.to_address_id = a2.address_id
-    ${sortDirectionToSQL(sortBy, 'e.')}
+    SELECT
+      errands.*, g.*, g.name as good_name, gc.name as good_category,
+      a1.country_id as from_country_id,
+      a1.state_id as from_state_id,
+      a1.city_id as from_city_id,
+      a1.country_name as from_country_name,
+      a1.country_iso2 as from_country_iso2,
+      a1.city_name as from_city,
+
+      a2.country_id as to_country_id,
+      a2.state_id as to_state_id,
+      a2.city_id as to_city_id,
+      a2.country_name as to_country_name,
+      a2.country_iso2 as to_country_iso2,
+      a2.city_name as to_city,
+        ST_X(a1.geography::geometry) as from_longitude,
+      ST_Y(a1.geography::geometry) as from_latitude,
+      ST_X(a2.geography::geometry) as to_longitude,
+      ST_Y(a2.geography::geometry) as to_latitude
+    FROM errands
+    LEFT JOIN addresses a1
+    ON errands.from_address_id = a1.address_id
+    LEFT JOIN addresses a2
+    ON errands.to_address_id = a2.address_id
+    LEFT JOIN goods g
+    ON errands.good_id = g.good_id
+    LEFT JOIN goods_categories gc
+    ON g.category_id = gc.category_id
   `;
 
   const dbrows = await sql(sqlString);
@@ -213,17 +239,35 @@ export async function getAnnouncementsById(id: string): Promise<AnnouncementProp
 
 export async function getErrandById(id: string): Promise<ErrandProps | null> {
   const result = await sql`
-  SELECT e.*, gc.name as ware_Category, g.name as ware_Name, g.size_x as ware_Size_X, g.size_y as ware_Size_Y, g.height as ware_Height, g.weight as ware_weight, g.special_conditions as ware_Special_Conditions,
-    ST_X(e.from_geography::geometry) as from_longitude,
-    ST_Y(e.from_geography::geometry) as from_latitude,
-    ST_X(e.to_geography::geometry) as to_longitude,
-    ST_Y(e.to_geography::geometry) as to_latitude
-    FROM errands e
+  SELECT
+      errands.*, g.*, g.name as good_name, gc.name as good_category,
+      a1.country_id as from_country_id,
+      a1.state_id as from_state_id,
+      a1.city_id as from_city_id,
+      a1.country_name as from_country_name,
+      a1.country_iso2 as from_country_iso2,
+      a1.city_name as from_city,
+
+      a2.country_id as to_country_id,
+      a2.state_id as to_state_id,
+      a2.city_id as to_city_id,
+      a2.country_name as to_country_name,
+      a2.country_iso2 as to_country_iso2,
+      a2.city_name as to_city,
+        ST_X(a1.geography::geometry) as from_longitude,
+      ST_Y(a1.geography::geometry) as from_latitude,
+      ST_X(a2.geography::geometry) as to_longitude,
+      ST_Y(a2.geography::geometry) as to_latitude
+    FROM errands
+    LEFT JOIN addresses a1
+    ON errands.from_address_id = a1.address_id
+    LEFT JOIN addresses a2
+    ON errands.to_address_id = a2.address_id
     LEFT JOIN goods g
-    ON e.good_id = g.good_id
+    ON errands.good_id = g.good_id
     LEFT JOIN goods_categories gc
-    ON gc.category_id = g.category_id
-    WHERE e.errand_id = ${id}
+    ON g.category_id = gc.category_id
+    WHERE errands.errand_id = ${id}
   `;
 
   if (result.length === 0) return null;
@@ -310,15 +354,11 @@ export async function addErrand(state: NewErrandFormState, formData: FormData) {
     wareSize: formData.get('wareSize'),
     wareHeight: formData.get('wareHeight'),
     wareName: formData.get('wareName'),
-    fromCity: formData.get('fromCity'),
-    toCity: formData.get('toCity'),
+    from: JSON.parse(formData.get('from') as string) as Address,
+    to: JSON.parse(formData.get('to') as string) as Address,
     earliestAt: formData.get('earliestAt'),
     latestAt: formData.get('latestAt'),
     desc: formData.get('desc'),
-    fromLatitude: formData.get('fromLatitude'),
-    fromLongitude: formData.get('fromLongitude'),
-    toLatitude: formData.get('toLatitude'),
-    toLongitude: formData.get('toLongitude'),
     category: formData.get('wareCategory'),
     specialConditions: formData.get('specialConditions'),
   });
@@ -327,9 +367,13 @@ export async function addErrand(state: NewErrandFormState, formData: FormData) {
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
+
   const data = validatedFields.data;
   let [size_x, size_y] = data.wareSize.split('x').map(Number);
   const { userId } = await verifySession();
+
+  const from_address_id = await addAddress(data.from);
+  const to_address_id = await addAddress(data.to);
 
   const category = await sql('SELECT category_id FROM goods_categories WHERE name=$1', [
     data.category,
@@ -350,20 +394,18 @@ export async function addErrand(state: NewErrandFormState, formData: FormData) {
   const goodId = result[0].good_id;
 
   await sql(
-    'INSERT INTO errands (title, description, from_geography, to_geography, earliest_at, latest_at, good_id, author_id, is_accepted, from_city, to_city, road_color) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)',
+    'INSERT INTO errands (title, description, earliest_at, latest_at, good_id, author_id, is_accepted, road_color, from_address_id, to_address_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
     [
       data.title,
       data.desc,
-      `POINT(${data.fromLatitude} ${data.fromLongitude})`,
-      `POINT(${data.toLatitude} ${data.toLongitude})`,
       data.earliestAt,
       data.latestAt,
       goodId,
       userId,
       false,
-      data.fromCity,
-      data.toCity,
       '#' + ((Math.random() * 0xffffff) << 0).toString(16),
+      from_address_id,
+      to_address_id,
     ],
   );
   redirect({ locale: 'pl', href: '/errands' });

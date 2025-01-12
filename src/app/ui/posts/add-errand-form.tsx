@@ -4,20 +4,27 @@ import { Button } from '../button';
 import Input from '../input';
 import { useActionState } from 'react';
 import { addErrand } from '../../lib/actions';
-import { CitySelect, CountrySelect, StateSelect } from 'react-country-state-city';
 import 'react-country-state-city/dist/react-country-state-city.css';
 import { useState } from 'react';
-import { City, Country, State } from 'react-country-state-city/dist/esm/types';
 import { useTranslations } from 'next-intl';
 import { Select } from '../select';
+import AddressSelect from '../chat/contract/address-select';
+import { Address } from '../../lib/definitions';
 
 export default function AddErrandForm() {
   const t = useTranslations('addPost');
-  const [countryid, setCountryid] = useState(0);
-  const [stateid, setstateid] = useState(0);
+  const [from, setFrom] = useState<Address>({
+    countryId: 0,
+    stateId: 0,
+    cityId: 0,
+  });
+  const [to, setTo] = useState<Address>({
+    countryId: 0,
+    stateId: 0,
+    cityId: 0,
+  });
+
   const [state, action, pending] = useActionState(addErrand, undefined);
-  const [fromCoordinates, setFromCoordinates] = useState({ lat: '', lng: '' });
-  const [toCoordinates, setToCoordinates] = useState({ lat: '', lng: '' });
 
   return (
     <form action={action} className="flex flex-col gap-2 pb-4">
@@ -26,75 +33,17 @@ export default function AddErrandForm() {
           <p className="text-xl">{t('roadInfo')}</p>
           <p>{t('startingPoint')}</p>
           <div className="text-black">
-            <CountrySelect
-              required
-              className="bg-black"
-              onChange={(e) => {
-                e = e as Country;
-                setCountryid(e.id);
-              }}
-              placeHolder={t('selectCountry')}
-              region={'Europe'}
-            />
-            <StateSelect
-              required
-              countryid={countryid}
-              onChange={(e) => {
-                e = e as State;
-                setstateid(e.id);
-              }}
-              placeHolder={t('selectState')}
-            />
-            <CitySelect
-              required
-              name="fromCity"
-              countryid={countryid}
-              stateid={stateid}
-              onChange={(e) => {
-                e = e as City;
-                setFromCoordinates({ lat: e.latitude, lng: e.longitude });
-              }}
-              placeHolder={t('selectCity')}
-            />
-            {state?.errors?.fromCity && (
-              <div className="mt-1 text-sm text-red-500">{state?.errors?.fromCity}</div>
+            <AddressSelect onChange={setFrom} value={from} />
+            {state?.errors?.from && (
+              <div className="mt-1 text-sm text-red-500">{state?.errors?.from}</div>
             )}
           </div>
 
           <p>{t('endPoint')}</p>
           <div className="text-black">
-            <CountrySelect
-              required
-              className="bg-black"
-              onChange={(e) => {
-                e = e as Country;
-                setCountryid(e.id);
-              }}
-              placeHolder={t('selectCountry')}
-              region={'Europe'}
-            />
-            <StateSelect
-              required
-              countryid={countryid}
-              onChange={(e) => {
-                e = e as State;
-                setstateid(e.id);
-              }}
-              placeHolder={t('selectState')}
-            />
-            <CitySelect
-              required
-              name="toCity"
-              countryid={countryid}
-              stateid={stateid}
-              onChange={(e) => {
-                e = e as City;
-                setToCoordinates({ lat: e.latitude, lng: e.longitude });
-              }}
-              placeHolder={t('selectCity')}
-            />
-            {state?.errors?.toCity && (
-              <div className="mt-1 text-sm text-red-500">{state?.errors?.toCity}</div>
+            <AddressSelect onChange={setTo} value={to} />
+            {state?.errors?.to && (
+              <div className="mt-1 text-sm text-red-500">{state?.errors?.to}</div>
             )}
           </div>
           <Input required name="earliesAt" title={t('earliestAt')} type="datetime-local" />
@@ -173,10 +122,8 @@ export default function AddErrandForm() {
           </div>
         </div>
       </div>
-      <input type="hidden" name="fromLatitude" value={fromCoordinates.lat} />
-      <input type="hidden" name="fromLongitude" value={fromCoordinates.lng} />
-      <input type="hidden" name="toLatitude" value={toCoordinates.lat} />
-      <input type="hidden" name="toLongitude" value={toCoordinates.lng} />
+      <input type="hidden" name="from" value={JSON.stringify(from)} />
+      <input type="hidden" name="to" value={JSON.stringify(to)} />
       <Button disabled={pending}>{t('addErrand')}</Button>
     </form>
   );
