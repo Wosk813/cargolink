@@ -66,7 +66,9 @@
     "chooseLanguages": "Wybierz języki jakie znasz",
     "acceptedStatute": "Przeczytałem/am regulamin i go akceptuje",
     "emailIsUsed": "Ten e-mail jest już przez kogoś używany",
-    "mustNotBeEmpty": "To pole nie może być puste"
+    "mustNotBeEmpty": "To pole nie może być puste",
+    "invalidPostalCode": "Niepoprawny kod pocztowy",
+    "selectEntityType": "Wybierz czy chcesz założyć konto jako przedsiębiorstwo czy osoba fizyczna"
   },
   "search": {
     "searchUser": "Wyszukaj użytkownika",

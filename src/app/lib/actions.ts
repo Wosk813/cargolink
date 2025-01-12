@@ -52,7 +52,7 @@ export async function register(formData: SignupFormData) {
   }
   const { firstname, lastname, email, password, accountType, company, languages } = formData;
   if (formData.asCompany && formData.company) {
-    const { companyName, nip, country, postalCode, street, city } = company;
+    const { companyName, taxId: nip, country, postalCode, street, city } = company;
     await sql(
       'INSERT INTO companies (name, nip, country, city, street, postal_code) VALUES ($1, $2, $3, $4, $5, $6)',
       [companyName, nip, country, city, street, postalCode],
@@ -458,13 +458,13 @@ export async function getPost({
 }: {
   postId: string;
   secoundUserId: string;
-  }): Promise<Post | null> {
-  let post: Post = {postType: PostTypes.Announcement, road}
+}): Promise<Post | null> {
+  let post: Post = { postType: PostTypes.Announcement, road };
   const annoucements = await sql('SELECT * FROM announcements WHERE announcement_id = $1', [
     postId,
   ]);
   if (annoucements.length > 0) {
-    post.postType = PostTypes.Announcement
+    post.postType = PostTypes.Announcement;
   } else {
     const errands = await sql('SELECT * FROM errands WHERE errand_id = $1', [postId]);
     return dbRowToObject(errands[0], RowMapping.ErrandProps) as ErrandProps;

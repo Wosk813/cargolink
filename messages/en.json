@@ -66,7 +66,9 @@
     "chooseLanguages": "Choose the languages you know",
     "acceptedStatute": "I have read and accept the terms and conditions",
     "emailIsUsed": "This email is already used by someone",
-    "mustNotBeEmpty": "This field must not be empty"
+    "mustNotBeEmpty": "This field cannot be empty",
+    "invalidPostalCode": "Invalid postal code",
+    "selectEntityType": "Select whether you want to create an account as a business or an individual"
   },
   "search": {
     "searchUser": "Search user",

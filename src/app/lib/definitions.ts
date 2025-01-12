@@ -165,14 +165,18 @@ export const SignupFormFirstStepSchema = (t: any) =>
 export const SignupFormThirdSchema = (t: any) =>
   z.object({
     companyName: z.string().min(1, { message: t('mustNotBeEmpty') }),
-    nip: z.string().length(10, { message: t('nipIsNotValid', { length: 10 }) }),
-    country: z.string().min(2, { message: t('selectCountry') }),
-    postalCode: z.string().min(1, { message: t('mustNotBeEmpty') }),
+    taxId: z.string().length(10, { message: t('nipIsNotValid', { length: 10 }) }),
+    address: AddressSchema(t),
+  });
+
+export const AddressSchema = (t: any) =>
+  z.object({
     city: z.string().min(1, { message: t('mustNotBeEmpty') }),
+    postalCode: z.string().regex(/^\d{2}-\d{3}$/, { message: t('invalidPostalCode') }),
     street: z.string().min(1, { message: t('mustNotBeEmpty') }),
   });
 
-export interface ValidationErrors {
+export type ValidationErrors = {
   firstname?: string;
   lastname?: string;
   email?: string;
@@ -181,13 +185,14 @@ export interface ValidationErrors {
   repeatPassword?: string;
   accountType?: string;
   companyName?: string;
-  nip?: string;
-  country?: string;
-  postalCode?: string;
-  city?: string;
-  street?: string;
+  asCompany?: string;
+  taxId?: string;
+  address?: {
+    city?: string;
+    postalCode?: string;
+    street?: string;
+  };
   isStatuteAccepted?: string;
-  [key: string]: string | string[] | undefined;
 }
 
 export interface SignupFormData {
@@ -204,11 +209,11 @@ export interface SignupFormData {
   isStatuteAccepted: boolean;
 }
 
-export interface Company {
-  companyName?: string;
-  nip?: string;
-  address?: Address;
-}
+export type Company = {
+  companyName: string;
+  taxId: string;
+  address: Address;
+};
 
 export enum ButtonTypes {
   Primary,
@@ -368,8 +373,7 @@ export type User = {
 };
 
 export type GeoPoint = {
-  type: string;
-  coordinates: [number, number];
+  coordinates: [string, string];
 };
 
 export type Road = {

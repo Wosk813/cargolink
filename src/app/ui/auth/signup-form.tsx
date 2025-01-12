@@ -21,14 +21,20 @@ import { useTranslations } from 'next-intl';
 import LanguageSelector from '@/src/app/ui/languageSelector';
 import InputCheckbox from '@/src/app/ui/inputCheckbox';
 import { register } from '@/src/app/lib/actions';
-import { CountrySelect } from 'react-country-state-city';
-import { Country } from 'react-country-state-city/dist/esm/types';
+import CompanyForm from './company-form';
 
 export function SignupForm() {
   const t = useTranslations('signup');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState<ValidationErrors>({});
+
+  const [companyData, setCompanyData] = useState<Company>({
+    companyName: '',
+    taxId: '',
+    address: { countryId: 0, stateId: 0, cityId: 0, countryIso2: '', countryName: '', city: '' },
+  });
+
   const [formData, setFormData] = useState<SignupFormData>({
     firstname: '',
     lastname: '',
@@ -36,17 +42,11 @@ export function SignupForm() {
     repeatEmail: '',
     password: '',
     repeatPassword: '',
-    accountType: AccountType.Carrier,
-    asCompany: true,
-    company: {},
+    accountType: undefined,
+    asCompany: undefined,
+    company: companyData,
     languages: [],
     isStatuteAccepted: false,
-  });
-
-  const [companyData, setCompanyData] = useState<Company>({
-    companyName: '',
-    nip: '',
-    address: { countryId: 0, stateId: 0, cityId: 0, countryIso2: '', countryName: '', city: '' },
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,24 +55,6 @@ export function SignupForm() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
-  };
-
-  const handleCompanyDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    if (name === 'companyName' || name === 'nip') {
-      setCompanyData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    } else {
-      setCompanyData((prev) => ({
-        ...prev,
-        address: {
-          ...prev.address,
-          [name]: value,
-        },
-      }));
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -192,6 +174,7 @@ export function SignupForm() {
               <div className="mt-1 text-sm text-red-500">{errors.accountType}</div>
             )}
             <InputRadio
+              checked={formData.accountType == AccountType.Carrier}
               name="accountType"
               title={t('asCarrier')}
               desc={t('asCarrierDesc')}
@@ -203,6 +186,7 @@ export function SignupForm() {
               }}
             />
             <InputRadio
+              checked={formData.accountType == AccountType.Principal}
               name="accountType"
               title={t('asPrincipal')}
               desc={t('asPrincipalDesc')}
@@ -220,7 +204,11 @@ export function SignupForm() {
           <>
             <p className="text-xl font-semibold">{t('asCompany')}</p>
             <p className="text-sm text-slate-400">{t('asCompanyDesc')}</p>
+            {errors.asCompany && (
+              <div className="mt-1 text-sm text-red-500">{errors.asCompany}</div>
+            )}
             <InputRadio
+              checked={formData.asCompany != undefined ? formData.asCompany : false}
               name="asCompany"
               title={t('company')}
               onChange={() =>
@@ -230,65 +218,9 @@ export function SignupForm() {
                 }))
               }
             />
-            <Input
-              name="companyName"
-              error={errors.companyName as string}
-              title={t('companyFullName')}
-              value={companyData.companyName}
-              onChange={handleCompanyDataChange}
-            />
-            <Input
-              name="nip"
-              error={errors.nip as string}
-              title="NIP"
-              value={companyData.nip}
-              onChange={handleCompanyDataChange}
-            />
-            <div className="w-full">
-              <CountrySelect
-                name="countryId"
-                required
-                className="w-full"
-                onChange={(country: Country) => {
-                  setCompanyData((prev) => ({
-                    ...prev,
-                    address: {
-                      ...prev.address,
-                      countryId: country.id,
-                      countryName: country.name,
-                      countryIso2: country.iso2,
-                      stateId: 0,
-                      cityId: 0,
-                      city: '',
-                    },
-                  }));
-                }}
-                placeHolder="Wybierz kraj"
-                region="Europe"
-              />
-            </div>
-            <Input
-              name="postalCode"
-              error={errors.postalCode as string}
-              title={t('postalCode')}
-              value={companyData.address?.postalCode}
-              onChange={handleCompanyDataChange}
-            />
-            <Input
-              name="city"
-              error={errors.city as string}
-              title={t('city')}
-              value={companyData.address?.city}
-              onChange={handleCompanyDataChange}
-            />
-            <Input
-              name="street"
-              error={errors.street as string}
-              title={t('street')}
-              value={companyData.address?.street}
-              onChange={handleCompanyDataChange}
-            />
+            <CompanyForm value={companyData} onChange={setCompanyData} errors={errors} />
             <InputRadio
+              checked={formData.asCompany != undefined ? !formData.asCompany : false}
               name="asCompany"
               title={t('asPhisicalPerson')}
               onChange={() =>
@@ -301,6 +233,7 @@ export function SignupForm() {
           </>
         );
       case 4:
+        console.log(formData);
         return (
           <>
             <p className="text-xl font-semibold">{t('whatLanguagesDoYouKnow')}</p>

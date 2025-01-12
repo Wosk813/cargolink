@@ -18,7 +18,6 @@ export default function AddressSelect({
       <div className="flex flex-col gap-2 text-black md:flex-row">
         <div className="w-full">
           <CountrySelect
-            required
             className="w-full"
             onChange={(e) => {
               e = e as Country;
@@ -27,6 +26,8 @@ export default function AddressSelect({
                 countryId: e.id,
                 countryName: e.name,
                 stateId: 0,
+                cityId: 0,
+                countryIso2: e.iso2,
                 city: '',
               });
             }}
@@ -36,13 +37,13 @@ export default function AddressSelect({
         </div>
         <div className="w-full">
           <StateSelect
-            required
             countryid={value.countryId}
             onChange={(e) => {
               e = e as State;
               onChange({
                 ...value,
                 stateId: e.id,
+                cityId: 0,
                 city: '',
               });
             }}
@@ -51,7 +52,6 @@ export default function AddressSelect({
         </div>
         <div className="w-full">
           <CitySelect
-            required
             countryid={value.countryId}
             stateid={value.stateId}
             onChange={(e) => {
@@ -59,6 +59,8 @@ export default function AddressSelect({
               onChange({
                 ...value,
                 city: e.name,
+                cityId: e.id,
+                geography: { coordinates: [e.latitude, e.longitude] },
               });
             }}
             placeHolder="Wybierz miasto"
