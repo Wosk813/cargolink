@@ -143,13 +143,7 @@ export async function getAnnouncements(
   filterOptions: FilterProps,
 ) {
   let sqlString = `
-    SELECT 
-      *,
-      ST_X(from_geography::geometry) as from_longitude,
-      ST_Y(from_geography::geometry) as from_latitude,
-      ST_X(to_geography::geometry) as to_longitude,
-      ST_Y(to_geography::geometry) as to_latitude 
-    FROM announcements 
+    SELECT announcements.*, a1.country_name as from_country_name, a1.country_iso2 as from_country_iso2, a1.city_name as from_city, a2.country_name as to_country_name, a2.country_iso2 as to_country_iso2, a2.city_name as to_city, ST_X(a1.geography::geometry) as from_longitude, ST_Y(a1.geography::geometry) as from_latitude, ST_X(a2.geography::geometry) as to_longitude, ST_Y(a2.geography::geometry) as to_latitude FROM announcements LEFT JOIN addresses a1 ON announcements.from_address_id = a1.address_id LEFT JOIN addresses a2 ON announcements.to_address_id = a2.address_id
     ${filterOptionsToSQL(filterOptions)} 
     ${sortDirectionToSQL(sortBy)}
   `;
@@ -174,16 +168,7 @@ export async function getErrands(
   filterOptions: FilterProps,
 ) {
   let sqlString = `
- SELECT e.*, gc.name as ware_Category, g.name as ware_Name, g.size_x as ware_Size_X, g.size_y as ware_Size_Y, g.height as ware_Height, g.weight as ware_weight, g.special_conditions as ware_Special_Conditions,
-  ST_X(e.from_geography::geometry) as from_longitude,
-  ST_Y(e.from_geography::geometry) as from_latitude,
-  ST_X(e.to_geography::geometry) as to_longitude,
-  ST_Y(e.to_geography::geometry) as to_latitude
-  FROM errands e
-  LEFT JOIN goods g
-  ON e.good_id = g.good_id
-  LEFT JOIN goods_categories gc
-  ON gc.category_id = g.category_id
+    SELECT announcements.*, a1.country_name as from_country_name, a1.country_iso2 as from_country_iso2, a1.city_name as from_city, a2.country_name as to_country_name, a2.country_iso2 as to_country_iso2, a2.city_name as to_city, ST_X(a1.geography::geometry) as from_longitude, ST_Y(a1.geography::geometry) as from_latitude, ST_X(a2.geography::geometry) as to_longitude, ST_Y(a2.geography::geometry) as to_latitude FROM announcements LEFT JOIN addresses a1 ON announcements.from_address_id = a1.address_id LEFT JOIN addresses a2 ON announcements.to_address_id = a2.address_id
     ${sortDirectionToSQL(sortBy, 'e.')}
   `;
 
@@ -201,10 +186,24 @@ export async function getErrands(
 
 export async function getAnnouncementsById(id: string): Promise<AnnouncementProps | null> {
   const result = await sql`
-    SELECT 
-      *,
-    FROM announcements 
-    WHERE announcement_id = ${id}
+    SELECT
+      announcements.*,
+      a1.country_name as from_country_name,
+      a1.country_iso2 as from_country_iso2,
+      a1.city_name as from_city,
+      a2.country_name as to_country_name,
+      a2.country_iso2 as to_country_iso2,
+      a2.city_name as to_city,
+        ST_X(a1.geography::geometry) as from_longitude,
+      ST_Y(a1.geography::geometry) as from_latitude,
+      ST_X(a2.geography::geometry) as to_longitude,
+      ST_Y(a2.geography::geometry) as to_latitude
+    FROM announcements
+    LEFT JOIN addresses a1
+    ON announcements.from_address_id = a1.address_id
+    LEFT JOIN addresses a2
+    ON announcements.to_address_id = a2.address_id
+    WHERE announcements.announcement_id = ${id}
   `;
 
   if (result.length === 0) return null;

@@ -429,15 +429,15 @@ export type Opinion = {
 };
 
 export type Address = {
-  countryId: number;
-  stateId: number;
-  cityId: number;
-  countryName: string;
-  city: string;
+  countryId?: number;
+  stateId?: number;
+  cityId?: number;
+  countryName?: string;
+  city?: string;
   geography?: GeoPoint;
   street?: string;
   postalCode?: string;
-  countryIso2: string;
+  countryIso2?: string;
 };
 
 export type ContractFormState = {

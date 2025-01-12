@@ -54,22 +54,26 @@ export function dbRowToObject(row: any, object: RowMapping) {
       return errand;
     case RowMapping.AnnoucementProps:
       fromGeoPoint = {
-        type: 'Point',
-        coordinates: [Number(row['from_longitude']), Number(row['from_latitude'])],
+        coordinates: [row['from_longitude'], row['from_latitude']],
       };
 
       toGeoPoint = {
-        type: 'Point',
-        coordinates: [Number(row['to_longitude']), Number(row['to_latitude'])],
+        coordinates: [row['to_longitude'], row['to_latitude']],
       };
 
       const announcement: AnnouncementProps = {
         id: row['announcement_id'],
         title: row['title'],
-        fromCity: row['from_city'],
-        toCity: row['to_city'],
-        fromGeography: fromGeoPoint,
-        toGeography: toGeoPoint,
+        from: {
+          city: row['from_city'],
+          countryIso2: row['from_country_iso2'],
+          geography: fromGeoPoint
+        },
+        to: {
+          city: row['to_city'],
+          countryIso2: row['to_country_iso2'],
+          geography: toGeoPoint
+        },
         departureDate: new Date(row['start_date']),
         arrivalDate: new Date(row['arrive_date']),
         carProps: {
