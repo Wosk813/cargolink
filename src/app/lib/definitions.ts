@@ -199,18 +199,15 @@ export interface SignupFormData {
   repeatPassword?: string;
   accountType?: AccountType;
   asCompany?: boolean;
-  company: CompanyData;
+  company: Company;
   languages?: string[];
   isStatuteAccepted: boolean;
 }
 
-export interface CompanyData {
+export interface Company {
   companyName?: string;
   nip?: string;
-  country?: string;
-  postalCode?: string;
-  city?: string;
-  street?: string;
+  address?: Address;
 }
 
 export enum ButtonTypes {
@@ -422,10 +419,13 @@ export type Opinion = {
 export type Address = {
   countryId: number;
   stateId: number;
+  cityId: number;
   countryName: string;
   city: string;
+  geography?: GeoPoint;
   street?: string;
   postalCode?: string;
+  countryIso2: string;
 };
 
 export type ContractFormState = {
