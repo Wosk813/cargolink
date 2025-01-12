@@ -10,7 +10,7 @@ export default async function Page({
   const postId = (await params).postId;
   const secoundUserId = (await params).secoundUserId;
   const post = await getPost({ postId: postId, secoundUserId: secoundUserId });
-  if (!post) redirect({ href: '/chats', locale: 'pl' });
+  // if (!post) redirect({ href: '/chats', locale: 'pl' });
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-3xl">Wygeneruj umowę</h1>

@@ -21,13 +21,13 @@ export default function Route({
       <div className="flex justify-between rounded-md bg-slate-700 p-2">
         <div className="flex flex-col">
           <p className="text-sm text-slate-400">z</p>
-          <h2 className="text-xl">{`${from.countryName}, ${from.city}`}</h2>
+          <h2 className="text-xl">{`${from.countryIso2}, ${from.city}`}</h2>
           <p>{from.street}</p>
         </div>
         <ArrowRightIcon className="w-8 text-slate-400" />
         <div className="flex flex-col">
           <p className="text-sm text-slate-400">do</p>
-          <h2 className="text-xl">{`${to.countryName}, ${to.city}`}</h2>
+          <h2 className="text-xl">{`${to.countryIso2}, ${to.city}`}</h2>
           <p>{to.street}</p>
         </div>
       </div>

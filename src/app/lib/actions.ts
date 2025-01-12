@@ -3,7 +3,14 @@
 import { createSession, deleteSession } from './session';
 import { redirect } from '@/src/i18n/routing';
 import { neon } from '@neondatabase/serverless';
-import { Address, RowMapping } from '@/src/app/lib/definitions';
+import {
+  Address,
+  Company,
+  GoodsCategory,
+  Post,
+  PostTypes,
+  RowMapping,
+} from '@/src/app/lib/definitions';
 import bcrypt from 'bcrypt';
 import {
   FilterProps,
@@ -322,7 +329,6 @@ export async function addAnnouncement(state: NewAnnouncementFormState, formData:
   const from_address_id = await addAddress(data.from);
   const to_address_id = await addAddress(data.to);
 
-  console.log(userId);
   await sql(
     'INSERT INTO announcements (title, description, start_date, arrive_date, max_weight, size_x, size_y, max_height, author_id, is_accepted, vehicle_brand, vehicle_model, from_address_id, to_address_id, road_color) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',
     [
@@ -513,6 +519,14 @@ export async function getOpinions(userId: string) {
   return opinions;
 }
 
+export async function getCompanyById(companyId: string): Promise<Company> {
+  const companies = await sql(
+    'SELECT companies.*, addresses.* FROM companies INNER JOIN addresses ON companies.address_id = addresses.address_id WHERE companies.company_id = $1',
+    [companyId],
+  );
+  return dbRowToObject(companies[0], RowMapping.Company) as Company;
+}
+
 export async function addOpinion(state: any, formData: FormData) {
   const { userId } = await verifySession();
 
@@ -523,22 +537,69 @@ export async function addOpinion(state: any, formData: FormData) {
   redirect({ locale: 'pl', href: `/profile/${formData.get('forUserId')}` });
 }
 
-// export async function getPost({
-//   postId,
-//   secoundUserId,
-// }: {
-//   postId: string;
-//   secoundUserId: string;
-// }): Promise<Post | null> {
-//   let post: Post = { postType: PostTypes.Announcement, road };
-//   const annoucements = await sql('SELECT * FROM announcements WHERE announcement_id = $1', [
-//     postId,
-//   ]);
-//   if (annoucements.length > 0) {
-//     post.postType = PostTypes.Announcement;
-//   } else {
-//     const errands = await sql('SELECT * FROM errands WHERE errand_id = $1', [postId]);
-//     return dbRowToObject(errands[0], RowMapping.ErrandProps) as ErrandProps;
-//   }
-//   return null;
-// }
+export async function getPost({
+  postId,
+  secoundUserId,
+}: {
+  postId: string;
+  secoundUserId: string;
+}): Promise<Post | null> {
+  let post: Post = { postType: PostTypes.Announcement };
+  const announcement = await getAnnouncementsById(postId)
+  if (announcement) {
+    post.postType = PostTypes.Announcement;
+
+    const author = await getUserById(announcement.authorId!);
+    const { userId } = await verifySession();
+    let currentUserIsAuthor: boolean;
+    if (userId == announcement.authorId) currentUserIsAuthor = true;
+    else currentUserIsAuthor = false;
+
+    const secoundUser = currentUserIsAuthor
+      ? await getUserById(secoundUserId)
+      : await getUserById(userId);
+
+    let companies: {
+      authorCompany?: Company;
+      secoundUserCompany?: Company;
+    } = {};
+    if (author.companyId) {
+      companies.authorCompany = await getCompanyById(author.companyId);
+    }
+    if (secoundUser.companyId) {
+      companies.secoundUserCompany = await getCompanyById(secoundUser.companyId);
+    }
+
+    post.carrier = {
+      isCompany: !author.isPhisicalPerson!,
+      companyDetails: companies.authorCompany,
+      personDetails: {
+        name: author.firstname + ' ' + author.lastname,
+        address: { countryId: 0, stateId: 0, cityId: 0, countryName: '', city: '' },
+      },
+    };
+    post.principal = {
+      isCompany: currentUserIsAuthor ? secoundUser.isPhisicalPerson! : author.isPhisicalPerson!,
+      companyDetails: companies.secoundUserCompany,
+      personDetails: {
+        name: secoundUser.firstname + ' ' + secoundUser.lastname,
+        address: { countryId: 0, stateId: 0, cityId: 0, countryName: '', city: '' },
+      },
+    };
+    post.goods = {
+      category: GoodsCategory.Other,
+      name: '',
+    };
+    post.road = {
+      from: announcement.from,
+      to: announcement.to,
+      departureDate: announcement.departureDate,
+      arrivalDate: announcement.arrivalDate,
+    };
+    return post;
+  } else {
+    const errands = await sql('SELECT * FROM errands WHERE errand_id = $1', [postId]);
+    // return dbRowToObject(errands[0], RowMapping.ErrandProps) as ErrandProps;
+  }
+  return null;
+}

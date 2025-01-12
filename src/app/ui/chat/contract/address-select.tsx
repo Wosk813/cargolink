@@ -32,12 +32,14 @@ export default function AddressSelect({
                 city: '',
               });
             }}
+            value={value.countryId}
             placeHolder="Wybierz kraj"
             region="Europe"
           />
         </div>
         <div className="w-full">
           <StateSelect
+            value={value.stateId}
             countryid={value.countryId}
             onChange={(e) => {
               e = e as State;
@@ -53,6 +55,7 @@ export default function AddressSelect({
         </div>
         <div className="w-full">
           <CitySelect
+            value={value.cityId}
             countryid={value.countryId}
             stateid={value.stateId}
             onChange={(e) => {

@@ -206,6 +206,7 @@ export interface SignupFormData {
 }
 
 export type Company = {
+  id?: string,
   companyName: string;
   taxId: string;
   address: Address;
@@ -469,6 +470,7 @@ export enum RowMapping {
   User,
   ChatType,
   ChatMessage,
+  Company
 }
 
 export enum PostTypes {
@@ -480,11 +482,7 @@ export type Post = {
   postType: PostTypes;
   principal?: {
     isCompany: boolean;
-    companyDetails?: {
-      name: string;
-      taxId: string;
-      address: Address;
-    };
+    companyDetails?: Company
     personDetails?: {
       name: string;
       address: Address;
@@ -492,11 +490,7 @@ export type Post = {
   };
   carrier?: {
     isCompany: boolean;
-    companyDetails?: {
-      name: string;
-      taxId: string;
-      address: Address;
-    };
+    companyDetails?: Company
     personDetails?: {
       name: string;
       address: Address;
@@ -506,7 +500,7 @@ export type Post = {
     category: GoodsCategory;
     name: string;
   };
-  road: {
+  road?: {
     from: Address;
     to: Address;
     departureDate?: Date;

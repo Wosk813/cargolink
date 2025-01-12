@@ -3,6 +3,7 @@ import {
   AnnouncementProps,
   ChatMessage,
   ChatType,
+  Company,
   ErrandProps,
   FilterProps,
   GeoPoint,
@@ -121,7 +122,7 @@ export function dbRowToObject(row: any, object: RowMapping) {
         companyId: row['company_id'],
         lastSeen: row['last_logged'],
         languages: row['languages'],
-        isPhisicalPerson: row['is_psyhical_person'],
+        isPhisicalPerson: row['is_phisical_person'],
         role: row['role'],
         userDesc: row['user_desc'],
         postCount: row['posts_count'],
@@ -161,6 +162,25 @@ export function dbRowToObject(row: any, object: RowMapping) {
         authorLastName: row['last_name'],
       };
       return opinion;
+    case RowMapping.Company:
+      const company: Company = {
+        id: row['company_id'],
+        companyName: row['name'],
+        taxId: row['taxid'],
+        address: {
+          countryId: row['country_id'],
+          stateId: row['state_id'],
+          cityId: row['city_id'],
+          city: row['city'],
+          postalCode: row['postal_code'],
+          street: row['street'],
+          countryIso2: row['country_iso2'],
+          geography: {
+            coordinates: [row['latitude'], row['longtitude']],
+          },
+        },
+      };
+      return company;
   }
 }
 
