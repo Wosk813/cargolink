@@ -15,8 +15,8 @@ export default function AllRoadsMap({ postType }: { postType: 'announcements' | 
       .then((res) => res.json())
       .then((announcements: AnnouncementProps[]) => {
         const newRoads = announcements.map((announcement: AnnouncementProps) => ({
-          from: announcement.fromGeography,
-          to: announcement.toGeography,
+          from: announcement.from.geography,
+          to: announcement.to.geography,
           postId: announcement.id,
           color: announcement.roadColor,
         }));
