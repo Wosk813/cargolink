@@ -1,7 +1,7 @@
 import { Address } from '@/src/app/lib/definitions';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 
-export default function Route({
+export default function Road({
   from,
   to,
   onChangeClick,

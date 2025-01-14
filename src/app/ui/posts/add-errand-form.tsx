@@ -46,7 +46,7 @@ export default function AddErrandForm() {
               <div className="mt-1 text-sm text-red-500">{state?.errors?.to}</div>
             )}
           </div>
-          <Input required name="earliesAt" title={t('earliestAt')} type="datetime-local" />
+          <Input required name="earliestAt" title={t('earliestAt')} type="datetime-local" />
           <Input required name="latestAt" title={t('latestAt')} type="datetime-local" />
         </div>
         <div className="flex flex-col gap-4">

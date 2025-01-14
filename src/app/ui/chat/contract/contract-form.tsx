@@ -7,7 +7,7 @@ import InputRadio from '../../inputRadio';
 import { Button } from '../../button';
 import { ContractFormState, Post } from '@/src/app/lib/definitions';
 import AddressSelect from './address-select';
-import Route from './route';
+import Road from './road';
 import CompanyForm from './company-form';
 import PhisicalPersonForm from './phisical-person-form';
 import { Select } from '../../select';
@@ -216,7 +216,7 @@ export default function ContractForm({ post }: { post: Post }) {
         />
       </div>
 
-      <Route
+      <Road
         from={formState.route.from}
         to={formState.route.to}
         onChangeClick={() =>
