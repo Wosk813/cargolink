@@ -3,6 +3,7 @@ import { CitySelect, CountrySelect, StateSelect } from 'react-country-state-city
 import { City, Country, State } from 'react-country-state-city/dist/esm/types';
 import Input from '../../input';
 import 'react-country-state-city/dist/react-country-state-city.css';
+import { useTranslations } from 'next-intl';
 
 export default function AddressSelect({
   value,
@@ -13,6 +14,7 @@ export default function AddressSelect({
   onChange: (address: Address) => void;
   label?: string;
 }) {
+  const t = useTranslations('addPost');
   return (
     <div className="flex flex-col gap-2">
       {label && <p className="text-slate-400">{label}</p>}
@@ -33,7 +35,7 @@ export default function AddressSelect({
               });
             }}
             value={value.countryId}
-            placeHolder="Wybierz kraj"
+            placeHolder={t('chooseCountry')}
             region="Europe"
           />
         </div>
@@ -50,7 +52,7 @@ export default function AddressSelect({
                 city: '',
               });
             }}
-            placeHolder="Wybierz stan"
+            placeHolder={t('chooseState')}
           />
         </div>
         <div className="w-full">
@@ -67,16 +69,16 @@ export default function AddressSelect({
                 geography: { coordinates: [e.latitude, e.longitude] },
               });
             }}
-            placeHolder="Wybierz miasto"
+            placeHolder={t('chooseCity')}
           />
         </div>
         <Input
-          title="Kod pocztowy"
+          title={t('postalCode')}
           value={value.postalCode}
           onChange={(e) => onChange({ ...value, postalCode: e.target.value })}
         />
         <Input
-          title="Ulica"
+          title={t('street')}
           value={value.street}
           onChange={(e) => onChange({ ...value, street: e.target.value })}
         />

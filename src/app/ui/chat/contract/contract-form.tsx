@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import 'react-country-state-city/dist/react-country-state-city.css';
 import Input from '../../input';
 import InputRadio from '../../inputRadio';
@@ -56,7 +56,7 @@ export default function ContractForm({ post }: { post: Post }) {
   return (
     <form className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <p>Zleceniodawca</p>
+        <p>{t('principal')}</p>
         <div className="flex flex-col gap-2 md:flex-row">
           <InputRadio
             onChange={() =>
@@ -65,7 +65,7 @@ export default function ContractForm({ post }: { post: Post }) {
                 principal: { ...prev.principal, isCompany: false },
               }))
             }
-            title="Jako osoba fizyczna"
+            title={t('asPhisicalPerson')}
             name="principalEntityType"
             checked={!formState.principal.isCompany}
           />
@@ -76,7 +76,7 @@ export default function ContractForm({ post }: { post: Post }) {
                 principal: { ...prev.principal, isCompany: true },
               }))
             }
-            title="Jako działalność gospodarcza"
+            title={t('asCompany')}
             name="principalEntityType"
             checked={formState.principal.isCompany}
           />
@@ -117,7 +117,7 @@ export default function ContractForm({ post }: { post: Post }) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <p>Przewoźnik</p>
+        <p>{t('carrier')}</p>
         <div className="flex flex-col gap-2 md:flex-row">
           <InputRadio
             onChange={() =>
@@ -126,7 +126,7 @@ export default function ContractForm({ post }: { post: Post }) {
                 carrier: { ...prev.carrier, isCompany: false },
               }))
             }
-            title="Jako osoba fizyczna"
+            title={t('asPhisicalPerson')}
             name="carrierEntityType"
             checked={!formState.carrier.isCompany}
           />
@@ -137,7 +137,7 @@ export default function ContractForm({ post }: { post: Post }) {
                 carrier: { ...prev.carrier, isCompany: true },
               }))
             }
-            title="Jako działalność gospodarcza"
+            title={t('asCompany')}
             name="carrierEntityType"
             checked={formState.carrier.isCompany}
           />
@@ -178,7 +178,7 @@ export default function ContractForm({ post }: { post: Post }) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <p>Przedmiot umowy</p>
+        <p>{t('good')}</p>
         <div className="bg-slate-700">
           <Select
             name="wareCategory"
@@ -205,7 +205,7 @@ export default function ContractForm({ post }: { post: Post }) {
           />
         </div>
         <Input
-          title="Nazwa towaru"
+          title={t('goodName')}
           value={formState.cargo.name}
           onChange={(e) =>
             setFormState((prev) => ({
@@ -254,7 +254,7 @@ export default function ContractForm({ post }: { post: Post }) {
 
       <div className="flex flex-col gap-2 md:flex-row">
         <Input
-          title="Data wyjazdu"
+          title={t('departureDate')}
           type="datetime-local"
           value={formState.route.earliestTime.toISOString().slice(0, 16)}
           onChange={(e) =>
@@ -265,7 +265,7 @@ export default function ContractForm({ post }: { post: Post }) {
           }
         />
         <Input
-          title="Data przyjazdu"
+          title={t('arrivalDate')}
           type="datetime-local"
           value={formState.route.latestTime.toISOString().slice(0, 16)}
           onChange={(e) =>
@@ -277,7 +277,7 @@ export default function ContractForm({ post }: { post: Post }) {
         />
       </div>
 
-      <Button type="submit">Wyślij propozycje umowy</Button>
+      <Button type="submit">{t('sendContractProposals')}</Button>
     </form>
   );
 }
