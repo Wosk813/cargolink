@@ -3,7 +3,6 @@ import Description from '@/src/app/ui/posts/desc';
 import Opinions from '@/src/app/ui/opinions/opinions';
 import ErrandRoadDetails from '@/src/app/ui/posts/errand-road-details';
 import WareInfo from '@/src/app/ui/posts/ware-info';
-import { Button } from '@/src/app/ui/button';
 import { getTranslations } from 'next-intl/server';
 import { verifySession } from '@/src/app/lib/dal';
 import GoToChatButton from '@/src/app/ui/posts/go-to-chat-butt';

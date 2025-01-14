@@ -4,6 +4,7 @@ import { createSession, deleteSession } from './session';
 import { redirect } from '@/src/i18n/routing';
 import { neon } from '@neondatabase/serverless';
 import {
+  AccountType,
   Address,
   Company,
   GoodsCategory,
@@ -545,51 +546,71 @@ export async function getPost({
   secoundUserId: string;
 }): Promise<Post | null> {
   let post: Post = { postType: PostTypes.Announcement };
-  const announcement = await getAnnouncementsById(postId)
+  const { userId } = await verifySession();
+  const secoundUser = await getUserById(secoundUserId);
+  const currentUser = await getUserById(userId);
+
+  let companies: Record<'currentUserCompany' | 'secoundUserCompany', Company> = {
+    currentUserCompany: {
+      companyName: '',
+      taxId: '',
+      address: {
+        countryId: 0,
+        stateId: 0,
+        cityId: 0,
+        countryName: '',
+        city: '',
+      },
+    },
+    secoundUserCompany: {
+      companyName: '',
+      taxId: '',
+      address: {
+        countryId: 0,
+        stateId: 0,
+        cityId: 0,
+        countryName: '',
+        city: '',
+      },
+    },
+  };
+
+  const carrier = currentUser.accountType == AccountType.Carrier ? currentUser : secoundUser;
+  const principal = currentUser.accountType == AccountType.Principal ? currentUser : secoundUser;
+
+  if (carrier.companyId) {
+    companies.currentUserCompany = await getCompanyById(carrier.companyId);
+  }
+  if (principal.companyId) {
+    companies.secoundUserCompany = await getCompanyById(principal.companyId);
+  }
+
+  const announcement = await getAnnouncementsById(postId);
+  const errand = await getErrandById(postId);
+
+  post.carrier = {
+    isCompany: !carrier.isPhisicalPerson!,
+    companyDetails: companies.currentUserCompany,
+    personDetails: {
+      name: carrier.firstname + ' ' + carrier.lastname,
+      address: { countryId: 0, stateId: 0, cityId: 0, countryName: '', city: '' },
+    },
+  };
+  post.principal = {
+    isCompany: !principal.isPhisicalPerson!,
+    companyDetails: companies.secoundUserCompany,
+    personDetails: {
+      name: secoundUser.firstname + ' ' + secoundUser.lastname,
+      address: { countryId: 0, stateId: 0, cityId: 0, countryName: '', city: '' },
+    },
+  };
+  post.goods = {
+    category: GoodsCategory.Other,
+    name: '',
+  };
+
   if (announcement) {
     post.postType = PostTypes.Announcement;
-
-    const author = await getUserById(announcement.authorId!);
-    const { userId } = await verifySession();
-    let currentUserIsAuthor: boolean;
-    if (userId == announcement.authorId) currentUserIsAuthor = true;
-    else currentUserIsAuthor = false;
-
-    const secoundUser = currentUserIsAuthor
-      ? await getUserById(secoundUserId)
-      : await getUserById(userId);
-
-    let companies: {
-      authorCompany?: Company;
-      secoundUserCompany?: Company;
-    } = {};
-    if (author.companyId) {
-      companies.authorCompany = await getCompanyById(author.companyId);
-    }
-    if (secoundUser.companyId) {
-      companies.secoundUserCompany = await getCompanyById(secoundUser.companyId);
-    }
-
-    post.carrier = {
-      isCompany: !author.isPhisicalPerson!,
-      companyDetails: companies.authorCompany,
-      personDetails: {
-        name: author.firstname + ' ' + author.lastname,
-        address: { countryId: 0, stateId: 0, cityId: 0, countryName: '', city: '' },
-      },
-    };
-    post.principal = {
-      isCompany: currentUserIsAuthor ? secoundUser.isPhisicalPerson! : author.isPhisicalPerson!,
-      companyDetails: companies.secoundUserCompany,
-      personDetails: {
-        name: secoundUser.firstname + ' ' + secoundUser.lastname,
-        address: { countryId: 0, stateId: 0, cityId: 0, countryName: '', city: '' },
-      },
-    };
-    post.goods = {
-      category: GoodsCategory.Other,
-      name: '',
-    };
     post.road = {
       from: announcement.from,
       to: announcement.to,
@@ -597,9 +618,16 @@ export async function getPost({
       arrivalDate: announcement.arrivalDate,
     };
     return post;
-  } else {
-    const errands = await sql('SELECT * FROM errands WHERE errand_id = $1', [postId]);
-    // return dbRowToObject(errands[0], RowMapping.ErrandProps) as ErrandProps;
+  }
+  if (errand) {
+    post.postType = PostTypes.Errand;
+    post.road = {
+      from: errand.from,
+      to: errand.to,
+      departureDate: errand.earliestAt,
+      arrivalDate: errand.latestAt,
+    };
+    return post;
   }
   return null;
 }

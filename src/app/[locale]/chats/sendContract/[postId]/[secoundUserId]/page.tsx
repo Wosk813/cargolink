@@ -10,6 +10,7 @@ export default async function Page({
   const postId = (await params).postId;
   const secoundUserId = (await params).secoundUserId;
   const post = await getPost({ postId: postId, secoundUserId: secoundUserId });
+  console.log(post)
   // if (!post) redirect({ href: '/chats', locale: 'pl' });
   return (
     <div className="flex flex-col gap-4">

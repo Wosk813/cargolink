@@ -5,7 +5,7 @@ import 'react-country-state-city/dist/react-country-state-city.css';
 import Input from '../../input';
 import InputRadio from '../../inputRadio';
 import { Button } from '../../button';
-import { AnnouncementProps, ContractFormState, ErrandProps, Post } from '@/src/app/lib/definitions';
+import { ContractFormState, Post } from '@/src/app/lib/definitions';
 import AddressSelect from './address-select';
 import Route from './route';
 import CompanyForm from './company-form';
