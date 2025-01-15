@@ -1,11 +1,11 @@
-import { getChats } from '../../lib/actions';
+import { redirect } from '@/src/i18n/routing';
 import { verifySession } from '../../lib/dal';
+import { getChats } from '../../lib/actions';
 import { ChatType } from '../../lib/definitions';
-import ChatComponent from '../../ui/chat/chat-component';
 
-export default async function Page() {
+export default async function ChatPage() {
   const { userId } = await verifySession();
   const initialChats: ChatType[] = await getChats(userId);
 
-  return <ChatComponent chats={initialChats} currentUserId={userId} chatId={initialChats[0]?.id} />;
+  redirect({ href: `/chats/${initialChats[0].id}`, locale: 'pl' });
 }

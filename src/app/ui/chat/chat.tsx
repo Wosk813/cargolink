@@ -1,12 +1,15 @@
+'use client';
+
 import { Button } from '../button';
 import Input from '../input';
 import Message from './message';
-import { ButtonTypes, ChatMessage, ChatType } from '../../lib/definitions';
+import { ChatMessage, ChatType } from '../../lib/definitions';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useActionState } from 'react';
 import { sendMessage } from '../../lib/actions';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/src/i18n/routing';
+import ContractProposal from './contract-proposal';
 
 type ChatProps = {
   hidden: boolean;
@@ -67,6 +70,13 @@ export default function Chat({
               myMessage={message.senderId == currentUserId}
             />
           ))}
+          {chat.contractProposalSent && (
+            <ContractProposal
+              postId={chat.announcementId ? chat.announcementId! : chat.errandId!}
+              secoundUserId={secoundUserId}
+              chatId={chat.id}
+            />
+          )}
         </div>
       </div>
       <div className="flex flex-col gap-2">

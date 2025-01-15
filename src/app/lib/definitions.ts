@@ -396,6 +396,7 @@ export type ChatType = {
   messages?: ChatMessage[];
   announcementId?: string;
   errandId?: string;
+  contractProposalSent?: boolean;
 };
 
 export type Language = {
@@ -448,7 +449,7 @@ export type GoodDetails = {
   name: string;
 };
 
-export type ContractFormState = {
+export type Contract = {
   principal: PersonDetails;
   carrier: PersonDetails;
   road: RoadDetails;

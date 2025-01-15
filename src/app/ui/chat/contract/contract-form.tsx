@@ -5,7 +5,7 @@ import 'react-country-state-city/dist/react-country-state-city.css';
 import Input from '../../input';
 import InputRadio from '../../inputRadio';
 import { Button } from '../../button';
-import { ContractFormState, GoodsCategory, Post } from '@/src/app/lib/definitions';
+import { Contract, GoodsCategory, Post } from '@/src/app/lib/definitions';
 import AddressSelect from '../../address-select';
 import Road from './road';
 import CompanyForm from './company-form';
@@ -17,7 +17,7 @@ import { addContract } from '@/src/app/lib/actions';
 export default function ContractForm({ post, chatId }: { post: Post; chatId: string }) {
   const t = useTranslations('addPost');
   const [state, handleSubmit, pending] = useActionState(addContract, undefined);
-  const [formState, setFormState] = useState<ContractFormState>({
+  const [formState, setFormState] = useState<Contract>({
     principal: {
       id: post.principal?.id,
       isCompany: post.principal?.isCompany!,

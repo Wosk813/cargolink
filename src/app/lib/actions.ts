@@ -7,7 +7,7 @@ import {
   AccountType,
   Address,
   Company,
-  ContractFormState,
+  Contract,
   GoodDetails,
   GoodsCategory,
   PersonDetails,
@@ -677,6 +677,8 @@ export async function getPost({
 }
 
 export async function addContract(state: any, formData: FormData) {
+  const { accountType } = await verifySession();
+
   const carrier: PersonDetails = JSON.parse(formData.get('carrier') as string);
   const principal: PersonDetails = JSON.parse(formData.get('principal') as string);
   const road: RoadDetails = JSON.parse(formData.get('road') as string);
@@ -697,7 +699,7 @@ export async function addContract(state: any, formData: FormData) {
   const goodCategoryId = await getGoodCategoryId(good.category);
 
   await sql(
-    'INSERT INTO contracts (carrier_id, principal_id, from_address_id, to_address_id, departure_date, arrival_date, carrier_company_id, principal_company_id, carrier_address_id, principal_address_id, carrier_as_company, principal_as_company, good_category_id, good_name, chat_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',
+    'INSERT INTO contracts (carrier_id, principal_id, from_address_id, to_address_id, departure_date, arrival_date, carrier_company_id, principal_company_id, carrier_address_id, principal_address_id, carrier_as_company, principal_as_company, good_category_id, good_name, chat_id, accepted_by_carrier, accepted_by_principal) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)',
     [
       carrier.id,
       principal.id,
@@ -714,6 +716,18 @@ export async function addContract(state: any, formData: FormData) {
       goodCategoryId,
       good.name,
       chatId,
+      accountType == AccountType.Carrier ? true : false,
+      accountType == AccountType.Principal ? true : false
     ],
   );
+  redirect({ href: `/chats/${chatId}`, locale: 'pl' });
+}
+
+export async function getContractIdForChatId(chatId: string): Promise<string | null> {
+  const contracts = await sql(
+    'SELECT * FROM contracts WHERE chat_id = $1 ORDER BY created_at LIMIT 1',
+    [chatId],
+  );
+  if (contracts) return contracts[0]['contract_id'];
+  return null;
 }

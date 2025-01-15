@@ -1,4 +1,4 @@
-import { ContractFormState } from '@/src/app/lib/definitions';
+import { Contract } from '@/src/app/lib/definitions';
 import Input from '../../input';
 import AddressSelect from '../../address-select';
 import { useTranslations } from 'next-intl';
@@ -7,8 +7,8 @@ export default function PhisicalPersonForm({
   value,
   onChange,
 }: {
-  value: NonNullable<ContractFormState['principal']['personDetails']>;
-  onChange: (details: NonNullable<ContractFormState['principal']['personDetails']>) => void;
+  value: NonNullable<Contract['principal']['personDetails']>;
+  onChange: (details: NonNullable<Contract['principal']['personDetails']>) => void;
 }) {
   const t = useTranslations('addPost');
   return (
