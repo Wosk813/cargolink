@@ -1,6 +1,6 @@
 import { ContractFormState } from '@/src/app/lib/definitions';
 import Input from '../../input';
-import AddressSelect from './address-select';
+import AddressSelect from '../../address-select';
 import { useTranslations } from 'next-intl';
 
 export default function PhisicalPersonForm({

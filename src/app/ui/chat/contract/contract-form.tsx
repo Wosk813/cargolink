@@ -1,27 +1,29 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useActionState, useState } from 'react';
 import 'react-country-state-city/dist/react-country-state-city.css';
 import Input from '../../input';
 import InputRadio from '../../inputRadio';
 import { Button } from '../../button';
 import { ContractFormState, Post } from '@/src/app/lib/definitions';
-import AddressSelect from './address-select';
+import AddressSelect from '../../address-select';
 import Road from './road';
 import CompanyForm from './company-form';
 import PhisicalPersonForm from './phisical-person-form';
 import { Select } from '../../select';
 import { useTranslations } from 'next-intl';
+import { addContract } from '@/src/app/lib/actions';
 
 export default function ContractForm({ post }: { post: Post }) {
   const t = useTranslations('addPost');
+  const [state, handleSubmit, pending] = useActionState(addContract, undefined);
   const [formState, setFormState] = useState<ContractFormState>({
     principal: {
       isCompany: post.principal?.isCompany!,
       companyDetails: {
         address: post.principal?.companyDetails?.address!,
         taxId: post.principal?.companyDetails?.taxId!,
-        name: post.principal?.companyDetails?.companyName!,
+        companyName: post.principal?.companyDetails?.companyName!,
       },
       personDetails: {
         name: post.principal?.personDetails?.name!,
@@ -33,28 +35,28 @@ export default function ContractForm({ post }: { post: Post }) {
       companyDetails: {
         address: post.carrier?.companyDetails?.address!,
         taxId: post.carrier?.companyDetails?.taxId!,
-        name: post.carrier?.companyDetails?.companyName!,
+        companyName: post.carrier?.companyDetails?.companyName!,
       },
       personDetails: {
         name: post.carrier?.personDetails?.name!,
         address: { countryId: 0, stateId: 0, cityId: 0, countryName: '', city: '' },
       },
     },
-    route: {
+    road: {
       from: post.road?.from!,
       to: post.road?.to!,
       showChangeForm: false,
-      earliestTime: post.road?.departureDate!,
-      latestTime: post.road?.arrivalDate!,
+      departureDate: post.road?.departureDate!,
+      arrivalDate: post.road?.arrivalDate!,
     },
-    cargo: {
+    good: {
       category: post.goods?.category!,
       name: post.goods?.name!,
     },
   });
 
   return (
-    <form className="flex flex-col gap-4">
+    <form action={handleSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
         <p>{t('principal')}</p>
         <div className="flex flex-col gap-2 md:flex-row">
@@ -66,7 +68,6 @@ export default function ContractForm({ post }: { post: Post }) {
               }))
             }
             title={t('asPhisicalPerson')}
-            name="principalEntityType"
             checked={!formState.principal.isCompany}
           />
           <InputRadio
@@ -77,7 +78,6 @@ export default function ContractForm({ post }: { post: Post }) {
               }))
             }
             title={t('asCompany')}
-            name="principalEntityType"
             checked={formState.principal.isCompany}
           />
         </div>
@@ -127,7 +127,6 @@ export default function ContractForm({ post }: { post: Post }) {
               }))
             }
             title={t('asPhisicalPerson')}
-            name="carrierEntityType"
             checked={!formState.carrier.isCompany}
           />
           <InputRadio
@@ -138,7 +137,6 @@ export default function ContractForm({ post }: { post: Post }) {
               }))
             }
             title={t('asCompany')}
-            name="carrierEntityType"
             checked={formState.carrier.isCompany}
           />
         </div>
@@ -181,9 +179,15 @@ export default function ContractForm({ post }: { post: Post }) {
         <p>{t('good')}</p>
         <div className="bg-slate-700">
           <Select
-            name="wareCategory"
             containerStytles="bg-slate-800"
             title={t('wareCategory')}
+            value={formState.good.category}
+            onChange={(e) =>
+              setFormState((prev) => ({
+                ...prev,
+                good: { ...prev.good, category: e.target.value },
+              }))
+            }
             options={[
               { value: 'other', label: t('other') },
               { value: 'electronics', label: t('electronics') },
@@ -206,49 +210,49 @@ export default function ContractForm({ post }: { post: Post }) {
         </div>
         <Input
           title={t('goodName')}
-          value={formState.cargo.name}
+          value={formState.good.name}
           onChange={(e) =>
             setFormState((prev) => ({
               ...prev,
-              cargo: { ...prev.cargo, name: e.target.value },
+              good: { ...prev.good, name: e.target.value },
             }))
           }
         />
       </div>
 
       <Road
-        from={formState.route.from}
-        to={formState.route.to}
+        from={formState.road.from}
+        to={formState.road.to}
         onChangeClick={() =>
           setFormState((prev) => ({
             ...prev,
-            route: { ...prev.route, showChangeForm: !prev.route.showChangeForm },
+            road: { ...prev.road, showChangeForm: !prev.road.showChangeForm },
           }))
         }
       />
 
       <div
-        className={`flex justify-between rounded-md bg-slate-700 p-2 ${formState.route.showChangeForm ? 'flex' : 'hidden'}`}
+        className={`flex justify-between rounded-md bg-slate-700 p-2 ${formState.road.showChangeForm ? 'flex' : 'hidden'}`}
       >
         <AddressSelect
-          value={formState.route.from}
+          value={formState.road.from}
           onChange={(from) =>
             setFormState((prev) => ({
               ...prev,
-              route: { ...prev.route, from },
+              road: { ...prev.road, from },
             }))
           }
-          label="Z"
+          label={t('from')}
         />
         <AddressSelect
-          value={formState.route.to}
+          value={formState.road.to}
           onChange={(to) =>
             setFormState((prev) => ({
               ...prev,
-              route: { ...prev.route, to },
+              road: { ...prev.road, to },
             }))
           }
-          label="Do"
+          label={t('to')}
         />
       </div>
 
@@ -256,28 +260,34 @@ export default function ContractForm({ post }: { post: Post }) {
         <Input
           title={t('departureDate')}
           type="datetime-local"
-          value={formState.route.earliestTime.toISOString().slice(0, 16)}
+          value={formState.road.departureDate.toISOString().slice(0, 16)}
           onChange={(e) =>
             setFormState((prev) => ({
               ...prev,
-              route: { ...prev.route, earliestTime: e.target.value as unknown as Date },
+              road: { ...prev.road, departureDate: e.target.value as unknown as Date },
             }))
           }
         />
         <Input
           title={t('arrivalDate')}
           type="datetime-local"
-          value={formState.route.latestTime.toISOString().slice(0, 16)}
+          value={formState.road.arrivalDate.toISOString().slice(0, 16)}
           onChange={(e) =>
             setFormState((prev) => ({
               ...prev,
-              route: { ...prev.route, latestTime: e.target.value as unknown as Date },
+              road: { ...prev.road, arrivalDate: e.target.value as unknown as Date },
             }))
           }
         />
       </div>
 
-      <Button type="submit">{t('sendContractProposals')}</Button>
+      <input type="hidden" name="carrier" value={JSON.stringify(formState.carrier)} />
+      <input type="hidden" name="principal" value={JSON.stringify(formState.principal)} />
+      <input type="hidden" name="good" value={JSON.stringify(formState.good)} />
+      <input type="hidden" name="road" value={JSON.stringify(formState.road)} />
+      <Button disabled={pending} type="submit">
+        {t('sendContractProposals')}
+      </Button>
     </form>
   );
 }

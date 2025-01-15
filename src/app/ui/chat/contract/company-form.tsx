@@ -1,6 +1,6 @@
 import { ContractFormState } from '@/src/app/lib/definitions';
 import Input from '../../input';
-import AddressSelect from './address-select';
+import AddressSelect from '../../address-select';
 import { useTranslations } from 'next-intl';
 
 export default function CompanyForm({
@@ -15,8 +15,8 @@ export default function CompanyForm({
     <div className="flex flex-col gap-2">
       <Input
         title={t('companyFullName')}
-        value={value.name}
-        onChange={(e) => onChange({ ...value, name: e.target.value })}
+        value={value.companyName}
+        onChange={(e) => onChange({ ...value, companyName: e.target.value })}
       />
       <Input
         title={t('taxId')}

@@ -206,7 +206,7 @@ export interface SignupFormData {
 }
 
 export type Company = {
-  id?: string,
+  id?: string;
   companyName: string;
   taxId: string;
   address: Address;
@@ -425,42 +425,33 @@ export type Address = {
   countryIso2?: string;
 };
 
-export type ContractFormState = {
-  principal: {
-    isCompany: boolean;
-    companyDetails: {
-      name: string;
-      taxId: string;
-      address: Address;
-    };
-    personDetails: {
-      name: string;
-      address: Address;
-    };
-  };
-  carrier: {
-    isCompany: boolean;
-    companyDetails: {
-      name: string;
-      taxId: string;
-      address: Address;
-    };
-    personDetails: {
-      name: string;
-      address: Address;
-    };
-  };
-  route: {
-    from: Address;
-    to: Address;
-    showChangeForm: boolean;
-    earliestTime: Date;
-    latestTime: Date;
-  };
-  cargo: {
-    category: string;
+export type PersonDetails = {
+  isCompany: boolean;
+  companyDetails: Company;
+  personDetails: {
     name: string;
+    address: Address;
   };
+};
+
+export type RoadDetails = {
+  from: Address;
+  to: Address;
+  showChangeForm?: boolean;
+  departureDate: Date;
+  arrivalDate: Date;
+};
+
+export type GoodDetails = {
+  category: string;
+  name: string;
+};
+
+export type ContractFormState = {
+  principal: PersonDetails;
+  carrier: PersonDetails;
+  road: RoadDetails;
+  good: GoodDetails;
 };
 
 export enum RowMapping {
@@ -470,7 +461,7 @@ export enum RowMapping {
   User,
   ChatType,
   ChatMessage,
-  Company
+  Company,
 }
 
 export enum PostTypes {
@@ -480,30 +471,8 @@ export enum PostTypes {
 
 export type Post = {
   postType: PostTypes;
-  principal?: {
-    isCompany: boolean;
-    companyDetails?: Company
-    personDetails?: {
-      name: string;
-      address: Address;
-    };
-  };
-  carrier?: {
-    isCompany: boolean;
-    companyDetails?: Company
-    personDetails?: {
-      name: string;
-      address: Address;
-    };
-  };
-  goods?: {
-    category: GoodsCategory;
-    name: string;
-  };
-  road?: {
-    from: Address;
-    to: Address;
-    departureDate?: Date;
-    arrivalDate?: Date;
-  };
+  principal?: PersonDetails;
+  carrier?: PersonDetails;
+  goods?: GoodDetails;
+  road?: RoadDetails;
 };

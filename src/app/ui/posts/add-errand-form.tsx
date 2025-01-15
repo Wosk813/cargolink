@@ -8,7 +8,7 @@ import 'react-country-state-city/dist/react-country-state-city.css';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Select } from '../select';
-import AddressSelect from '../chat/contract/address-select';
+import AddressSelect from '../address-select';
 import { Address } from '../../lib/definitions';
 
 export default function AddErrandForm() {

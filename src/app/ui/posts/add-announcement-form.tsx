@@ -7,7 +7,7 @@ import { addAnnouncement } from '../../lib/actions';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Address } from '../../lib/definitions';
-import AddressSelect from '../chat/contract/address-select';
+import AddressSelect from '../address-select';
 
 export default function AddAnnoucementForm() {
   const t = useTranslations('addPost');

@@ -7,9 +7,13 @@ import {
   AccountType,
   Address,
   Company,
+  ContractFormState,
+  GoodDetails,
   GoodsCategory,
+  PersonDetails,
   Post,
   PostTypes,
+  RoadDetails,
   RowMapping,
 } from '@/src/app/lib/definitions';
 import bcrypt from 'bcrypt';
@@ -627,7 +631,23 @@ export async function getPost({
       departureDate: errand.earliestAt,
       arrivalDate: errand.latestAt,
     };
+    post.goods = {
+      category: errand.ware.category,
+      name: errand.ware.name,
+    };
     return post;
   }
   return null;
+}
+
+export async function addContract(state: any, formData: FormData) {
+  const carrier: PersonDetails = JSON.parse(formData.get('carrier') as string);
+  const principal: PersonDetails = JSON.parse(formData.get('principal') as string);
+  const road: RoadDetails = JSON.parse(formData.get('road') as string);
+  const good: GoodDetails = JSON.parse(formData.get('road') as string);
+
+  const fromAddressId = await addAddress(road.from);
+  const toAddressId = await addAddress(road.to);
+
+  
 }

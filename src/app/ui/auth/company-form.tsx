@@ -2,7 +2,7 @@ import { useTranslations } from 'next-intl';
 import { Address, Company, ValidationErrors } from '../../lib/definitions';
 import 'react-country-state-city/dist/react-country-state-city.css';
 import Input from '../input';
-import AddressSelect from '../chat/contract/address-select';
+import AddressSelect from '../address-select';
 
 export default function CompanyForm({
   value,
