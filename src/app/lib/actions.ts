@@ -305,6 +305,16 @@ export async function addAddress(addres: Address): Promise<string> {
   return addresses[0]['address_id'];
 }
 
+export async function addCompany(company: Company): Promise<string> {
+  const addressId = await addAddress(company.address);
+
+  const comapnies = await sql(
+    'INSERT INTO companies (name, taxId, address_id) VALUES ($1, $2, $3) RETURNING company_id',
+    [company.companyName, company.taxId, addressId],
+  );
+  return comapnies[0]['company_id'];
+}
+
 export async function addAnnouncement(state: NewAnnouncementFormState, formData: FormData) {
   const t = await getTranslations('addPost');
   const validatedFields = newAnnouncementSchema(t).safeParse({
@@ -526,7 +536,7 @@ export async function getOpinions(userId: string) {
 
 export async function getCompanyById(companyId: string): Promise<Company> {
   const companies = await sql(
-    'SELECT companies.*, addresses.* FROM companies INNER JOIN addresses ON companies.address_id = addresses.address_id WHERE companies.company_id = $1',
+    'SELECT companies.*, addresses.*, ST_X(addresses.geography::geometry) as longitude, ST_Y(addresses.geography::geometry) as latitude FROM companies INNER JOIN addresses ON companies.address_id = addresses.address_id WHERE companies.company_id = $1',
     [companyId],
   );
   return dbRowToObject(companies[0], RowMapping.Company) as Company;
@@ -542,6 +552,12 @@ export async function addOpinion(state: any, formData: FormData) {
   redirect({ locale: 'pl', href: `/profile/${formData.get('forUserId')}` });
 }
 
+export async function getGoodCategoryId(category: GoodsCategory): Promise<string> {
+  console.log('category ' + category);
+  const categories = await sql('SELECT * FROM goods_categories WHERE name = $1', [category]);
+  return categories[0]['category_id'];
+}
+
 export async function getPost({
   postId,
   secoundUserId,
@@ -554,8 +570,8 @@ export async function getPost({
   const secoundUser = await getUserById(secoundUserId);
   const currentUser = await getUserById(userId);
 
-  let companies: Record<'currentUserCompany' | 'secoundUserCompany', Company> = {
-    currentUserCompany: {
+  let companies: Record<'carrier' | 'principal', Company> = {
+    carrier: {
       companyName: '',
       taxId: '',
       address: {
@@ -564,9 +580,11 @@ export async function getPost({
         cityId: 0,
         countryName: '',
         city: '',
+        geography: { coordinates: ['0', '0'] },
+        countryIso2: '',
       },
     },
-    secoundUserCompany: {
+    principal: {
       companyName: '',
       taxId: '',
       address: {
@@ -575,6 +593,8 @@ export async function getPost({
         cityId: 0,
         countryName: '',
         city: '',
+        geography: { coordinates: ['0', '0'] },
+        countryIso2: '',
       },
     },
   };
@@ -583,29 +603,45 @@ export async function getPost({
   const principal = currentUser.accountType == AccountType.Principal ? currentUser : secoundUser;
 
   if (carrier.companyId) {
-    companies.currentUserCompany = await getCompanyById(carrier.companyId);
+    companies.carrier = await getCompanyById(carrier.companyId);
   }
   if (principal.companyId) {
-    companies.secoundUserCompany = await getCompanyById(principal.companyId);
+    companies.principal = await getCompanyById(principal.companyId);
   }
 
   const announcement = await getAnnouncementsById(postId);
   const errand = await getErrandById(postId);
 
   post.carrier = {
+    id: carrier.id!,
     isCompany: !carrier.isPhisicalPerson!,
-    companyDetails: companies.currentUserCompany,
+    companyDetails: companies.carrier,
     personDetails: {
       name: carrier.firstname + ' ' + carrier.lastname,
-      address: { countryId: 0, stateId: 0, cityId: 0, countryName: '', city: '' },
+      address: {
+        countryId: 0,
+        stateId: 0,
+        cityId: 0,
+        countryName: '',
+        city: '',
+        geography: { coordinates: ['0', '0'] },
+      },
     },
   };
   post.principal = {
+    id: principal.id!,
     isCompany: !principal.isPhisicalPerson!,
-    companyDetails: companies.secoundUserCompany,
+    companyDetails: companies.principal,
     personDetails: {
       name: secoundUser.firstname + ' ' + secoundUser.lastname,
-      address: { countryId: 0, stateId: 0, cityId: 0, countryName: '', city: '' },
+      address: {
+        countryId: 0,
+        stateId: 0,
+        cityId: 0,
+        countryName: '',
+        city: '',
+        geography: { coordinates: ['0', '0'] },
+      },
     },
   };
   post.goods = {
@@ -644,10 +680,40 @@ export async function addContract(state: any, formData: FormData) {
   const carrier: PersonDetails = JSON.parse(formData.get('carrier') as string);
   const principal: PersonDetails = JSON.parse(formData.get('principal') as string);
   const road: RoadDetails = JSON.parse(formData.get('road') as string);
-  const good: GoodDetails = JSON.parse(formData.get('road') as string);
+  const good: GoodDetails = JSON.parse(formData.get('good') as string);
+  const chatId = formData.get('chatId');
 
   const fromAddressId = await addAddress(road.from);
   const toAddressId = await addAddress(road.to);
 
-  
+  const carrierCompanyId = carrier.isCompany ? await addCompany(carrier.companyDetails) : null;
+  const principalCompanyId = principal.isCompany
+    ? await addCompany(principal.companyDetails)
+    : null;
+
+  const carrierAddressId = await addAddress(carrier.personDetails.address);
+  const prinipalAddressId = await addAddress(principal.personDetails.address);
+
+  const goodCategoryId = await getGoodCategoryId(good.category);
+
+  await sql(
+    'INSERT INTO contracts (carrier_id, principal_id, from_address_id, to_address_id, departure_date, arrival_date, carrier_company_id, principal_company_id, carrier_address_id, principal_address_id, carrier_as_company, principal_as_company, good_category_id, good_name, chat_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',
+    [
+      carrier.id,
+      principal.id,
+      fromAddressId,
+      toAddressId,
+      road.departureDate,
+      road.arrivalDate,
+      carrierCompanyId,
+      principalCompanyId,
+      carrierAddressId,
+      prinipalAddressId,
+      carrier.isCompany,
+      principal.isCompany,
+      goodCategoryId,
+      good.name,
+      chatId,
+    ],
+  );
 }

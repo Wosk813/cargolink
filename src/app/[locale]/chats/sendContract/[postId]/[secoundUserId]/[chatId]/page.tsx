@@ -5,12 +5,13 @@ import { redirect } from '@/src/i18n/routing';
 export default async function Page({
   params,
 }: {
-  params: Promise<{ postId: string; secoundUserId: string }>;
+  params: Promise<{ postId: string; secoundUserId: string; chatId: string }>;
 }) {
   const postId = (await params).postId;
   const secoundUserId = (await params).secoundUserId;
+  const chatId = (await params).chatId;
   const post = await getPost({ postId: postId, secoundUserId: secoundUserId });
-  console.log(post)
+
   // if (!post) redirect({ href: '/chats', locale: 'pl' });
   return (
     <div className="flex flex-col gap-4">
@@ -18,7 +19,7 @@ export default async function Page({
       <p className="text-sm text-slate-400">
         Sprawdź poprawność danych, możesz je w tym miejscu edytowac
       </p>
-      <ContractForm post={post!} />
+      <ContractForm post={post!} chatId={chatId} />
     </div>
   );
 }

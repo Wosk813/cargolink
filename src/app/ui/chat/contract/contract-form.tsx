@@ -5,7 +5,7 @@ import 'react-country-state-city/dist/react-country-state-city.css';
 import Input from '../../input';
 import InputRadio from '../../inputRadio';
 import { Button } from '../../button';
-import { ContractFormState, Post } from '@/src/app/lib/definitions';
+import { ContractFormState, GoodsCategory, Post } from '@/src/app/lib/definitions';
 import AddressSelect from '../../address-select';
 import Road from './road';
 import CompanyForm from './company-form';
@@ -14,11 +14,12 @@ import { Select } from '../../select';
 import { useTranslations } from 'next-intl';
 import { addContract } from '@/src/app/lib/actions';
 
-export default function ContractForm({ post }: { post: Post }) {
+export default function ContractForm({ post, chatId }: { post: Post; chatId: string }) {
   const t = useTranslations('addPost');
   const [state, handleSubmit, pending] = useActionState(addContract, undefined);
   const [formState, setFormState] = useState<ContractFormState>({
     principal: {
+      id: post.principal?.id,
       isCompany: post.principal?.isCompany!,
       companyDetails: {
         address: post.principal?.companyDetails?.address!,
@@ -27,10 +28,19 @@ export default function ContractForm({ post }: { post: Post }) {
       },
       personDetails: {
         name: post.principal?.personDetails?.name!,
-        address: { countryId: 0, stateId: 0, cityId: 0, countryName: '', city: '' },
+        address: {
+          countryId: 0,
+          stateId: 0,
+          cityId: 0,
+          countryName: '',
+          city: '',
+          geography: { coordinates: ['0', '0'] },
+          countryIso2: '',
+        },
       },
     },
     carrier: {
+      id: post.carrier?.id,
       isCompany: post.carrier?.isCompany!,
       companyDetails: {
         address: post.carrier?.companyDetails?.address!,
@@ -39,7 +49,15 @@ export default function ContractForm({ post }: { post: Post }) {
       },
       personDetails: {
         name: post.carrier?.personDetails?.name!,
-        address: { countryId: 0, stateId: 0, cityId: 0, countryName: '', city: '' },
+        address: {
+          countryId: 0,
+          stateId: 0,
+          cityId: 0,
+          countryName: '',
+          city: '',
+          geography: { coordinates: ['0', '0'] },
+          countryIso2: '',
+        },
       },
     },
     road: {
@@ -185,7 +203,7 @@ export default function ContractForm({ post }: { post: Post }) {
             onChange={(e) =>
               setFormState((prev) => ({
                 ...prev,
-                good: { ...prev.good, category: e.target.value },
+                good: { ...prev.good, category: e.target.value as GoodsCategory },
               }))
             }
             options={[
@@ -285,6 +303,7 @@ export default function ContractForm({ post }: { post: Post }) {
       <input type="hidden" name="principal" value={JSON.stringify(formState.principal)} />
       <input type="hidden" name="good" value={JSON.stringify(formState.good)} />
       <input type="hidden" name="road" value={JSON.stringify(formState.road)} />
+      <input type="hidden" name="chatId" value={chatId} />
       <Button disabled={pending} type="submit">
         {t('sendContractProposals')}
       </Button>

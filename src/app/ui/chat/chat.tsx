@@ -34,9 +34,8 @@ export default function Chat({
 
   let languages = userIsAuthor ? chat.interestedUserLanguages : chat.postAuthorUserLanguages;
 
-  const secoundUserId = (chat.interestedUserId == currentUserId
-    ? chat.postAuthorUserId
-    : chat.interestedUserId);
+  const secoundUserId =
+    chat.interestedUserId == currentUserId ? chat.postAuthorUserId : chat.interestedUserId;
 
   return (
     <div className={`flex w-full flex-col justify-between ${hidden ? 'hidden md:block' : ''}`}>
@@ -79,7 +78,7 @@ export default function Chat({
           </Button>
         </form>
         <Link
-          href={`/chats/sendContract/${chat.announcementId ? chat.announcementId : chat.errandId}/${secoundUserId}`}
+          href={`/chats/sendContract/${chat.announcementId ? chat.announcementId : chat.errandId}/${secoundUserId}/${chat.id}`}
           className="rounded-md border border-yellow-300 p-2 text-center text-yellow-300"
         >
           {t('sendContractProposals')}

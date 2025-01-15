@@ -426,6 +426,7 @@ export type Address = {
 };
 
 export type PersonDetails = {
+  id?: string;
   isCompany: boolean;
   companyDetails: Company;
   personDetails: {
@@ -443,7 +444,7 @@ export type RoadDetails = {
 };
 
 export type GoodDetails = {
-  category: string;
+  category: GoodsCategory;
   name: string;
 };
 

@@ -176,7 +176,7 @@ export function dbRowToObject(row: any, object: RowMapping) {
           street: row['street'],
           countryIso2: row['country_iso2'],
           geography: {
-            coordinates: [row['latitude'], row['longtitude']],
+            coordinates: [row['latitude'], row['longitude']],
           },
         },
       };
