@@ -19,6 +19,7 @@ type ChatProps = {
   currentUserId: string;
   messages: ChatMessage[];
   isLoading: boolean;
+  contractId: string | null;
 };
 
 export default function Chat({
@@ -28,6 +29,7 @@ export default function Chat({
   chat,
   messages,
   currentUserId,
+  contractId,
   isLoading,
 }: ChatProps) {
   const [state, handleSend, pending] = useActionState(sendMessage, undefined);
@@ -70,13 +72,7 @@ export default function Chat({
               myMessage={message.senderId == currentUserId}
             />
           ))}
-          {chat.contractProposalSent && (
-            <ContractProposal
-              postId={chat.announcementId ? chat.announcementId! : chat.errandId!}
-              secoundUserId={secoundUserId}
-              chatId={chat.id}
-            />
-          )}
+          {contractId && <ContractProposal contractId={contractId} />}
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -88,7 +84,7 @@ export default function Chat({
           </Button>
         </form>
         <Link
-          href={`/chats/sendContract/${chat.announcementId ? chat.announcementId : chat.errandId}/${secoundUserId}/${chat.id}`}
+          href={`/chats/contract/new/${chat.announcementId ? chat.announcementId : chat.errandId}/${secoundUserId}/${chat.id}`}
           className="rounded-md border border-yellow-300 p-2 text-center text-yellow-300"
         >
           {t('sendContractProposals')}

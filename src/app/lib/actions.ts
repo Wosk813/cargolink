@@ -717,7 +717,7 @@ export async function addContract(state: any, formData: FormData) {
       good.name,
       chatId,
       accountType == AccountType.Carrier ? true : false,
-      accountType == AccountType.Principal ? true : false
+      accountType == AccountType.Principal ? true : false,
     ],
   );
   redirect({ href: `/chats/${chatId}`, locale: 'pl' });
@@ -728,6 +728,6 @@ export async function getContractIdForChatId(chatId: string): Promise<string | n
     'SELECT * FROM contracts WHERE chat_id = $1 ORDER BY created_at LIMIT 1',
     [chatId],
   );
-  if (contracts) return contracts[0]['contract_id'];
+  if (contracts.length > 0) return contracts[0]['contract_id'];
   return null;
 }

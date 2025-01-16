@@ -8,12 +8,6 @@ export default async function Page({ params }: { params: Promise<{ chatId: strin
   const { userId } = await verifySession();
   const contractId = await getContractIdForChatId(chatId)
   const initialChats: ChatType[] = await getChats(userId);
-  if (contractId) {
-    const chat = initialChats.find((chat) => chat.id === chatId);
-    if (chat) {
-      chat.contractProposalSent = true;
-    }
-  }
 
-  return <ChatComponent chats={initialChats} currentUserId={userId} chatId={chatId} />;
+  return <ChatComponent chats={initialChats} currentUserId={userId} chatId={chatId} contractId={contractId} />;
 }

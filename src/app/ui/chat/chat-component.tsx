@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Chat from './chat';
 import { ChatMessage, ChatType } from '../../lib/definitions';
 import ChatCard from './chat-card';
@@ -11,10 +12,12 @@ export default function ChatComponent({
   chats,
   currentUserId,
   chatId,
+  contractId,
 }: {
   chats: ChatType[];
   currentUserId: string;
   chatId: string;
+  contractId: string | null;
 }) {
   const [chatListHidden, setChatListHidden] = useState(false);
   const [chatHidden, setChatHidden] = useState(true);
@@ -22,6 +25,7 @@ export default function ChatComponent({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const router = useRouter();
   const t = useTranslations('chat');
 
   useEffect(() => {
@@ -41,7 +45,14 @@ export default function ChatComponent({
     const interval = setInterval(fetchMessages, 3000);
 
     return () => clearInterval(interval);
-  }, [currentChatId]);
+  }, [currentChatId, chatHidden]);
+
+  const handleChatSelect = (selectedChatId: string) => {
+    setChatHidden(false);
+    setChatListHidden(true);
+    setCurrentChatId(selectedChatId);
+    router.push(`/pl/chats/${selectedChatId}`);
+  };
 
   if (!chatId) return <h1 className="text-2xl">Brak dostępnych czatów</h1>;
 
@@ -54,11 +65,7 @@ export default function ChatComponent({
         {chats.map((chat) => (
           <ChatCard
             key={chat.id}
-            handleClick={() => {
-              setChatHidden(false);
-              setChatListHidden(true);
-              setCurrentChatId(chat.id);
-            }}
+            handleClick={() => handleChatSelect(chat.id)}
             chatTitle={chat.title}
             lastMessage={
               chat.messages && chat.messages.length > 0
@@ -72,6 +79,7 @@ export default function ChatComponent({
         ))}
       </div>
       <Chat
+        contractId={contractId}
         currentUserId={currentUserId}
         chat={chats.find((chat) => chat.id === currentChatId) || ({} as ChatType)}
         hidden={chatHidden}

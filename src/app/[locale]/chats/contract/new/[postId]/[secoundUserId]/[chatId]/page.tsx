@@ -1,4 +1,4 @@
-import { getPost } from '@/src/app/lib/actions';
+import { getContractIdForChatId, getPost } from '@/src/app/lib/actions';
 import ContractForm from '@/src/app/ui/chat/contract/contract-form';
 import { redirect } from '@/src/i18n/routing';
 
