@@ -551,10 +551,10 @@ export async function addOpinion(state: any, formData: FormData) {
   redirect({ locale: 'pl', href: `/profile/${formData.get('forUserId')}` });
 }
 
-export async function getGoodCategoryId(category: GoodsCategory): Promise<string> {
-  console.log('category ' + category);
+export async function getGoodCategoryId(category: GoodsCategory): Promise<GoodsCategory | null> {
   const categories = await sql('SELECT * FROM goods_categories WHERE name = $1', [category]);
-  return categories[0]['category_id'];
+  if (categories.length > 0) return categories[0]['category_id'];
+  return null;
 }
 
 export async function getInitialContractValues({
@@ -611,7 +611,6 @@ export async function getInitialContractValues({
   const errand = await getErrandById(postId);
 
   let initialContractValues: Contract = {
-    postType: PostTypes.Announcement,
     carrier: {
       id: carrier.id!,
       isCompany: !carrier.isPhisicalPerson!,
@@ -668,10 +667,11 @@ export async function getInitialContractValues({
       departureDate: new Date(),
       arrivalDate: new Date(),
     },
+    acceptedByCarrier: false,
+    acceptedByPrincipal: false,
   };
 
   if (announcement) {
-    initialContractValues.postType = PostTypes.Announcement;
     initialContractValues.road = {
       from: announcement.from,
       to: announcement.to,
@@ -680,7 +680,6 @@ export async function getInitialContractValues({
     };
   }
   if (errand) {
-    initialContractValues.postType = PostTypes.Errand;
     initialContractValues.road = {
       from: errand.from,
       to: errand.to,
@@ -751,4 +750,76 @@ export async function getContractIdForChatId(chatId: string): Promise<string | n
   return null;
 }
 
-// export async function getContractById(contractId: string): Promise<Contract> {}
+export async function getAddressById(id: string): Promise<Address | null> {
+  const addresses = await sql(
+    'SELECT *, ST_X(addresses.geography::geometry) as longitude, ST_Y(addresses.geography::geometry) as latitude FROM addresses WHERE address_id = $1',
+    [id],
+  );
+  if (addresses.length > 0) return dbRowToObject(addresses[0], RowMapping.Address) as Address;
+  return null;
+}
+
+export async function getContractById(contractId: string): Promise<Contract | undefined> {
+  const dbContract = (await sql('SELECT * FROM contracts WHERE contract_id = $1', [contractId]))[0];
+  const carrier = await getUserById(dbContract['carrier_id']);
+  const principal = await getUserById(dbContract['principal_id']);
+  const fromAddress = await getAddressById(dbContract['from_address_id']);
+  const toAddress = await getAddressById(dbContract['to_address_id']);
+  const carrierAsCompany = dbContract['carrier_as_company'];
+  const principalAsCompany = dbContract['principal_as_company'];
+  const departureDate = dbContract['departure_date'] as Date;
+  const arrivalDate = dbContract['arrival_date'] as Date;
+  const carrierCompany = dbContract['carrier_company_id']
+    ? await getCompanyById(dbContract['carrier_company_id'])
+    : null;
+  const principalCompany = dbContract['principal_company_id']
+    ? await getCompanyById(dbContract['principal_company_id'])
+    : null;
+  const carrierAddress = await getAddressById(dbContract['carrier_address_id']);
+  const principalAddress = await getAddressById(dbContract['principal_address_id']);
+  const goodCategory = await getGoodCategoryId(dbContract['good_category_id']);
+  const goodName = dbContract['good_name'];
+  const acceptedByCarrier = dbContract['accepted_by_carrier'];
+  const acceptedByPrincipal = dbContract['accepted_by_principal'];
+
+  const contract: Contract = {
+    carrier: {
+      isCompany: carrierAsCompany,
+      companyDetails: {
+        companyName: carrierCompany?.companyName!,
+        taxId: carrierCompany?.taxId!,
+        address: carrierCompany?.address!,
+      },
+      personDetails: {
+        name: carrier.firstname + ' ' + carrier.lastname,
+        address: carrierAddress!,
+      },
+    },
+    principal: {
+      isCompany: principalAsCompany,
+      companyDetails: {
+        companyName: principalCompany?.companyName!,
+        taxId: principalCompany?.taxId!,
+        address: principalCompany?.address!,
+      },
+      personDetails: {
+        name: principal.firstname + ' ' + principal.lastname,
+        address: principalAddress!,
+      },
+    },
+    good: {
+      category: goodCategory!,
+      name: goodName,
+    },
+    road: {
+      from: fromAddress!,
+      to: toAddress!,
+      departureDate: departureDate,
+      arrivalDate: arrivalDate,
+    },
+    acceptedByCarrier: acceptedByCarrier,
+    acceptedByPrincipal: acceptedByPrincipal,
+  };
+  // console.log(contract)
+  return contract;
+}

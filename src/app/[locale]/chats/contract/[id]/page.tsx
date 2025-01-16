@@ -1,10 +1,12 @@
-import { getInitialContractValues } from '@/src/app/lib/actions';
+import { getContractById, getInitialContractValues } from '@/src/app/lib/actions';
 import ContractForm from '@/src/app/ui/chat/contract/contract-form';
 import { redirect } from '@/src/i18n/routing';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const contractId = (await params).id;
-
+  const contractValues = await getContractById(contractId);
+  if (!contractValues) return <h1>Error</h1>;
+  // console.log(contractValues)
   // if (!post) redirect({ href: '/chats', locale: 'pl' });
   return (
     <div className="flex flex-col gap-4">
@@ -12,7 +14,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       <p className="text-sm text-slate-400">
         Sprawdź poprawność danych, możesz je w tym miejscu edytowac
       </p>
-      {/* <ContractForm post={post!} chatId={chatId} /> */}
+      <ContractForm initialState={contractValues} />
     </div>
   );
 }

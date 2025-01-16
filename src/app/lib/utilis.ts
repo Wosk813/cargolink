@@ -1,5 +1,6 @@
 import Errand from '../ui/posts/errand';
 import {
+  Address,
   AnnouncementProps,
   ChatMessage,
   ChatType,
@@ -181,6 +182,26 @@ export function dbRowToObject(row: any, object: RowMapping) {
         },
       };
       return company;
+    case RowMapping.Address:
+      fromGeoPoint = {
+        coordinates: [row['from_longitude'], row['from_latitude']],
+      };
+
+      toGeoPoint = {
+        coordinates: [row['to_longitude'], row['to_latitude']],
+      };
+      const address: Address = {
+        countryId: row['country_id'],
+        stateId: row['state_id'],
+        cityId: row['city_id'],
+        city: row['city_name'],
+        postalCode: row['postal_code'],
+        street: row['street'],
+        countryName: row['country_name'],
+        countryIso2: row['country_iso2'],
+        geography: { coordinates: [row['longitude'], row['latitude']] },
+      };
+      return address;
   }
 }
 

@@ -10,7 +10,7 @@ import {
 import Input from '../input';
 import { Button } from '../button';
 import React, { useState } from 'react';
-import { InputRadio } from '../inputRadio';
+import { InputRadio } from '../input-radio';
 import {
   validateFirstStep,
   validateFourthStep,
@@ -18,8 +18,8 @@ import {
   validateThridStep,
 } from '../../[locale]/auth/signup/validation';
 import { useTranslations } from 'next-intl';
-import LanguageSelector from '@/src/app/ui/languageSelector';
-import InputCheckbox from '@/src/app/ui/inputCheckbox';
+import LanguageSelector from '@/src/app/ui/auth/language-selector';
+import InputCheckbox from '@/src/app/ui/input-checkbox';
 import { register } from '@/src/app/lib/actions';
 import CompanyForm from './company-form';
 

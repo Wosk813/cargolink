@@ -3,7 +3,7 @@
 import { useActionState, useState } from 'react';
 import 'react-country-state-city/dist/react-country-state-city.css';
 import Input from '../../input';
-import InputRadio from '../../inputRadio';
+import InputRadio from '../../input-radio';
 import { Button } from '../../button';
 import { Contract, GoodsCategory } from '@/src/app/lib/definitions';
 import AddressSelect from '../../address-select';
@@ -19,12 +19,11 @@ export default function ContractForm({
   chatId,
 }: {
   initialState: Contract;
-  chatId: string;
+  chatId?: string;
 }) {
   const t = useTranslations('addPost');
   const [state, handleSubmit, pending] = useActionState(addContract, undefined);
   const [formState, setFormState] = useState<Contract>({
-    postType: initialState.postType,
     principal: {
       id: initialState.principal?.id,
       isCompany: initialState.principal?.isCompany!,
@@ -78,6 +77,8 @@ export default function ContractForm({
       category: initialState.good?.category!,
       name: initialState.good?.name!,
     },
+    acceptedByCarrier: initialState.acceptedByCarrier,
+    acceptedByPrincipal: initialState.acceptedByPrincipal,
   });
 
   return (
@@ -310,7 +311,7 @@ export default function ContractForm({
       <input type="hidden" name="principal" value={JSON.stringify(formState.principal)} />
       <input type="hidden" name="good" value={JSON.stringify(formState.good)} />
       <input type="hidden" name="road" value={JSON.stringify(formState.road)} />
-      <input type="hidden" name="chatId" value={chatId} />
+      {chatId && <input type="hidden" name="chatId" value={chatId} />}
       <Button disabled={pending} type="submit">
         {t('sendContractProposals')}
       </Button>

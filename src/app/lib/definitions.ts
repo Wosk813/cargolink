@@ -450,11 +450,12 @@ export type GoodDetails = {
 };
 
 export type Contract = {
-  postType: PostTypes
   principal: PersonDetails;
   carrier: PersonDetails;
   road: RoadDetails;
   good: GoodDetails;
+  acceptedByCarrier: boolean
+  acceptedByPrincipal: boolean
 };
 
 export enum RowMapping {
@@ -465,6 +466,7 @@ export enum RowMapping {
   ChatType,
   ChatMessage,
   Company,
+  Address
 }
 
 export enum PostTypes {
