@@ -13,6 +13,7 @@
   "dependencies": {
     "@heroicons/react": "^2.1.5",
     "@neondatabase/serverless": "^0.10.4",
+    "@react-pdf/renderer": "^4.1.6",
     "@vercel/speed-insights": "^1.1.0",
     "bcrypt": "^5.1.1",
     "escalade": "^3.2.0",
