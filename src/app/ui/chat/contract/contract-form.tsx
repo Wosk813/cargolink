@@ -14,15 +14,18 @@ import PhisicalPersonForm from './phisical-person-form';
 import { Select } from '../../select';
 import { useTranslations } from 'next-intl';
 import { addContract } from '@/src/app/lib/actions';
+import { Link } from '@/src/i18n/routing';
 
 export default function ContractForm({
   initialState,
   chatId,
   canAccept,
+  contractId,
 }: {
   initialState: Contract;
   chatId?: string;
   canAccept?: boolean;
+  contractId?: string;
 }) {
   const t = useTranslations('addPost');
   const [state, handleSubmit, pending] = useActionState(addContract, undefined);
@@ -315,7 +318,14 @@ export default function ContractForm({
       <input type="hidden" name="good" value={JSON.stringify(formState.good)} />
       <input type="hidden" name="road" value={JSON.stringify(formState.road)} />
       {chatId && <input type="hidden" name="chatId" value={chatId} />}
-      {canAccept && <Button className='border-yellow-300 text-yellow-300' buttType={ButtonTypes.Secondary}>Akceptuj</Button>}
+      {canAccept && (
+        <Link
+          href={`/chats/contract/doc/${contractId}`}
+          className="rounded-md border border-yellow-300 p-2 text-center text-yellow-300"
+        >
+          Akceptuj
+        </Link>
+      )}
       <Button disabled={pending} type="submit">
         {t('sendContractProposals')}
       </Button>

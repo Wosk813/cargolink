@@ -25,6 +25,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         initialState={contractValues}
         canAccept={canAccept}
         chatId={contractValues.chatId}
+        contractId={contractId}
       />
     </div>
   );
