@@ -1,6 +1,7 @@
 'use client';
 
 import { useActionState, useState } from 'react';
+import { ButtonTypes } from '@/src/app/lib/definitions';
 import 'react-country-state-city/dist/react-country-state-city.css';
 import Input from '../../input';
 import InputRadio from '../../input-radio';
@@ -17,9 +18,11 @@ import { addContract } from '@/src/app/lib/actions';
 export default function ContractForm({
   initialState,
   chatId,
+  canAccept,
 }: {
   initialState: Contract;
   chatId?: string;
+  canAccept?: boolean;
 }) {
   const t = useTranslations('addPost');
   const [state, handleSubmit, pending] = useActionState(addContract, undefined);
@@ -312,6 +315,7 @@ export default function ContractForm({
       <input type="hidden" name="good" value={JSON.stringify(formState.good)} />
       <input type="hidden" name="road" value={JSON.stringify(formState.road)} />
       {chatId && <input type="hidden" name="chatId" value={chatId} />}
+      {canAccept && <Button className='border-yellow-300 text-yellow-300' buttType={ButtonTypes.Secondary}>Akceptuj</Button>}
       <Button disabled={pending} type="submit">
         {t('sendContractProposals')}
       </Button>

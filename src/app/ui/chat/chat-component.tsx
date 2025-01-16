@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Chat from './chat';
-import { ChatMessage, ChatType } from '../../lib/definitions';
+import { AccountType, ChatMessage, ChatType } from '../../lib/definitions';
 import ChatCard from './chat-card';
 import { getMessages, setAsReaden } from '../../lib/actions';
 import { useTranslations } from 'next-intl';
@@ -13,11 +13,13 @@ export default function ChatComponent({
   currentUserId,
   chatId,
   contractId,
+  contractSentBy,
 }: {
   chats: ChatType[];
   currentUserId: string;
   chatId: string;
   contractId: string | null;
+  contractSentBy: AccountType | null;
 }) {
   const [chatListHidden, setChatListHidden] = useState(false);
   const [chatHidden, setChatHidden] = useState(true);
@@ -79,6 +81,7 @@ export default function ChatComponent({
         ))}
       </div>
       <Chat
+        contractSentBy={contractSentBy}
         contractId={contractId}
         currentUserId={currentUserId}
         chat={chats.find((chat) => chat.id === currentChatId) || ({} as ChatType)}

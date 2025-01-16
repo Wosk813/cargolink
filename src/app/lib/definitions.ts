@@ -454,8 +454,9 @@ export type Contract = {
   carrier: PersonDetails;
   road: RoadDetails;
   good: GoodDetails;
-  acceptedByCarrier: boolean
-  acceptedByPrincipal: boolean
+  acceptedByCarrier: boolean;
+  acceptedByPrincipal: boolean;
+  chatId?: string;
 };
 
 export enum RowMapping {

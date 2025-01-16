@@ -749,7 +749,7 @@ export async function addContract(state: any, formData: FormData) {
 
 export async function getContractIdForChatId(chatId: string): Promise<string | null> {
   const contracts = await sql(
-    'SELECT * FROM contracts WHERE chat_id = $1 ORDER BY created_at LIMIT 1',
+    'SELECT * FROM contracts WHERE chat_id = $1 ORDER BY created_at DESC LIMIT 1',
     [chatId],
   );
   if (contracts.length > 0) return contracts[0]['contract_id'];
@@ -787,9 +787,11 @@ export async function getContractById(contractId: string): Promise<Contract | un
   const goodName = dbContract['good_name'];
   const acceptedByCarrier = dbContract['accepted_by_carrier'];
   const acceptedByPrincipal = dbContract['accepted_by_principal'];
+  const chatId = dbContract['chat_id'];
 
   const contract: Contract = {
     carrier: {
+      id: carrier.id!,
       isCompany: carrierAsCompany,
       companyDetails: {
         companyName: carrierCompany?.companyName!,
@@ -802,6 +804,7 @@ export async function getContractById(contractId: string): Promise<Contract | un
       },
     },
     principal: {
+      id: principal.id!,
       isCompany: principalAsCompany,
       companyDetails: {
         companyName: principalCompany?.companyName!,
@@ -825,6 +828,7 @@ export async function getContractById(contractId: string): Promise<Contract | un
     },
     acceptedByCarrier: acceptedByCarrier,
     acceptedByPrincipal: acceptedByPrincipal,
+    chatId: chatId,
   };
   return contract;
 }

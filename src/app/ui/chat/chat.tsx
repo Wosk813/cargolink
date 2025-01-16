@@ -3,7 +3,7 @@
 import { Button } from '../button';
 import Input from '../input';
 import Message from './message';
-import { ChatMessage, ChatType } from '../../lib/definitions';
+import { AccountType, ChatMessage, ChatType } from '../../lib/definitions';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useActionState } from 'react';
 import { sendMessage } from '../../lib/actions';
@@ -20,6 +20,7 @@ type ChatProps = {
   messages: ChatMessage[];
   isLoading: boolean;
   contractId: string | null;
+  contractSentBy: AccountType | null;
 };
 
 export default function Chat({
@@ -30,6 +31,7 @@ export default function Chat({
   messages,
   currentUserId,
   contractId,
+  contractSentBy,
   isLoading,
 }: ChatProps) {
   const [state, handleSend, pending] = useActionState(sendMessage, undefined);
@@ -72,7 +74,9 @@ export default function Chat({
               myMessage={message.senderId == currentUserId}
             />
           ))}
-          {contractId && <ContractProposal contractId={contractId} />}
+          {contractId && contractSentBy && (
+            <ContractProposal contractSentBy={contractSentBy} contractId={contractId} />
+          )}
         </div>
       </div>
       <div className="flex flex-col gap-2">
