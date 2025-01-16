@@ -551,9 +551,15 @@ export async function addOpinion(state: any, formData: FormData) {
   redirect({ locale: 'pl', href: `/profile/${formData.get('forUserId')}` });
 }
 
-export async function getGoodCategoryId(category: GoodsCategory): Promise<GoodsCategory | null> {
+export async function getGoodCategoryIdByName(category: GoodsCategory): Promise<string | null> {
   const categories = await sql('SELECT * FROM goods_categories WHERE name = $1', [category]);
   if (categories.length > 0) return categories[0]['category_id'];
+  return null;
+}
+
+export async function getGoodCategoryById(id: string): Promise<GoodsCategory | null> {
+  const categories = await sql('SELECT * FROM goods_categories WHERE category_id = $1', [id]);
+  if (categories.length > 0) return categories[0]['name'] as GoodsCategory;
   return null;
 }
 
@@ -714,7 +720,7 @@ export async function addContract(state: any, formData: FormData) {
   const carrierAddressId = await addAddress(carrier.personDetails!.address);
   const prinipalAddressId = await addAddress(principal.personDetails!.address);
 
-  const goodCategoryId = await getGoodCategoryId(good.category);
+  const goodCategoryId = await getGoodCategoryIdByName(good.category);
 
   await sql(
     'INSERT INTO contracts (carrier_id, principal_id, from_address_id, to_address_id, departure_date, arrival_date, carrier_company_id, principal_company_id, carrier_address_id, principal_address_id, carrier_as_company, principal_as_company, good_category_id, good_name, chat_id, accepted_by_carrier, accepted_by_principal) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)',
@@ -777,7 +783,7 @@ export async function getContractById(contractId: string): Promise<Contract | un
     : null;
   const carrierAddress = await getAddressById(dbContract['carrier_address_id']);
   const principalAddress = await getAddressById(dbContract['principal_address_id']);
-  const goodCategory = await getGoodCategoryId(dbContract['good_category_id']);
+  const goodCategory = await getGoodCategoryById(dbContract['good_category_id']);
   const goodName = dbContract['good_name'];
   const acceptedByCarrier = dbContract['accepted_by_carrier'];
   const acceptedByPrincipal = dbContract['accepted_by_principal'];
@@ -820,6 +826,5 @@ export async function getContractById(contractId: string): Promise<Contract | un
     acceptedByCarrier: acceptedByCarrier,
     acceptedByPrincipal: acceptedByPrincipal,
   };
-  // console.log(contract)
   return contract;
 }

@@ -1,9 +1,17 @@
 import { Address } from '@/src/app/lib/definitions';
-import { CitySelect, CountrySelect, StateSelect } from 'react-country-state-city';
+import {
+  CitySelect,
+  CountrySelect,
+  StateSelect,
+  GetCountries,
+  GetState,
+  GetCity,
+} from 'react-country-state-city';
 import { City, Country, State } from 'react-country-state-city/dist/esm/types';
 import Input from './input';
 import 'react-country-state-city/dist/react-country-state-city.css';
 import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
 
 export default function AddressSelect({
   value,
@@ -15,6 +23,40 @@ export default function AddressSelect({
   label?: string;
 }) {
   const t = useTranslations('addPost');
+  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
+  const [selectedState, setSelectedState] = useState<State | null>(null);
+  const [selectedCity, setSelectedCity] = useState<City | null>(null);
+
+  useEffect(() => {
+    const initializeSelections = async () => {
+      if (value.countryId && !selectedCountry) {
+        const countries = await GetCountries();
+        const country = countries.find((c) => c.id === value.countryId);
+        if (country) {
+          setSelectedCountry(country);
+        }
+      }
+
+      if (value.countryId && value.stateId && !selectedState) {
+        const states = await GetState(value.countryId);
+        const state = states.find((s) => s.id === value.stateId);
+        if (state) {
+          setSelectedState(state);
+        }
+      }
+
+      if (value.countryId && value.stateId && value.cityId && !selectedCity) {
+        const cities = await GetCity(value.countryId, value.stateId);
+        const city = cities.find((c) => c.id === value.cityId);
+        if (city) {
+          setSelectedCity(city);
+        }
+      }
+    };
+
+    initializeSelections();
+  }, [value.countryId, value.stateId, value.cityId]);
+
   return (
     <div className="flex flex-col gap-2">
       {label && <p className="text-slate-400">{label}</p>}
@@ -24,6 +66,9 @@ export default function AddressSelect({
             className="w-full"
             onChange={(e) => {
               e = e as Country;
+              setSelectedCountry(e);
+              setSelectedState(null);
+              setSelectedCity(null);
               onChange({
                 ...value,
                 countryId: e.id,
@@ -34,17 +79,19 @@ export default function AddressSelect({
                 city: '',
               });
             }}
-            value={value.countryId}
+            value={selectedCountry?.id || value.countryId}
             placeHolder={t('chooseCountry')}
             region="Europe"
+            defaultValue={selectedCountry as any}
           />
         </div>
         <div className="w-full">
           <StateSelect
-            value={value.stateId}
             countryid={value.countryId}
             onChange={(e) => {
               e = e as State;
+              setSelectedState(e);
+              setSelectedCity(null);
               onChange({
                 ...value,
                 stateId: e.id,
@@ -52,16 +99,18 @@ export default function AddressSelect({
                 city: '',
               });
             }}
+            value={selectedState?.id || value.stateId}
             placeHolder={t('chooseState')}
+            defaultValue={selectedState as any}
           />
         </div>
         <div className="w-full">
           <CitySelect
-            value={value.cityId}
             countryid={value.countryId}
             stateid={value.stateId}
             onChange={(e) => {
               e = e as City;
+              setSelectedCity(e);
               onChange({
                 ...value,
                 city: e.name,
@@ -69,7 +118,9 @@ export default function AddressSelect({
                 geography: { coordinates: [e.latitude, e.longitude] },
               });
             }}
+            value={selectedCity?.id || value.cityId}
             placeHolder={t('chooseCity')}
+            defaultValue={selectedCity as any}
           />
         </div>
         <Input

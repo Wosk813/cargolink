@@ -236,7 +236,7 @@ export default function ContractForm({
         </div>
         <Input
           title={t('goodName')}
-          value={formState.good.name}
+          value={formState.good.name || ''}
           onChange={(e) =>
             setFormState((prev) => ({
               ...prev,

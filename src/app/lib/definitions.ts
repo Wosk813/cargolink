@@ -466,7 +466,7 @@ export enum RowMapping {
   ChatType,
   ChatMessage,
   Company,
-  Address
+  Address,
 }
 
 export enum PostTypes {
