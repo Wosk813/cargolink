@@ -429,7 +429,7 @@ export type Address = {
 export type PersonDetails = {
   id?: string;
   isCompany: boolean;
-  companyDetails: Company;
+  companyDetails?: Company;
   personDetails: {
     name: string;
     address: Address;
@@ -450,6 +450,7 @@ export type GoodDetails = {
 };
 
 export type Contract = {
+  postType: PostTypes
   principal: PersonDetails;
   carrier: PersonDetails;
   road: RoadDetails;
@@ -470,11 +471,3 @@ export enum PostTypes {
   Announcement,
   Errand,
 }
-
-export type Post = {
-  postType: PostTypes;
-  principal?: PersonDetails;
-  carrier?: PersonDetails;
-  goods?: GoodDetails;
-  road?: RoadDetails;
-};

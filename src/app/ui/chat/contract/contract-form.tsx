@@ -5,7 +5,7 @@ import 'react-country-state-city/dist/react-country-state-city.css';
 import Input from '../../input';
 import InputRadio from '../../inputRadio';
 import { Button } from '../../button';
-import { Contract, GoodsCategory, Post } from '@/src/app/lib/definitions';
+import { Contract, GoodsCategory } from '@/src/app/lib/definitions';
 import AddressSelect from '../../address-select';
 import Road from './road';
 import CompanyForm from './company-form';
@@ -14,20 +14,27 @@ import { Select } from '../../select';
 import { useTranslations } from 'next-intl';
 import { addContract } from '@/src/app/lib/actions';
 
-export default function ContractForm({ post, chatId }: { post: Post; chatId: string }) {
+export default function ContractForm({
+  initialState,
+  chatId,
+}: {
+  initialState: Contract;
+  chatId: string;
+}) {
   const t = useTranslations('addPost');
   const [state, handleSubmit, pending] = useActionState(addContract, undefined);
   const [formState, setFormState] = useState<Contract>({
+    postType: initialState.postType,
     principal: {
-      id: post.principal?.id,
-      isCompany: post.principal?.isCompany!,
+      id: initialState.principal?.id,
+      isCompany: initialState.principal?.isCompany!,
       companyDetails: {
-        address: post.principal?.companyDetails?.address!,
-        taxId: post.principal?.companyDetails?.taxId!,
-        companyName: post.principal?.companyDetails?.companyName!,
+        address: initialState.principal?.companyDetails?.address!,
+        taxId: initialState.principal?.companyDetails?.taxId!,
+        companyName: initialState.principal?.companyDetails?.companyName!,
       },
       personDetails: {
-        name: post.principal?.personDetails?.name!,
+        name: initialState.principal?.personDetails?.name!,
         address: {
           countryId: 0,
           stateId: 0,
@@ -40,15 +47,15 @@ export default function ContractForm({ post, chatId }: { post: Post; chatId: str
       },
     },
     carrier: {
-      id: post.carrier?.id,
-      isCompany: post.carrier?.isCompany!,
+      id: initialState.carrier?.id,
+      isCompany: initialState.carrier?.isCompany!,
       companyDetails: {
-        address: post.carrier?.companyDetails?.address!,
-        taxId: post.carrier?.companyDetails?.taxId!,
-        companyName: post.carrier?.companyDetails?.companyName!,
+        address: initialState.carrier?.companyDetails?.address!,
+        taxId: initialState.carrier?.companyDetails?.taxId!,
+        companyName: initialState.carrier?.companyDetails?.companyName!,
       },
       personDetails: {
-        name: post.carrier?.personDetails?.name!,
+        name: initialState.carrier?.personDetails?.name!,
         address: {
           countryId: 0,
           stateId: 0,
@@ -61,15 +68,15 @@ export default function ContractForm({ post, chatId }: { post: Post; chatId: str
       },
     },
     road: {
-      from: post.road?.from!,
-      to: post.road?.to!,
+      from: initialState.road?.from!,
+      to: initialState.road?.to!,
       showChangeForm: false,
-      departureDate: post.road?.departureDate!,
-      arrivalDate: post.road?.arrivalDate!,
+      departureDate: initialState.road?.departureDate!,
+      arrivalDate: initialState.road?.arrivalDate!,
     },
     good: {
-      category: post.goods?.category!,
-      name: post.goods?.name!,
+      category: initialState.good?.category!,
+      name: initialState.good?.name!,
     },
   });
 
@@ -104,9 +111,9 @@ export default function ContractForm({ post, chatId }: { post: Post; chatId: str
           <CompanyForm
             value={
               formState.principal.companyDetails ?? {
-                name: '',
+                companyName: '',
                 taxId: '',
-                address: { countryId: 0, stateId: 0, countryName: '', city: '' },
+                address: { countryId: 0, stateId: 0, cityId: 0, countryName: '', city: '' },
               }
             }
             onChange={(details) =>
@@ -163,9 +170,9 @@ export default function ContractForm({ post, chatId }: { post: Post; chatId: str
           <CompanyForm
             value={
               formState.carrier.companyDetails ?? {
-                name: '',
+                companyName: '',
                 taxId: '',
-                address: { countryId: 0, stateId: 0, countryName: '', city: '' },
+                address: { countryId: 0, stateId: 0, cityId: 0, countryName: '', city: '' },
               }
             }
             onChange={(details) =>

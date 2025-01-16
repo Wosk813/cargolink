@@ -1,4 +1,4 @@
-import { getContractIdForChatId, getPost } from '@/src/app/lib/actions';
+import { getInitialContractValues } from '@/src/app/lib/actions';
 import ContractForm from '@/src/app/ui/chat/contract/contract-form';
 import { redirect } from '@/src/i18n/routing';
 
@@ -10,7 +10,7 @@ export default async function Page({
   const postId = (await params).postId;
   const secoundUserId = (await params).secoundUserId;
   const chatId = (await params).chatId;
-  const post = await getPost({ postId: postId, secoundUserId: secoundUserId });
+  const initialContractValues = await getInitialContractValues({ postId: postId, secoundUserId: secoundUserId });
 
   // if (!post) redirect({ href: '/chats', locale: 'pl' });
   return (
@@ -19,7 +19,7 @@ export default async function Page({
       <p className="text-sm text-slate-400">
         Sprawdź poprawność danych, możesz je w tym miejscu edytowac
       </p>
-      <ContractForm post={post!} chatId={chatId} />
+      <ContractForm initialState={initialContractValues!} chatId={chatId} />
     </div>
   );
 }

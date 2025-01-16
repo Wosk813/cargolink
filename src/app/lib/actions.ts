@@ -11,7 +11,6 @@ import {
   GoodDetails,
   GoodsCategory,
   PersonDetails,
-  Post,
   PostTypes,
   RoadDetails,
   RowMapping,
@@ -558,14 +557,13 @@ export async function getGoodCategoryId(category: GoodsCategory): Promise<string
   return categories[0]['category_id'];
 }
 
-export async function getPost({
+export async function getInitialContractValues({
   postId,
   secoundUserId,
 }: {
   postId: string;
   secoundUserId: string;
-}): Promise<Post | null> {
-  let post: Post = { postType: PostTypes.Announcement };
+}): Promise<Contract> {
   const { userId } = await verifySession();
   const secoundUser = await getUserById(secoundUserId);
   const currentUser = await getUserById(userId);
@@ -612,13 +610,46 @@ export async function getPost({
   const announcement = await getAnnouncementsById(postId);
   const errand = await getErrandById(postId);
 
-  post.carrier = {
-    id: carrier.id!,
-    isCompany: !carrier.isPhisicalPerson!,
-    companyDetails: companies.carrier,
-    personDetails: {
-      name: carrier.firstname + ' ' + carrier.lastname,
-      address: {
+  let initialContractValues: Contract = {
+    postType: PostTypes.Announcement,
+    carrier: {
+      id: carrier.id!,
+      isCompany: !carrier.isPhisicalPerson!,
+      companyDetails: companies.carrier,
+      personDetails: {
+        name: carrier.firstname + ' ' + carrier.lastname,
+        address: {
+          countryId: 0,
+          stateId: 0,
+          cityId: 0,
+          countryName: '',
+          city: '',
+          geography: { coordinates: ['0', '0'] },
+        },
+      },
+    },
+    principal: {
+      id: principal.id!,
+      isCompany: !principal.isPhisicalPerson!,
+      companyDetails: companies.principal,
+      personDetails: {
+        name: secoundUser.firstname + ' ' + secoundUser.lastname,
+        address: {
+          countryId: 0,
+          stateId: 0,
+          cityId: 0,
+          countryName: '',
+          city: '',
+          geography: { coordinates: ['0', '0'] },
+        },
+      },
+    },
+    good: {
+      category: GoodsCategory.Other,
+      name: '',
+    },
+    road: {
+      from: {
         countryId: 0,
         stateId: 0,
         cityId: 0,
@@ -626,15 +657,7 @@ export async function getPost({
         city: '',
         geography: { coordinates: ['0', '0'] },
       },
-    },
-  };
-  post.principal = {
-    id: principal.id!,
-    isCompany: !principal.isPhisicalPerson!,
-    companyDetails: companies.principal,
-    personDetails: {
-      name: secoundUser.firstname + ' ' + secoundUser.lastname,
-      address: {
+      to: {
         countryId: 0,
         stateId: 0,
         cityId: 0,
@@ -642,38 +665,34 @@ export async function getPost({
         city: '',
         geography: { coordinates: ['0', '0'] },
       },
+      departureDate: new Date(),
+      arrivalDate: new Date(),
     },
-  };
-  post.goods = {
-    category: GoodsCategory.Other,
-    name: '',
   };
 
   if (announcement) {
-    post.postType = PostTypes.Announcement;
-    post.road = {
+    initialContractValues.postType = PostTypes.Announcement;
+    initialContractValues.road = {
       from: announcement.from,
       to: announcement.to,
       departureDate: announcement.departureDate,
       arrivalDate: announcement.arrivalDate,
     };
-    return post;
   }
   if (errand) {
-    post.postType = PostTypes.Errand;
-    post.road = {
+    initialContractValues.postType = PostTypes.Errand;
+    initialContractValues.road = {
       from: errand.from,
       to: errand.to,
       departureDate: errand.earliestAt,
       arrivalDate: errand.latestAt,
     };
-    post.goods = {
+    initialContractValues.good = {
       category: errand.ware.category,
       name: errand.ware.name,
     };
-    return post;
   }
-  return null;
+  return initialContractValues;
 }
 
 export async function addContract(state: any, formData: FormData) {
@@ -688,13 +707,13 @@ export async function addContract(state: any, formData: FormData) {
   const fromAddressId = await addAddress(road.from);
   const toAddressId = await addAddress(road.to);
 
-  const carrierCompanyId = carrier.isCompany ? await addCompany(carrier.companyDetails) : null;
+  const carrierCompanyId = carrier.isCompany ? await addCompany(carrier.companyDetails!) : null;
   const principalCompanyId = principal.isCompany
-    ? await addCompany(principal.companyDetails)
+    ? await addCompany(principal.companyDetails!)
     : null;
 
-  const carrierAddressId = await addAddress(carrier.personDetails.address);
-  const prinipalAddressId = await addAddress(principal.personDetails.address);
+  const carrierAddressId = await addAddress(carrier.personDetails!.address);
+  const prinipalAddressId = await addAddress(principal.personDetails!.address);
 
   const goodCategoryId = await getGoodCategoryId(good.category);
 
@@ -731,3 +750,5 @@ export async function getContractIdForChatId(chatId: string): Promise<string | n
   if (contracts.length > 0) return contracts[0]['contract_id'];
   return null;
 }
+
+// export async function getContractById(contractId: string): Promise<Contract> {}

@@ -1,4 +1,4 @@
-import { Contract } from '@/src/app/lib/definitions';
+import { Company, Contract } from '@/src/app/lib/definitions';
 import Input from '../../input';
 import AddressSelect from '../../address-select';
 import { useTranslations } from 'next-intl';
@@ -7,8 +7,8 @@ export default function CompanyForm({
   value,
   onChange,
 }: {
-  value: NonNullable<Contract['principal']['companyDetails']>;
-  onChange: (details: NonNullable<Contract['principal']['companyDetails']>) => void;
+  value: Company;
+  onChange: (details: Company) => void;
 }) {
   const t = useTranslations('addPost');
   return (
