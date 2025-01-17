@@ -2,14 +2,18 @@ import { useTranslations } from 'next-intl';
 import { ErrandProps } from '../../lib/definitions';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { FormattedDate, formatWeight } from './annoucment';
+import { Button } from '../button';
+import { acceptErrand, deleteErrand } from '../../lib/actions';
 
 export default function Errand({
+  id,
   title,
   from,
   to,
   earliestAt,
   latestAt,
   ware,
+  showModeratorButtons,
 }: ErrandProps) {
   const t = useTranslations('posts');
 
@@ -59,6 +63,16 @@ export default function Errand({
           <p className="text-center text-xl md:text-2xl">{ware.size.height} cm</p>
         </div>
       </div>
+      {showModeratorButtons && (
+        <div className="flex flex-col gap-4">
+          <Button onClick={() => acceptErrand(id!)} className="bg-lime-300">
+            Zatwierdź
+          </Button>
+          <Button onClick={() => deleteErrand(id!)} className="bg-red-500 text-white">
+            Usuń
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

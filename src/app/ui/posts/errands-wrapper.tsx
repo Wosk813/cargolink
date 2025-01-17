@@ -11,10 +11,14 @@ import Errand from './errand';
 type WrapperProps = {
   sortDirection: SortDirection;
   filterOptions: FilterProps;
-  showNotVerified?: boolean
+  showNotVerified?: boolean;
 };
 
-export default function ErrandsWrapper({ sortDirection, filterOptions, showNotVerified }: WrapperProps) {
+export default function ErrandsWrapper({
+  sortDirection,
+  filterOptions,
+  showNotVerified,
+}: WrapperProps) {
   const [errands, setErrands] = useState<Array<ErrandProps>>([]);
   const [isLoading, setLoading] = useState(true);
   const currentLocale = useLocale();
@@ -114,12 +118,14 @@ export default function ErrandsWrapper({ sortDirection, filterOptions, showNotVe
       {errands.map((errand: ErrandProps, index) => (
         <Link key={errand.id} href={`/errands/${errand.id}`}>
           <Errand
+            id={errand.id}
             title={errand.title}
             from={errand.from}
             to={errand.to}
             earliestAt={errand.earliestAt}
             latestAt={errand.latestAt}
             ware={errand.ware}
+            showModeratorButtons={showNotVerified}
           />
         </Link>
       ))}

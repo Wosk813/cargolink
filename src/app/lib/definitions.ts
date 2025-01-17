@@ -254,6 +254,7 @@ export type AnnouncementProps = {
   isAccepted?: boolean;
   desc?: string;
   roadColor?: string;
+  showModeratorButtons?: boolean;
 };
 
 export type ErrandProps = {
@@ -278,6 +279,7 @@ export type ErrandProps = {
   isAccepted?: boolean;
   authorId?: string;
   roadColor?: string;
+  showModeratorButtons?: boolean;
 };
 
 export enum GoodsCategory {

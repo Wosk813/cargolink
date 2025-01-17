@@ -837,3 +837,19 @@ export async function getContractById(contractId: string): Promise<Contract | un
   };
   return contract;
 }
+
+export async function acceptErrand(id: string) {
+  await sql('UPDATE errands SET is_accepted = true WHERE errand_id = $1', [id]);
+}
+
+export async function deleteErrand(id: string) {
+  await sql('DELETE FROM errands WHERE errand_id = $1', [id]);
+}
+
+export async function acceptAnnouncement(id: string) {
+  await sql('UPDATE announcements SET is_accepted = true WHERE announcement_id = $1', [id]);
+}
+
+export async function deleteAnnouncement(id: string) {
+  await sql('DELETE FROM announcements WHERE announcement_id = $1', [id]);
+}
