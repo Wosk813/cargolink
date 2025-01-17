@@ -12,6 +12,7 @@ import { logout } from '../lib/actions';
 const inter = Inter({ subsets: ['latin'] });
 
 async function getNavLinks(
+  isAuth: boolean | undefined,
   role: Role | undefined,
   accountType: AccountType | undefined,
   userId: string | undefined,
@@ -34,7 +35,7 @@ async function getNavLinks(
       highlighted: false,
     },
   ];
-  if (role === Role.User) {
+  if (isAuth) {
     links.push({
       name: t('profile'),
       href: `/profile/${userId}`,
@@ -57,43 +58,17 @@ async function getNavLinks(
         href: '/errands/add',
         highlighted: true,
       });
-  } else if (role === Role.Moderator) {
-    links.push({
-      name: t('profile'),
-      href: `/profile/${userId}`,
-      highlighted: false,
-    });
-    links.push({
-      name: t('chats'),
-      href: '/chats',
-      highlighted: false,
-    });
-    links.push({
-      name: t('moderation'),
-      href: '/moderation',
-      highlighted: false,
-    });
-  } else if (role === Role.Admin) {
-    links.push({
-      name: t('profile'),
-      href: `/profile/${userId}`,
-      highlighted: false,
-    });
-    links.push({
-      name: t('chats'),
-      href: '/chats',
-      highlighted: false,
-    });
-    links.push({
-      name: t('moderation'),
-      href: '/moderation',
-      highlighted: false,
-    });
-    links.push({
-      name: t('admin'),
-      href: '/admin',
-      highlighted: false,
-    });
+    if (role == Role.Moderator || role == Role.Admin)
+      links.push({
+        name: t('verifyAnnouncements'),
+        href: '/announcements/notVerified',
+        highlighted: false,
+      });
+      links.push({
+        name: t('verifyErrands'),
+        href: '/errands/notVerified',
+        highlighted: false
+      });
   }
   return links;
 }
@@ -115,14 +90,14 @@ export default async function LocaleLayout(props: {
 
   const { isAuth, role, accountType, userId } = await verifySession();
 
-  const links = await getNavLinks(role, accountType, userId);
+  const links = await getNavLinks(isAuth, role, accountType, userId);
 
   return (
     <html lang={locale}>
       <body className={`${inter.className} min-h-screen bg-slate-800 text-white`}>
         <NextIntlClientProvider messages={messages}>
           <div className="flex min-h-screen flex-col md:flex-row">
-            <Nav links={links} onLogout={logout} isAuth={isAuth} />
+            <Nav links={links} onLogout={logout} isAuth={isAuth} role={role!} />
             <main className="relative flex-1">
               <div className="mx-6 h-full md:ml-0 md:py-8">{children}</div>
               <SpeedInsights />

@@ -11,9 +11,10 @@ import Errand from './errand';
 type WrapperProps = {
   sortDirection: SortDirection;
   filterOptions: FilterProps;
+  showNotVerified?: boolean
 };
 
-export default function ErrandsWrapper({ sortDirection, filterOptions }: WrapperProps) {
+export default function ErrandsWrapper({ sortDirection, filterOptions, showNotVerified }: WrapperProps) {
   const [errands, setErrands] = useState<Array<ErrandProps>>([]);
   const [isLoading, setLoading] = useState(true);
   const currentLocale = useLocale();
@@ -85,10 +86,15 @@ export default function ErrandsWrapper({ sortDirection, filterOptions }: Wrapper
 
     const params = buildURLParams();
 
-    router.push(`/${currentLocale}/errands?${params.toString()}`, { scroll: false });
+    router.push(
+      `/${currentLocale}/errands${showNotVerified ? '/notVerified' : ''}?${params.toString()}`,
+      { scroll: false },
+    );
 
     setLoading(true);
-    fetch(`/pl/errands/get?${params.toString()}`, { cache: 'no-store' })
+    fetch(`/pl/errands/get${showNotVerified ? '/notVerified' : ''}?${params.toString()}`, {
+      cache: 'no-store',
+    })
       .then((res) => res.json())
       .then((data) => {
         setErrands(data);

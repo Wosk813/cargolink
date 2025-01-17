@@ -14,7 +14,9 @@
     "close": "Zamknij",
     "announcement": "Planowana trasa",
     "addAnnoucement": "Dodaj ogłoszenie o planowanej trasie",
-    "addErrand": "Dodaj zlecenie"
+    "addErrand": "Dodaj zlecenie",
+    "verifyErrands": "Zweryfikuj zlecenia",
+    "verifyAnnouncements": "Zweryfikuj ogłoszenia o planowanej trasie"
   },
   "login": {
     "login": "Zaloguj się",

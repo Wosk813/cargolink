@@ -14,7 +14,9 @@
     "close": "Close",
     "announcement": "Planned route",
     "addAnnoucement": "Add an announcement about your planned route",
-    "addErrand": "Add errand"
+    "addErrand": "Add errand",
+    "verifyErrands": "Verify errands",
+    "verifyAnnouncements": "Verify planned route announcements"
   },
   "login": {
     "login": "Log in",
