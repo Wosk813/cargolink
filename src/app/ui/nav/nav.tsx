@@ -42,7 +42,7 @@ export default function Nav({ links, onLogout, isAuth, role }: ClientNavigationP
           <NavLinks links={links} handleClickLink={handleClickLink} />
         </div>
         <div className="mt-auto">
-          {role != Role.User && <p className="text-sm text-slate-400">{role.toUpperCase()}</p>}
+          {role && role != Role.User && <p className="text-sm text-slate-400">{role.toUpperCase()}</p>}
           <BottomButtons onLogout={onLogout} isAuth={isAuth} />
         </div>
       </div>

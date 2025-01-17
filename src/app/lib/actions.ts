@@ -13,6 +13,7 @@ import {
   PersonDetails,
   PostTypes,
   RoadDetails,
+  Role,
   RowMapping,
 } from '@/src/app/lib/definitions';
 import bcrypt from 'bcrypt';
@@ -852,4 +853,8 @@ export async function acceptAnnouncement(id: string) {
 
 export async function deleteAnnouncement(id: string) {
   await sql('DELETE FROM announcements WHERE announcement_id = $1', [id]);
+}
+
+export async function editUserPremissions(userId: string, role: Role) {
+  await sql('UPDATE users SET role = $1 WHERE user_id = $2', [role, userId]);
 }

@@ -250,7 +250,12 @@
     "userDesc": "Benutzerbeschreibung",
     "saveChanges": "Änderungen speichern",
     "noInfo": "Keine Informationen",
-    "noDesc": "keine Beschreibung"
+    "noDesc": "Keine Beschreibung",
+    "accountPremissions": "Kontoberechtigungen",
+    "user": "Benutzer",
+    "moderator": "Moderator",
+    "admin": "Admin",
+    "changeUserPremissions": "Benutzerberechtigungen ändern"
   },
   "chat": {
     "showChats": "Chats anzeigen",

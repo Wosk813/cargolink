@@ -250,7 +250,12 @@
     "userDesc": "User description",
     "saveChanges": "Save changes",
     "noInfo": "No information",
-    "noDesc": "No description"
+    "noDesc": "No description",
+    "accountPremissions": "Account permissions",
+    "user": "User",
+    "moderator": "Moderator",
+    "admin": "Admin",
+    "changeUserPremissions": "Change user permissions"
   },
   "chat": {
     "showChats": "Show chats",
