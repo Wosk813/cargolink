@@ -13,7 +13,8 @@
     "logoutPending": "Ausloggen ...",
     "close": "schließen",
     "announcement": "Geplante Route",
-    "addAnnoucement": "Fügen Sie eine Ankündigung zu Ihrer geplanten Route hinzu"
+    "addAnnoucement": "Fügen Sie eine Ankündigung zu Ihrer geplanten Route hinzu",
+    "addErrand": "Auftrag hinzufügen"
   },
   "login": {
     "login": "Einloggen",
@@ -66,7 +67,9 @@
     "chooseLanguages": "Wählen Sie die Sprachen, die Sie sprechen",
     "acceptedStatute": "Ich habe die Allgemeinen Geschäftsbedingungen gelesen und akzeptiere sie",
     "emailIsUsed": "Diese E-Mail-Adresse wird bereits von jemandem verwendet",
-    "mustNotBeEmpty": "Dieses Feld darf nicht leer sein"
+    "mustNotBeEmpty": "Dieses Feld darf nicht leer sein",
+    "invalidPostalCode": "Ungültige Postleitzahl",
+    "selectEntityType": "Wählen Sie, ob Sie ein Konto als Unternehmen oder als Einzelperson erstellen möchten"
   },
   "search": {
     "searchUser": "Benutzer suchen",
@@ -205,7 +208,29 @@
     "wareHeight": "Warenhöhe (cm)",
     "wareName": "Warenname",
     "specialConditions": "Besondere Bedingungen (optional)",
-    "addErrand": "Auftrag hinzufügen"
+    "addErrand": "Auftrag hinzufügen",
+    "principal": "Auftraggeber",
+    "asPhisicalPerson": "Als Einzelperson",
+    "asCompany": "Als Unternehmen",
+    "carrier": "Transporteur",
+    "good": "Vertragsgegenstand",
+    "goodName": "Warenname",
+    "departureDate": "Abfahrtsdatum",
+    "arrivalDate": "Ankunftsdatum",
+    "sendContractProposals": "Vertragsvorschläge senden",
+    "fullname": "Vollständiger Name",
+    "address": "Adresse eingeben",
+    "change": "Ändern",
+    "from": "von",
+    "to": "zu",
+    "companyFullName": "Vollständiger Firmenname",
+    "taxId": "Steuernummer",
+    "companyAddress": "Firmenadresse eingeben",
+    "chooseCountry": "Land auswählen",
+    "chooseState": "Bundesland auswählen",
+    "chooseCity": "Stadt auswählen",
+    "postalCode": "Postleitzahl",
+    "street": "Straße"
   },
   "profile": {
     "aboutMe": "Über mich",

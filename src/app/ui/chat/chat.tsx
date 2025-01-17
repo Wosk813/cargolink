@@ -1,20 +1,26 @@
+'use client';
+
 import { Button } from '../button';
 import Input from '../input';
 import Message from './message';
-import { ButtonTypes, ChatMessage, ChatType } from '../../lib/definitions';
+import { AccountType, ChatMessage, ChatType } from '../../lib/definitions';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useActionState } from 'react';
 import { sendMessage } from '../../lib/actions';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/src/i18n/routing';
+import ContractProposal from './contract-proposal';
 
 type ChatProps = {
   hidden: boolean;
   showArrow: boolean;
   arrowClick: () => void;
   chat: ChatType;
-  userId: string;
+  currentUserId: string;
   messages: ChatMessage[];
   isLoading: boolean;
+  contractId: string | null;
+  contractSentBy: AccountType | null;
 };
 
 export default function Chat({
@@ -23,15 +29,20 @@ export default function Chat({
   arrowClick,
   chat,
   messages,
-  userId,
+  currentUserId,
+  contractId,
+  contractSentBy,
   isLoading,
 }: ChatProps) {
   const [state, handleSend, pending] = useActionState(sendMessage, undefined);
   const t = useTranslations('chat');
   let userIsAuthor = false;
-  if (userId == chat.postAuthorUserId) userIsAuthor = true;
+  if (currentUserId == chat.postAuthorUserId) userIsAuthor = true;
 
   let languages = userIsAuthor ? chat.interestedUserLanguages : chat.postAuthorUserLanguages;
+
+  const secoundUserId =
+    chat.interestedUserId == currentUserId ? chat.postAuthorUserId : chat.interestedUserId;
 
   return (
     <div className={`flex w-full flex-col justify-between ${hidden ? 'hidden md:block' : ''}`}>
@@ -44,9 +55,9 @@ export default function Chat({
             <ArrowLeftIcon className="h-4" />
             {t('showChats')}
           </div>
-          <h1 className="text-3xl font-bold">
+          <Link href={`/profile/${secoundUserId}`} className="text-3xl font-bold">
             {userIsAuthor ? chat.interestedUserName : chat.postAuthorUserName}
-          </h1>
+          </Link>
           <p className="text-sm text-slate-400">{t('thisPersonSpeaksLanguages')}</p>
           <p>
             {languages?.length
@@ -60,9 +71,12 @@ export default function Chat({
               key={message.id}
               date={message.sentAt}
               message={message.content}
-              myMessage={message.senderId == userId}
+              myMessage={message.senderId == currentUserId}
             />
           ))}
+          {contractId && contractSentBy && (
+            <ContractProposal contractSentBy={contractSentBy} contractId={contractId} />
+          )}
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -73,9 +87,12 @@ export default function Chat({
             {t('send')}
           </Button>
         </form>
-        <Button className="border-yellow-300 text-yellow-300" buttType={ButtonTypes.Secondary}>
+        <Link
+          href={`/chats/contract/new/${chat.announcementId ? chat.announcementId : chat.errandId}/${secoundUserId}/${chat.id}`}
+          className="rounded-md border border-yellow-300 p-2 text-center text-yellow-300"
+        >
           {t('sendContractProposals')}
-        </Button>
+        </Link>
       </div>
     </div>
   );

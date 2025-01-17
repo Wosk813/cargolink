@@ -5,7 +5,7 @@ const Map = dynamic(() => import('@/src/app/ui/posts/map'), {
   loading: () => <div className="h-[500px] w-full bg-gray-100">Ładowanie mapy...</div>,
 });
 import { useEffect, useState } from 'react';
-import { AnnoucementProps, Road } from '@/src/app/lib/definitions';
+import { AnnouncementProps, Road } from '@/src/app/lib/definitions';
 
 export default function AllRoadsMap({ postType }: { postType: 'announcements' | 'errands' }) {
   const [roads, setRoads] = useState<Road[]>([]);
@@ -13,10 +13,10 @@ export default function AllRoadsMap({ postType }: { postType: 'announcements' | 
   useEffect(() => {
     fetch(`/pl/${postType}/get?sort=byNewest&category=all`)
       .then((res) => res.json())
-      .then((announcements: AnnoucementProps[]) => {
-        const newRoads = announcements.map((announcement: AnnoucementProps) => ({
-          from: announcement.fromGeography,
-          to: announcement.toGeography,
+      .then((announcements: AnnouncementProps[]) => {
+        const newRoads = announcements.map((announcement: AnnouncementProps) => ({
+          from: announcement.from.geography,
+          to: announcement.to.geography,
           postId: announcement.id,
           color: announcement.roadColor,
         }));

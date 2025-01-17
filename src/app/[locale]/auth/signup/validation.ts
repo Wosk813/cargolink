@@ -1,4 +1,6 @@
 import {
+  Company,
+  SignupFormData,
   SignupFormFirstStepSchema,
   SignupFormThirdSchema,
   ValidationErrors,
@@ -25,7 +27,7 @@ export const validateFirstStep = async (t: any, formData: any): Promise<Validati
           stepErrors.password.push(issue.message);
         }
       } else {
-        stepErrors[issue.path[0]] = issue.message;
+        stepErrors[issue.path[0] as keyof ValidationErrors] = issue.message;
       }
     });
     return stepErrors;
@@ -41,24 +43,50 @@ export const validateSecondStep = (t: any, formData: any): ValidationErrors => {
   return {};
 };
 
-export const validateThridStep = (t: any, companyData: any, formData: any): ValidationErrors => {
+export const validateThridStep = (
+  t: any,
+  companyData: Company,
+  formData: SignupFormData,
+): ValidationErrors => {
+  if (formData.asCompany == null) {
+    return { asCompany: t('selectEntityType') };
+  }
+
   if (!formData.asCompany) {
     return {};
   }
-  try {
-    SignupFormThirdSchema(t).parse(companyData);
+
+  const result = SignupFormThirdSchema(t).safeParse(companyData);
+
+  if (result.success) {
     formData.company = companyData;
     return {};
-  } catch (error: any) {
-    const stepErrors: ValidationErrors = {};
-    error.errors.forEach((issue: any) => {
-      stepErrors[issue.path[0]] = issue.message;
-    });
-    return stepErrors;
   }
+
+  const stepErrors: ValidationErrors = {};
+
+  result.error.issues.forEach((issue) => {
+    if (issue.path.length > 1) {
+      const [parent, child] = issue.path;
+      if (parent === 'address') {
+        if (!stepErrors.address) {
+          stepErrors.address = {};
+        }
+
+        if (child === 'city' || child === 'postalCode' || child === 'street') {
+          stepErrors.address[child] = issue.message;
+        }
+      }
+    } else {
+      stepErrors[issue.path[0] as keyof ValidationErrors] = issue.message;
+    }
+  });
+
+  console.log(stepErrors);
+  return stepErrors;
 };
 
-export const validateFourthStep = (t: any, formData: any): ValidationErrors => {
+export const validateFourthStep = (t: any, formData: SignupFormData): ValidationErrors => {
   if (!formData.isStatuteAccepted) {
     return { isStatuteAccepted: t('acceptStatute') };
   }

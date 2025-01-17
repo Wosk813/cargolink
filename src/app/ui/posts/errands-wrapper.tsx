@@ -109,8 +109,8 @@ export default function ErrandsWrapper({ sortDirection, filterOptions }: Wrapper
         <Link key={errand.id} href={`/errands/${errand.id}`}>
           <Errand
             title={errand.title}
-            fromCity={errand.fromCity}
-            toCity={errand.toCity}
+            from={errand.from}
+            to={errand.to}
             earliestAt={errand.earliestAt}
             latestAt={errand.latestAt}
             ware={errand.ware}

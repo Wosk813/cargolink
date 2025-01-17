@@ -54,7 +54,7 @@ export default function Map({ zoom = 13, className, roads = [] }: MapProps) {
 
   return (
     <MapContainer
-      center={roads[0]?.from?.coordinates}
+      center={roads[0]?.from?.coordinates ? [Number(roads[0].from.coordinates[0]), Number(roads[0].from.coordinates[1])] : undefined}
       zoom={zoom}
       scrollWheelZoom={true}
       className={`${className} z-10 h-screen w-full`}
@@ -66,7 +66,7 @@ export default function Map({ zoom = 13, className, roads = [] }: MapProps) {
       {roads.map(
         (road: Road, index) =>
           road.from?.coordinates && (
-            <Marker key={index} position={road.from.coordinates}>
+            <Marker key={index} position={[Number(road.from.coordinates[0]), Number(road.from.coordinates[1])]}>
               <Popup>
                 {t('startPoint')}
                 <br />
@@ -78,7 +78,7 @@ export default function Map({ zoom = 13, className, roads = [] }: MapProps) {
       {roads.map(
         (road: Road, index) =>
           road.to?.coordinates && (
-            <Marker key={index} position={road.to.coordinates}>
+            <Marker key={index} position={[Number(road.to.coordinates[0]), Number(road.to.coordinates[1])]}>
               <Popup>
                 {t('endPoint')}
                 <br />

@@ -17,21 +17,9 @@ export const newErrandSchema = (t: any) =>
     wareHeight: z.coerce
       .number()
       .refine(inRange(1, 1_000), { message: t('valueBetween') + ' 1 - 1000' }),
-    fromCity: z
-      .string()
-      .min(1, { message: t('mustNotBeEmpty') })
-      .trim(),
-    toCity: z
-      .string()
-      .min(1, { message: t('mustNotBeEmpty') })
-      .trim(),
     desc: z.string().trim(),
     earliestAt: z.coerce.date(),
     latestAt: z.coerce.date(),
-    fromLatitude: z.coerce.number(),
-    fromLongitude: z.coerce.number(),
-    toLatitude: z.coerce.number(),
-    toLongitude: z.coerce.number(),
     wareName: z
       .string()
       .min(1, { message: t('mustNotBeEmpty') })
@@ -41,6 +29,8 @@ export const newErrandSchema = (t: any) =>
       .min(1, { message: t('mustNotBeEmpty') })
       .trim(),
     specialConditions: z.string(),
+    from: AddressSchema(t),
+    to: AddressSchema(t),
   });
 
 export type NewErrandFormState =
@@ -51,8 +41,8 @@ export type NewErrandFormState =
         wareWeight?: string[];
         wareSize?: string[];
         wareHeight?: string[];
-        fromCity?: string[];
-        toCity?: string[];
+        from?: string[];
+        to?: string[];
         earliestAt?: string[];
         latestAt?: string[];
         category?: string[];
@@ -84,21 +74,11 @@ export const newAnnouncementSchema = (t: any) =>
     maxHeight: z.coerce
       .number()
       .refine(inRange(1, 1_000), { message: t('valueBetween') + ' 1 - 1000' }),
-    fromCity: z
-      .string()
-      .min(1, { message: t('mustNotBeEmpty') })
-      .trim(),
-    toCity: z
-      .string()
-      .min(1, { message: t('mustNotBeEmpty') })
-      .trim(),
     desc: z.string().trim(),
     departureDate: z.coerce.date(),
     arrivalDate: z.coerce.date(),
-    fromLatitude: z.coerce.number(),
-    fromLongitude: z.coerce.number(),
-    toLatitude: z.coerce.number(),
-    toLongitude: z.coerce.number(),
+    from: AddressSchema(t),
+    to: AddressSchema(t),
   });
 
 export type NewAnnouncementFormState =
@@ -110,8 +90,8 @@ export type NewAnnouncementFormState =
         maxWeight?: string[];
         maxSize?: string[];
         maxHeight?: string[];
-        fromCity?: string[];
-        toCity?: string[];
+        from?: string[];
+        to?: string[];
         departureDate?: string[];
         arrivalDate?: string[];
       };
@@ -165,14 +145,34 @@ export const SignupFormFirstStepSchema = (t: any) =>
 export const SignupFormThirdSchema = (t: any) =>
   z.object({
     companyName: z.string().min(1, { message: t('mustNotBeEmpty') }),
-    nip: z.string().length(10, { message: t('nipIsNotValid', { length: 10 }) }),
-    country: z.string().min(2, { message: t('selectCountry') }),
-    postalCode: z.string().min(1, { message: t('mustNotBeEmpty') }),
-    city: z.string().min(1, { message: t('mustNotBeEmpty') }),
-    street: z.string().min(1, { message: t('mustNotBeEmpty') }),
+    taxId: z.string().length(10, { message: t('nipIsNotValid', { length: 10 }) }),
+    address: AddressSchema(t),
   });
 
-export interface ValidationErrors {
+export const AddressSchema = (t: any) =>
+  z.object({
+    countryId: z.number(),
+    stateId: z.number(),
+    cityId: z.number(),
+    countryName: z.string().min(1, { message: t('mustNotBeEmpty') }),
+    city: z.string().min(1, { message: t('mustNotBeEmpty') }),
+    geography: z
+      .object({
+        coordinates: z.tuple([z.string().regex(/^\d+\.\d+$/), z.string().regex(/^\d+\.\d+$/)]),
+      })
+      .optional(),
+    street: z
+      .string()
+      .min(1, { message: t('mustNotBeEmpty') })
+      .optional(),
+    postalCode: z
+      .string()
+      .regex(/^\d{2}-\d{3}$/, { message: t('invalidPostalCode') })
+      .optional(),
+    countryIso2: z.string().length(2),
+  });
+
+export type ValidationErrors = {
   firstname?: string;
   lastname?: string;
   email?: string;
@@ -181,14 +181,15 @@ export interface ValidationErrors {
   repeatPassword?: string;
   accountType?: string;
   companyName?: string;
-  nip?: string;
-  country?: string;
-  postalCode?: string;
-  city?: string;
-  street?: string;
+  asCompany?: string;
+  taxId?: string;
+  address?: {
+    city?: string;
+    postalCode?: string;
+    street?: string;
+  };
   isStatuteAccepted?: string;
-  [key: string]: string | string[] | undefined;
-}
+};
 
 export interface SignupFormData {
   firstname?: string;
@@ -199,19 +200,17 @@ export interface SignupFormData {
   repeatPassword?: string;
   accountType?: AccountType;
   asCompany?: boolean;
-  company: CompanyData;
+  company: Company;
   languages?: string[];
   isStatuteAccepted: boolean;
 }
 
-export interface CompanyData {
-  companyName?: string;
-  nip?: string;
-  country?: string;
-  postalCode?: string;
-  city?: string;
-  street?: string;
-}
+export type Company = {
+  id?: string;
+  companyName: string;
+  taxId: string;
+  address: Address;
+};
 
 export enum ButtonTypes {
   Primary,
@@ -238,13 +237,11 @@ export type SessionPayload = {
   accountType?: AccountType;
 };
 
-export type AnnoucementProps = {
+export type AnnouncementProps = {
   id?: string;
   title: string;
-  fromCity?: string;
-  toCity?: string;
-  fromGeography?: GeoPoint;
-  toGeography?: GeoPoint;
+  from: Address;
+  to: Address;
   departureDate: Date;
   arrivalDate: Date;
   carProps: {
@@ -262,10 +259,8 @@ export type AnnoucementProps = {
 export type ErrandProps = {
   id?: string;
   title: string;
-  fromCity: string;
-  toCity: string;
-  fromGeography?: GeoPoint;
-  toGeography?: GeoPoint;
+  from: Address;
+  to: Address;
   earliestAt: Date;
   latestAt: Date;
   ware: {
@@ -371,8 +366,7 @@ export type User = {
 };
 
 export type GeoPoint = {
-  type: string;
-  coordinates: [number, number];
+  coordinates: [string, string];
 };
 
 export type Road = {
@@ -400,6 +394,9 @@ export type ChatType = {
   interestedUserName: string;
   interestedUserLanguages: string[];
   messages?: ChatMessage[];
+  announcementId?: string;
+  errandId?: string;
+  contractProposalSent?: boolean;
 };
 
 export type Language = {
@@ -416,3 +413,64 @@ export type Opinion = {
   authorFirstName?: string;
   authorLastName?: string;
 };
+
+export type Address = {
+  countryId: number;
+  stateId: number;
+  cityId: number;
+  countryName?: string;
+  city?: string;
+  geography?: GeoPoint;
+  street?: string;
+  postalCode?: string;
+  countryIso2?: string;
+};
+
+export type PersonDetails = {
+  id?: string;
+  isCompany: boolean;
+  companyDetails?: Company;
+  personDetails: {
+    name: string;
+    address: Address;
+  };
+};
+
+export type RoadDetails = {
+  from: Address;
+  to: Address;
+  showChangeForm?: boolean;
+  departureDate: Date;
+  arrivalDate: Date;
+};
+
+export type GoodDetails = {
+  category: GoodsCategory;
+  name: string;
+};
+
+export type Contract = {
+  principal: PersonDetails;
+  carrier: PersonDetails;
+  road: RoadDetails;
+  good: GoodDetails;
+  acceptedByCarrier: boolean;
+  acceptedByPrincipal: boolean;
+  chatId?: string;
+};
+
+export enum RowMapping {
+  Opinion,
+  ErrandProps,
+  AnnoucementProps,
+  User,
+  ChatType,
+  ChatMessage,
+  Company,
+  Address,
+}
+
+export enum PostTypes {
+  Announcement,
+  Errand,
+}

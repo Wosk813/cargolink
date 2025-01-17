@@ -14,17 +14,16 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   if (!annoucement) return <h1>Error</h1>;
   const { userId, isAuth } = await verifySession();
   const t = await getTranslations('posts');
+  console.log(annoucement)
   return (
     <div className="flex flex-col gap-4 pb-4">
       <div className="flex flex-col gap-4 md:flex-row">
         <AnnouncementRoadDetails
           className="w-full"
-          from={annoucement?.fromCity}
-          to={annoucement?.toCity}
+          from={annoucement?.from}
+          to={annoucement?.to}
           departureDate={annoucement?.departureDate}
           arrivalDate={annoucement?.arrivalDate}
-          fromGeography={annoucement?.fromGeography}
-          toGeography={annoucement?.toGeography}
           postId={annoucement?.id}
           roadColor={annoucement?.roadColor}
         />

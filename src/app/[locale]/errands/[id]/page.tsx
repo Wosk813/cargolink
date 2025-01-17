@@ -3,7 +3,6 @@ import Description from '@/src/app/ui/posts/desc';
 import Opinions from '@/src/app/ui/opinions/opinions';
 import ErrandRoadDetails from '@/src/app/ui/posts/errand-road-details';
 import WareInfo from '@/src/app/ui/posts/ware-info';
-import { Button } from '@/src/app/ui/button';
 import { getTranslations } from 'next-intl/server';
 import { verifySession } from '@/src/app/lib/dal';
 import GoToChatButton from '@/src/app/ui/posts/go-to-chat-butt';
@@ -19,12 +18,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       <div className="flex flex-col gap-4 md:flex-row">
         <ErrandRoadDetails
           className="w-full"
-          from={errand?.fromCity}
-          to={errand?.toCity}
+          from={errand?.from}
+          to={errand?.to}
           earliestAt={errand?.earliestAt}
           latestAt={errand?.latestAt}
-          fromGeography={errand?.fromGeography}
-          toGeography={errand?.toGeography}
           postId={errand?.id}
           roadColor={errand?.roadColor}
         />

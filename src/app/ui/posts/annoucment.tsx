@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl';
-import { AnnoucementProps } from '../../lib/definitions';
+import { AnnouncementProps } from '../../lib/definitions';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 
 export const FormattedDate = ({ date }: { date: Date | undefined }) => {
@@ -34,12 +34,12 @@ export const formatWeight = (weight: number | undefined) => {
 
 export default function Annoucement({
   title,
-  fromCity,
-  toCity,
+  from,
+  to,
   departureDate,
   arrivalDate,
   carProps,
-}: AnnoucementProps) {
+}: AnnouncementProps) {
   const t = useTranslations('posts');
 
   return (
@@ -48,12 +48,12 @@ export default function Annoucement({
       <div className="flex justify-between rounded-md bg-slate-800 p-4">
         <div className="flex flex-col">
           <p className="text-sm text-slate-400">{t('fromCity')}</p>
-          <h2 className="text-xl">{fromCity}</h2>
+          <h2 className="text-xl">{from?.countryIso2 + ', ' + from?.city}</h2>
         </div>
         <ArrowRightIcon className="w-8 text-slate-400" />
         <div className="flex flex-col">
           <p className="text-sm text-slate-400">{t('to')}</p>
-          <h2 className="text-xl">{toCity}</h2>
+          <h2 className="text-xl">{to?.countryIso2 + ', ' + to?.city}</h2>
         </div>
       </div>
       <div className="flex gap-2 md:gap-4">

@@ -13,7 +13,8 @@
     "logoutPending": "Wylogowywanie ...",
     "close": "Zamknij",
     "announcement": "Planowana trasa",
-    "addAnnoucement": "Dodaj ogłoszenie o planowanej trasie"
+    "addAnnoucement": "Dodaj ogłoszenie o planowanej trasie",
+    "addErrand": "Dodaj zlecenie"
   },
   "login": {
     "login": "Zaloguj się",
@@ -66,7 +67,9 @@
     "chooseLanguages": "Wybierz języki jakie znasz",
     "acceptedStatute": "Przeczytałem/am regulamin i go akceptuje",
     "emailIsUsed": "Ten e-mail jest już przez kogoś używany",
-    "mustNotBeEmpty": "To pole nie może być puste"
+    "mustNotBeEmpty": "To pole nie może być puste",
+    "invalidPostalCode": "Niepoprawny kod pocztowy",
+    "selectEntityType": "Wybierz czy chcesz założyć konto jako przedsiębiorstwo czy osoba fizyczna"
   },
   "search": {
     "searchUser": "Wyszukaj użytkownika",
@@ -205,7 +208,29 @@
     "wareHeight": "Wyskość towaru (cm)",
     "wareName": "Nazwa towaru",
     "specialConditions": "Specjalne warunki (niewymagane)",
-    "addErrand": "Dodaj zlecenie"
+    "addErrand": "Dodaj zlecenie",
+    "principal": "Zleceniodawca",
+    "asPhisicalPerson": "Jako osoba fizyczna",
+    "asCompany": "Jako działalność gospodarcza",
+    "carrier": "Przewoźnik",
+    "good": "Przedmiot umowy",
+    "goodName": "Nazwa towaru",
+    "departureDate": "Data wyjazdu",
+    "arrivalDate": "Data przyjazdu",
+    "sendContractProposals": "Wyślij propozycje umowy",
+    "fullname": "Imię i nazwisko",
+    "address": "Podaj adres",
+    "change": "Zmień",
+    "from": "z",
+    "to": "do",
+    "companyFullName": "Pełna nazwa przedsiębiorstwa",
+    "taxId": "NIP",
+    "companyAddress": "Podaj adres przedsiębiorstwa",
+    "chooseCountry": "Wybierz kraj",
+    "chooseState": "Wybierz stan",
+    "chooseCity": "Wybierz miasto",
+    "postalCode": "Kod pocztowy",
+    "street": "Ulica"
   },
   "profile": {
     "aboutMe": "O mnie",

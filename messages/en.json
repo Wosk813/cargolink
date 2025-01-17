@@ -13,7 +13,8 @@
     "logoutPending": "Logging out ...",
     "close": "Close",
     "announcement": "Planned route",
-    "addAnnoucement": "Add an announcement about your planned route"
+    "addAnnoucement": "Add an announcement about your planned route",
+    "addErrand": "Add errand"
   },
   "login": {
     "login": "Log in",
@@ -66,7 +67,9 @@
     "chooseLanguages": "Choose the languages you know",
     "acceptedStatute": "I have read and accept the terms and conditions",
     "emailIsUsed": "This email is already used by someone",
-    "mustNotBeEmpty": "This field must not be empty"
+    "mustNotBeEmpty": "This field cannot be empty",
+    "invalidPostalCode": "Invalid postal code",
+    "selectEntityType": "Select whether you want to create an account as a business or an individual"
   },
   "search": {
     "searchUser": "Search user",
@@ -205,7 +208,29 @@
     "wareHeight": "Goods height (cm)",
     "wareName": "Goods name",
     "specialConditions": "Special conditions (optional)",
-    "addErrand": "Add errand"
+    "addErrand": "Add errand",
+    "principal": "Principal",
+    "asPhisicalPerson": "As an individual",
+    "asCompany": "As a business",
+    "carrier": "Carrier",
+    "good": "Contract item",
+    "goodName": "Goods name",
+    "departureDate": "Departure date",
+    "arrivalDate": "Arrival date",
+    "sendContractProposals": "Send contract proposals",
+    "fullname": "Full name",
+    "address": "Enter address",
+    "change": "Change",
+    "from": "from",
+    "to": "to",
+    "companyFullName": "Full company name",
+    "taxId": "Tax ID",
+    "companyAddress": "Enter company address",
+    "chooseCountry": "Choose country",
+    "chooseState": "Choose state",
+    "chooseCity": "Choose city",
+    "postalCode": "Postal code",
+    "street": "Street"
   },
   "profile": {
     "aboutMe": "About me",

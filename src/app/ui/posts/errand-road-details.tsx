@@ -9,16 +9,14 @@ const Map = dynamic(() => import('@/src/app/ui/posts/map'), {
   loading: () => <div className="h-[500px] w-full bg-gray-100">Ładowanie mapy...</div>,
 });
 import { useTranslations } from 'next-intl';
-import { GeoPoint } from '../../lib/definitions';
+import { Address, GeoPoint } from '../../lib/definitions';
 
 type RoadDetailsProps = {
-  from: string | undefined;
-  to: string | undefined;
+  from: Address | undefined;
+  to: Address | undefined;
   earliestAt: Date | undefined;
   latestAt: Date | undefined;
   className?: string;
-  fromGeography?: GeoPoint | undefined;
-  toGeography?: GeoPoint | undefined;
   postId?: string | undefined;
   roadColor?: string | undefined;
 };
@@ -29,8 +27,6 @@ export default function ErrandRoadDetails({
   earliestAt,
   latestAt,
   className,
-  fromGeography,
-  toGeography,
   postId,
   roadColor,
 }: RoadDetailsProps) {
@@ -41,12 +37,12 @@ export default function ErrandRoadDetails({
       <div className="flex justify-between rounded-md bg-slate-800 p-2">
         <div className="flex flex-col">
           <p className="text-sm text-slate-400">{t('fromCity')}</p>
-          <h2 className="text-xl">{from}</h2>
+          <h2 className="text-xl">{from?.countryIso2 + ', ' + from?.city}</h2>
         </div>
         <ArrowRightIcon className="w-8 text-slate-400" />
         <div className="flex flex-col">
           <p className="text-sm text-slate-400">{t('to')}</p>
-          <h2 className="text-xl">{to}</h2>
+          <h2 className="text-xl">{to?.countryIso2 + ', ' + to?.city}</h2>
         </div>
       </div>
       <div className="flex gap-2">
@@ -61,7 +57,7 @@ export default function ErrandRoadDetails({
       </div>
       <Map
         className="!h-64 rounded-md"
-        roads={[{ from: fromGeography, to: toGeography, postId: postId, color: roadColor }]}
+        roads={[{ from: from?.geography, to: to?.geography, postId: postId, color: roadColor }]}
         zoom={5}
       />
     </div>

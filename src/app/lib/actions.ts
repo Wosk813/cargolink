@@ -4,26 +4,37 @@ import { createSession, deleteSession } from './session';
 import { redirect } from '@/src/i18n/routing';
 import { neon } from '@neondatabase/serverless';
 import {
-  FilterProps,
+  AccountType,
+  Address,
+  Company,
+  Contract,
+  GoodDetails,
   GoodsCategory,
+  PersonDetails,
+  PostTypes,
+  RoadDetails,
+  RowMapping,
+} from '@/src/app/lib/definitions';
+import bcrypt from 'bcrypt';
+import {
+  FilterProps,
   SignupFormData,
   SortDirection,
   ValidationErrors,
-  AnnoucementProps,
+  AnnouncementProps,
   User,
-  GeoPoint,
   newAnnouncementSchema,
   NewAnnouncementFormState,
   ErrandProps,
   newErrandSchema,
   NewErrandFormState,
-  AccountType,
   ChatType,
   ChatMessage,
   Opinion,
 } from '@/src/app/lib/definitions';
 import { getTranslations } from 'next-intl/server';
 import { verifySession } from './dal';
+import { dbRowToObject, filterOptionsToSQL, sortDirectionToSQL, verifyPassword } from './utilis';
 
 const sql = neon(
   `postgres://neondb_owner:zZD3Rg6YXVMn@ep-soft-firefly-a2gmv5of-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require`,
@@ -48,26 +59,29 @@ export async function logout() {
 }
 
 export async function register(formData: SignupFormData) {
-  if (!formData) {
+  if (!formData || !formData.password) {
     return;
   }
+
+  const hashedPassword = await bcrypt.hash(formData.password, 10);
   const { firstname, lastname, email, password, accountType, company, languages } = formData;
   if (formData.asCompany && formData.company) {
-    const { companyName, nip, country, postalCode, street, city } = company;
-    await sql(
-      'INSERT INTO companies (name, nip, country, city, street, postal_code) VALUES ($1, $2, $3, $4, $5, $6)',
-      [companyName, nip, country, city, street, postalCode],
+    const address_id = await addAddress(formData.company.address);
+
+    const companyId = await sql(
+      'INSERT INTO companies (name, taxId, address_id) VALUES ($1, $2, $3) RETURNING company_id',
+      [company.companyName, company.taxId, address_id],
     );
-    const results = await sql('SELECT * FROM companies WHERE nip = $1', [nip]);
+
     await sql(
       'INSERT INTO users (first_name, last_name, email, password, account_type, company_id, languages, is_phisical_person) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
       [
         firstname,
         lastname,
         email,
-        password,
+        hashedPassword,
         accountType,
-        results[0]['company_id'],
+        companyId[0]['company_id'],
         languages,
         false,
       ],
@@ -75,7 +89,7 @@ export async function register(formData: SignupFormData) {
   } else {
     await sql(
       'INSERT INTO users (first_name, last_name, email, password, account_type, company_id, languages, is_phisical_person) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
-      [firstname, lastname, email, password, accountType, null, languages, true],
+      [firstname, lastname, email, hashedPassword, accountType, null, languages, true],
     );
   }
   const user = await sql('SELECT * FROM users WHERE email = $1', [email]);
@@ -99,24 +113,35 @@ export async function checkCredentials(
   password: string,
 ): Promise<{ errors: string } | undefined> {
   const t = await getTranslations('login');
-  const results = await sql('SELECT * FROM users WHERE email = $1 AND password = $2', [
-    email,
-    password,
-  ]);
 
-  if (results.length == 0) {
+  const results = await sql('SELECT * FROM users WHERE email = $1', [email]);
+
+  if (results.length === 0) {
     return {
       errors: t('credentialsError'),
     };
   }
+
+  const user = results[0];
+  const hashedPassword = user.password;
+
+  const isPasswordValid = await verifyPassword(password, hashedPassword);
+
+  if (!isPasswordValid) {
+    return {
+      errors: t('credentialsError'),
+    };
+  }
+
+  return undefined;
 }
 
 export async function getUserById(userId: string): Promise<User> {
   const user = await sql(
-    'SELECT u.*, (SELECT COUNT(*) FROM announcements a WHERE a.author_id = u.user_id) as posts_count FROM users u WHERE u.user_id = $1',
+    'SELECT u.*, COALESCE((SELECT COUNT(*) FROM announcements a WHERE a.author_id = u.user_id), (SELECT COUNT(*) FROM errands e WHERE e.author_id = u.user_id)) AS posts_count FROM users u WHERE u.user_id = $1;',
     [userId],
   );
-  return dbRowToObject(user[0], 'user') as User;
+  return dbRowToObject(user[0], RowMapping.User) as User;
 }
 
 export async function getUserByEmail(email: string) {
@@ -124,126 +149,25 @@ export async function getUserByEmail(email: string) {
   return user[0];
 }
 
-function sortDirectionToSQL(sortBy: SortDirection, onColumn: string = '') {
-  let by = '';
-  switch (sortBy) {
-    case SortDirection.ByNewest:
-      by = 'created_at ASC';
-      break;
-    case SortDirection.ByOldest:
-      by = 'created_at DESC';
-      break;
-    case SortDirection.ByWeightAsc:
-      by = 'max_weight ASC';
-      break;
-    case SortDirection.ByWeightDesc:
-      by = 'max_weight DESC';
-      break;
-    case SortDirection.ByHeightAsc:
-      by = 'max_height ASC';
-      break;
-    case SortDirection.ByHeightDesc:
-      by = 'max_height DESC';
-      break;
-    case SortDirection.BySizeAsc:
-      by = 'size_x * size_y ASC';
-      break;
-    case SortDirection.BySizeDesc:
-      by = 'size_x * size_y DESC';
-      break;
-  }
-  return `ORDER BY ${onColumn}${by}`;
-}
-
-function filterOptionsToSQL(filterOptions: FilterProps, onColumn: string = ''): string {
-  const conditions: string[] = [];
-
-  // Dates
-  if (filterOptions.date.departureDate.from) {
-    conditions.push(`departure_date >= '${filterOptions.date.departureDate.from.toISOString()}'`);
-  }
-  if (filterOptions.date.departureDate.to) {
-    conditions.push(`departure_date <= '${filterOptions.date.departureDate.to.toISOString()}'`);
-  }
-  if (filterOptions.date.arrivalDate.from) {
-    conditions.push(`arrival_date >= '${filterOptions.date.arrivalDate.from.toISOString()}'`);
-  }
-  if (filterOptions.date.arrivalDate.to) {
-    conditions.push(`arrival_date <= '${filterOptions.date.arrivalDate.to.toISOString()}'`);
-  }
-
-  // Cities
-  if (filterOptions.cities.from) {
-    conditions.push(`from_city ILIKE '%${filterOptions.cities.from}%'`);
-  }
-  if (filterOptions.cities.to) {
-    conditions.push(`to_city ILIKE '%${filterOptions.cities.to}%'`);
-  }
-
-  // Goods
-  if (filterOptions.goods.weight.from !== null) {
-    conditions.push(`max_weight >= ${filterOptions.goods.weight.from}`);
-  }
-  if (filterOptions.goods.weight.to !== null) {
-    conditions.push(`max_weight <= ${filterOptions.goods.weight.to}`);
-  }
-
-  if (filterOptions.goods.size.x.from !== null) {
-    conditions.push(`size_x >= ${filterOptions.goods.size.x.from}`);
-  }
-  if (filterOptions.goods.size.x.to !== null) {
-    conditions.push(`size_x <= ${filterOptions.goods.size.x.to}`);
-  }
-
-  if (filterOptions.goods.size.y.from !== null) {
-    conditions.push(`size_y >= ${filterOptions.goods.size.y.from}`);
-  }
-  if (filterOptions.goods.size.y.to !== null) {
-    conditions.push(`size_y <= ${filterOptions.goods.size.y.to}`);
-  }
-
-  if (filterOptions.goods.size.height.from !== null) {
-    conditions.push(`max_height >= ${filterOptions.goods.size.height.from}`);
-  }
-  if (filterOptions.goods.size.height.to !== null) {
-    conditions.push(`max_height <= ${filterOptions.goods.size.height.to}`);
-  }
-
-  // Category
-  if (filterOptions.goods.category) {
-    if (filterOptions.goods.category != GoodsCategory.All)
-      conditions.push(`category = '${filterOptions.goods.category}'`);
-  }
-
-  if (conditions.length === 0) {
-    return '';
-  }
-
-  return `WHERE ${onColumn}${conditions.join(' AND ')}`;
-}
-
 export async function getAnnouncements(
   sortBy: SortDirection = SortDirection.ByNewest,
   filterOptions: FilterProps,
 ) {
   let sqlString = `
-    SELECT 
-      *,
-      ST_X(from_geography::geometry) as from_longitude,
-      ST_Y(from_geography::geometry) as from_latitude,
-      ST_X(to_geography::geometry) as to_longitude,
-      ST_Y(to_geography::geometry) as to_latitude 
-    FROM announcements 
+    SELECT announcements.*, a1.country_id as from_country_id, a1.state_id as from_state_id, a1.city_id as from_city_id, a1.country_name as from_country_name, a1.country_iso2 as from_country_iso2, a1.city_name as from_city, a2.country_id as to_country_id, a2.state_id as to_state_id, a2.city_id as to_city_id, a2.country_name as to_country_name, a2.country_iso2 as to_country_iso2, a2.city_name as to_city, ST_X(a1.geography::geometry) as from_longitude, ST_Y(a1.geography::geometry) as from_latitude, ST_X(a2.geography::geometry) as to_longitude, ST_Y(a2.geography::geometry) as to_latitude FROM announcements LEFT JOIN addresses a1 ON announcements.from_address_id = a1.address_id LEFT JOIN addresses a2 ON announcements.to_address_id = a2.address_id
     ${filterOptionsToSQL(filterOptions)} 
     ${sortDirectionToSQL(sortBy)}
   `;
 
   const dbrows = await sql(sqlString);
-  const announcements: Array<AnnoucementProps | null> = [];
+  const announcements: Array<AnnouncementProps | null> = [];
 
   dbrows.map((dbrow) => {
     if (!dbrow['is_accepted']) return;
-    let row: AnnoucementProps | null = dbRowToObject(dbrow, 'annoucement') as AnnoucementProps;
+    let row: AnnouncementProps | null = dbRowToObject(
+      dbrow,
+      RowMapping.AnnoucementProps,
+    ) as AnnouncementProps;
     announcements.push(row);
   });
 
@@ -255,17 +179,34 @@ export async function getErrands(
   filterOptions: FilterProps,
 ) {
   let sqlString = `
- SELECT e.*, gc.name as ware_Category, g.name as ware_Name, g.size_x as ware_Size_X, g.size_y as ware_Size_Y, g.height as ware_Height, g.weight as ware_weight, g.special_conditions as ware_Special_Conditions,
-  ST_X(e.from_geography::geometry) as from_longitude,
-  ST_Y(e.from_geography::geometry) as from_latitude,
-  ST_X(e.to_geography::geometry) as to_longitude,
-  ST_Y(e.to_geography::geometry) as to_latitude
-  FROM errands e
-  LEFT JOIN goods g
-  ON e.good_id = g.good_id
-  LEFT JOIN goods_categories gc
-  ON gc.category_id = g.category_id
-    ${sortDirectionToSQL(sortBy, 'e.')}
+    SELECT
+      errands.*, g.*, g.name as good_name, gc.name as good_category,
+      a1.country_id as from_country_id,
+      a1.state_id as from_state_id,
+      a1.city_id as from_city_id,
+      a1.country_name as from_country_name,
+      a1.country_iso2 as from_country_iso2,
+      a1.city_name as from_city,
+
+      a2.country_id as to_country_id,
+      a2.state_id as to_state_id,
+      a2.city_id as to_city_id,
+      a2.country_name as to_country_name,
+      a2.country_iso2 as to_country_iso2,
+      a2.city_name as to_city,
+        ST_X(a1.geography::geometry) as from_longitude,
+      ST_Y(a1.geography::geometry) as from_latitude,
+      ST_X(a2.geography::geometry) as to_longitude,
+      ST_Y(a2.geography::geometry) as to_latitude
+    FROM errands
+    LEFT JOIN addresses a1
+    ON errands.from_address_id = a1.address_id
+    LEFT JOIN addresses a2
+    ON errands.to_address_id = a2.address_id
+    LEFT JOIN goods g
+    ON errands.good_id = g.good_id
+    LEFT JOIN goods_categories gc
+    ON g.category_id = gc.category_id
   `;
 
   const dbrows = await sql(sqlString);
@@ -273,178 +214,104 @@ export async function getErrands(
 
   dbrows.map((dbrow) => {
     if (!dbrow['is_accepted']) return;
-    let row: ErrandProps | null = dbRowToObject(dbrow, 'errand') as ErrandProps;
+    let row: ErrandProps | null = dbRowToObject(dbrow, RowMapping.ErrandProps) as ErrandProps;
     errands.push(row);
   });
 
   return errands;
 }
 
-export async function getAnnouncementsById(id: string): Promise<AnnoucementProps | null> {
+export async function getAnnouncementsById(id: string): Promise<AnnouncementProps | null> {
   const result = await sql`
-    SELECT 
-      *,
-      ST_X(from_geography::geometry) as from_longitude,
-      ST_Y(from_geography::geometry) as from_latitude,
-      ST_X(to_geography::geometry) as to_longitude,
-      ST_Y(to_geography::geometry) as to_latitude
-    FROM announcements 
-    WHERE announcement_id = ${id}
+    SELECT
+      announcements.*,
+      a1.country_name as from_country_name,
+      a1.country_iso2 as from_country_iso2,
+      a1.city_name as from_city,
+      a2.country_name as to_country_name,
+      a2.country_iso2 as to_country_iso2,
+      a2.city_name as to_city,
+        ST_X(a1.geography::geometry) as from_longitude,
+      ST_Y(a1.geography::geometry) as from_latitude,
+      ST_X(a2.geography::geometry) as to_longitude,
+      ST_Y(a2.geography::geometry) as to_latitude
+    FROM announcements
+    LEFT JOIN addresses a1
+    ON announcements.from_address_id = a1.address_id
+    LEFT JOIN addresses a2
+    ON announcements.to_address_id = a2.address_id
+    WHERE announcements.announcement_id = ${id}
   `;
 
   if (result.length === 0) return null;
 
-  return dbRowToObject(result[0], 'annoucement') as AnnoucementProps;
+  return dbRowToObject(result[0], RowMapping.AnnoucementProps) as AnnouncementProps;
 }
 
 export async function getErrandById(id: string): Promise<ErrandProps | null> {
   const result = await sql`
-  SELECT e.*, gc.name as ware_Category, g.name as ware_Name, g.size_x as ware_Size_X, g.size_y as ware_Size_Y, g.height as ware_Height, g.weight as ware_weight, g.special_conditions as ware_Special_Conditions,
-    ST_X(e.from_geography::geometry) as from_longitude,
-    ST_Y(e.from_geography::geometry) as from_latitude,
-    ST_X(e.to_geography::geometry) as to_longitude,
-    ST_Y(e.to_geography::geometry) as to_latitude
-    FROM errands e
+  SELECT
+      errands.*, g.*, g.name as good_name, gc.name as good_category,
+      a1.country_id as from_country_id,
+      a1.state_id as from_state_id,
+      a1.city_id as from_city_id,
+      a1.country_name as from_country_name,
+      a1.country_iso2 as from_country_iso2,
+      a1.city_name as from_city,
+
+      a2.country_id as to_country_id,
+      a2.state_id as to_state_id,
+      a2.city_id as to_city_id,
+      a2.country_name as to_country_name,
+      a2.country_iso2 as to_country_iso2,
+      a2.city_name as to_city,
+        ST_X(a1.geography::geometry) as from_longitude,
+      ST_Y(a1.geography::geometry) as from_latitude,
+      ST_X(a2.geography::geometry) as to_longitude,
+      ST_Y(a2.geography::geometry) as to_latitude
+    FROM errands
+    LEFT JOIN addresses a1
+    ON errands.from_address_id = a1.address_id
+    LEFT JOIN addresses a2
+    ON errands.to_address_id = a2.address_id
     LEFT JOIN goods g
-    ON e.good_id = g.good_id
+    ON errands.good_id = g.good_id
     LEFT JOIN goods_categories gc
-    ON gc.category_id = g.category_id
-    WHERE e.errand_id = ${id}
+    ON g.category_id = gc.category_id
+    WHERE errands.errand_id = ${id}
   `;
 
   if (result.length === 0) return null;
 
-  return dbRowToObject(result[0], 'errand') as ErrandProps;
+  return dbRowToObject(result[0], RowMapping.ErrandProps) as ErrandProps;
 }
 
-function dbRowToObject(row: any, object: string) {
-  let fromGeoPoint: GeoPoint;
-  let toGeoPoint: GeoPoint;
-  switch (object) {
-    case 'errand':
-      fromGeoPoint = {
-        type: 'Point',
-        coordinates: [Number(row['from_longitude']), Number(row['from_latitude'])],
-      };
+export async function addAddress(addres: Address): Promise<string> {
+  const addresses = await sql(
+    'INSERT INTO addresses (country_id, state_id, city_id, city_name, postal_code, street, geography, country_name, country_iso2) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING address_id',
+    [
+      addres.countryId,
+      addres.stateId,
+      addres.cityId,
+      addres.city,
+      addres.postalCode,
+      addres.street,
+      `POINT(${addres.geography?.coordinates[0]} ${addres.geography?.coordinates[1]})`,
+      addres.countryName,
+      addres.countryIso2,
+    ],
+  );
+  return addresses[0]['address_id'];
+}
 
-      toGeoPoint = {
-        type: 'Point',
-        coordinates: [Number(row['to_longitude']), Number(row['to_latitude'])],
-      };
+export async function addCompany(company: Company): Promise<string> {
+  const addressId = await addAddress(company.address);
 
-      const errand: ErrandProps = {
-        id: row['errand_id'],
-        title: row['title'],
-        fromCity: row['from_city'],
-        toCity: row['to_city'],
-        fromGeography: fromGeoPoint,
-        toGeography: toGeoPoint,
-        earliestAt: new Date(row['earliest_at']),
-        latestAt: new Date(row['latest_at']),
-        ware: {
-          weight: Number(row['ware_weight']),
-          size: {
-            x: Number(row['ware_size_x']),
-            y: Number(row['ware_size_y']),
-            height: Number(row['ware_height']),
-          },
-          name: row['ware_name'],
-          category: row['ware_category'],
-        },
-        authorId: row['author_id'],
-        isAccepted: row['is_accepted'],
-        desc: row['description'],
-        roadColor: row['road_color'],
-      };
-      return errand;
-    case 'annoucement':
-      fromGeoPoint = {
-        type: 'Point',
-        coordinates: [Number(row['from_longitude']), Number(row['from_latitude'])],
-      };
-
-      toGeoPoint = {
-        type: 'Point',
-        coordinates: [Number(row['to_longitude']), Number(row['to_latitude'])],
-      };
-
-      const announcement: AnnoucementProps = {
-        id: row['announcement_id'],
-        title: row['title'],
-        fromCity: row['from_city'],
-        toCity: row['to_city'],
-        fromGeography: fromGeoPoint,
-        toGeography: toGeoPoint,
-        departureDate: new Date(row['start_date']),
-        arrivalDate: new Date(row['arrive_date']),
-        carProps: {
-          maxWeight: Number(row['max_weight']),
-          maxSize: {
-            x: Number(row['size_x']),
-            y: Number(row['size_y']),
-            height: Number(row['max_height']),
-          },
-          brand: row['vehicle_brand'],
-          model: row['vehicle_model'],
-        },
-        authorId: row['author_id'],
-        isAccepted: row['is_accepted'],
-        desc: row['description'],
-        roadColor: row['road_color'],
-      };
-      return announcement;
-    case 'user':
-      const user: User = {
-        id: row['user_id'],
-        firstname: row['first_name'],
-        lastname: row['last_name'],
-        email: row['email'],
-        createdAt: row['created_at'],
-        accountType: row['account_type'],
-        companyId: row['company_id'],
-        lastSeen: row['last_logged'],
-        languages: row['languages'],
-        isPhisicalPerson: row['is_psyhical_person'],
-        role: row['role'],
-        userDesc: row['user_desc'],
-        postCount: row['posts_count'],
-      };
-      return user;
-    case 'chat':
-      const chat: ChatType = {
-        id: row['chat_id'],
-        interestedUserId: row['interested_user_id'],
-        postAuthorUserId: row['post_author_id'],
-        interestedUserName: row['interested_user_name'],
-        postAuthorUserName: row['post_author_name'],
-        interestedUserLanguages: row['interested_user_languages'],
-        postAuthorUserLanguages: row['post_author_languages'],
-        title: row['title'],
-      };
-      return chat;
-    case 'message':
-      const message: ChatMessage = {
-        id: row['message_id'],
-        senderId: row['sender_id'],
-        content: row['content'],
-        sentAt: row['sent_at'],
-        readen: row['readen'],
-      };
-      return message;
-    case 'opinion':
-      const opinion: Opinion = {
-        id: row['opinion_id'],
-        stars: row['stars'],
-        desc: row['desc'],
-        authorId: row['author_id'],
-        createdAt: row['created_at'],
-        authorFirstName: row['first_name'],
-        authorLastName: row['last_name'],
-      };
-      return opinion;
-  }
-
-  return null;
+  const comapnies = await sql(
+    'INSERT INTO companies (name, taxId, address_id) VALUES ($1, $2, $3) RETURNING company_id',
+    [company.companyName, company.taxId, addressId],
+  );
+  return comapnies[0]['company_id'];
 }
 
 export async function addAnnouncement(state: NewAnnouncementFormState, formData: FormData) {
@@ -461,10 +328,8 @@ export async function addAnnouncement(state: NewAnnouncementFormState, formData:
     departureDate: formData.get('departureDate'),
     arrivalDate: formData.get('arrivalDate'),
     desc: formData.get('desc'),
-    fromLatitude: formData.get('fromLatitude'),
-    fromLongitude: formData.get('fromLongitude'),
-    toLatitude: formData.get('toLatitude'),
-    toLongitude: formData.get('toLongitude'),
+    from: JSON.parse(formData.get('from') as string) as Address,
+    to: JSON.parse(formData.get('to') as string) as Address,
   });
   if (!validatedFields.success) {
     return {
@@ -474,8 +339,12 @@ export async function addAnnouncement(state: NewAnnouncementFormState, formData:
   const data = validatedFields.data;
   let [size_x, size_y] = data.maxSize.split('x').map(Number);
   const { userId } = await verifySession();
+
+  const from_address_id = await addAddress(data.from);
+  const to_address_id = await addAddress(data.to);
+
   await sql(
-    'INSERT INTO announcements (title, description, start_date, arrive_date, max_weight, size_x, size_y, max_height, author_id, is_accepted, vehicle_brand, vehicle_model, from_geography, to_geography, from_city, to_city, road_color) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)',
+    'INSERT INTO announcements (title, description, start_date, arrive_date, max_weight, size_x, size_y, max_height, author_id, is_accepted, vehicle_brand, vehicle_model, from_address_id, to_address_id, road_color) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',
     [
       data.title,
       data.desc,
@@ -489,10 +358,8 @@ export async function addAnnouncement(state: NewAnnouncementFormState, formData:
       false,
       data.brand,
       data.model,
-      `POINT(${data.fromLatitude} ${data.fromLongitude})`,
-      `POINT(${data.toLatitude} ${data.toLongitude})`,
-      data.fromCity,
-      data.toCity,
+      from_address_id,
+      to_address_id,
       '#' + ((Math.random() * 0xffffff) << 0).toString(16),
     ],
   );
@@ -507,15 +374,11 @@ export async function addErrand(state: NewErrandFormState, formData: FormData) {
     wareSize: formData.get('wareSize'),
     wareHeight: formData.get('wareHeight'),
     wareName: formData.get('wareName'),
-    fromCity: formData.get('fromCity'),
-    toCity: formData.get('toCity'),
+    from: JSON.parse(formData.get('from') as string) as Address,
+    to: JSON.parse(formData.get('to') as string) as Address,
     earliestAt: formData.get('earliestAt'),
     latestAt: formData.get('latestAt'),
     desc: formData.get('desc'),
-    fromLatitude: formData.get('fromLatitude'),
-    fromLongitude: formData.get('fromLongitude'),
-    toLatitude: formData.get('toLatitude'),
-    toLongitude: formData.get('toLongitude'),
     category: formData.get('wareCategory'),
     specialConditions: formData.get('specialConditions'),
   });
@@ -524,9 +387,13 @@ export async function addErrand(state: NewErrandFormState, formData: FormData) {
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
+
   const data = validatedFields.data;
   let [size_x, size_y] = data.wareSize.split('x').map(Number);
   const { userId } = await verifySession();
+
+  const from_address_id = await addAddress(data.from);
+  const to_address_id = await addAddress(data.to);
 
   const category = await sql('SELECT category_id FROM goods_categories WHERE name=$1', [
     data.category,
@@ -547,20 +414,18 @@ export async function addErrand(state: NewErrandFormState, formData: FormData) {
   const goodId = result[0].good_id;
 
   await sql(
-    'INSERT INTO errands (title, description, from_geography, to_geography, earliest_at, latest_at, good_id, author_id, is_accepted, from_city, to_city, road_color) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)',
+    'INSERT INTO errands (title, description, earliest_at, latest_at, good_id, author_id, is_accepted, road_color, from_address_id, to_address_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
     [
       data.title,
       data.desc,
-      `POINT(${data.fromLatitude} ${data.fromLongitude})`,
-      `POINT(${data.toLatitude} ${data.toLongitude})`,
       data.earliestAt,
       data.latestAt,
       goodId,
       userId,
       false,
-      data.fromCity,
-      data.toCity,
       '#' + ((Math.random() * 0xffffff) << 0).toString(16),
+      from_address_id,
+      to_address_id,
     ],
   );
   redirect({ locale: 'pl', href: '/errands' });
@@ -578,24 +443,24 @@ export async function searchUsers(state: User[], formData: FormData) {
   query += ` AND account_type = '${formData.get('accountType')}'`;
 
   const users = await sql(query);
-  return users.map((user) => dbRowToObject(user, 'user') as User);
+  return users.map((user) => dbRowToObject(user, RowMapping.User) as User);
 }
 
 export async function getChats(userId: string): Promise<ChatType[]> {
   let chats: ChatType[] = [];
   const dbChats = await sql(
-    "SELECT c.*, COALESCE(ua.user_id, ue.user_id) as post_author_id, COALESCE(ua.languages, ue.languages) as post_author_languages, u.first_name || ' ' || u.last_name as interested_user_name, COALESCE(ua.first_name || ' ' || ua.last_name, ue.first_name || ' ' || ue.last_name ) as post_author_name, u.languages as interested_user_languages, COALESCE(a.title, e.title) as title FROM chats c LEFT JOIN announcements a ON c.announcement_id = a.announcement_id LEFT JOIN errands e ON c.errand_id = e.errand_id LEFT JOIN users ua ON a.author_id = ua.user_id LEFT JOIN users ue ON e.author_id = ue.user_id LEFT JOIN users u ON c.interested_user_id = u.user_id WHERE COALESCE(ua.user_id, ue.user_id) = $1 OR u.user_id = $1",
+    "SELECT c.*, COALESCE(ua.user_id, ue.user_id) as post_author_id, COALESCE(ua.languages, ue.languages) as post_author_languages, COALESCE(c.announcement_id, c.errand_id) as post_id, u.first_name || ' ' || u.last_name as interested_user_name, COALESCE(ua.first_name || ' ' || ua.last_name, ue.first_name || ' ' || ue.last_name ) as post_author_name, u.languages as interested_user_languages, COALESCE(a.title, e.title) as title, ( SELECT MAX(sent_at) FROM messages m WHERE m.chat_id = c.chat_id ) as last_message_sent_at FROM chats c LEFT JOIN announcements a ON c.announcement_id = a.announcement_id LEFT JOIN errands e ON c.errand_id = e.errand_id LEFT JOIN users ua ON a.author_id = ua.user_id LEFT JOIN users ue ON e.author_id = ue.user_id LEFT JOIN users u ON c.interested_user_id = u.user_id WHERE COALESCE(ua.user_id, ue.user_id) = $1 OR u.user_id = $1 ORDER BY last_message_sent_at DESC NULLS LAST;",
     [userId],
   );
   await Promise.all(
     dbChats.map(async (dbChat) => {
-      let chat: ChatType = dbRowToObject(dbChat, 'chat') as ChatType;
+      let chat: ChatType = dbRowToObject(dbChat, RowMapping.ChatType) as ChatType;
       const dbMessages = await sql('SELECT * FROM messages WHERE chat_id = $1', [
         dbChat['chat_id'],
       ]);
 
       chat.messages = dbMessages.map(
-        (dbMessage) => dbRowToObject(dbMessage, 'message') as ChatMessage,
+        (dbMessage) => dbRowToObject(dbMessage, RowMapping.ChatMessage) as ChatMessage,
       );
 
       chats.push(chat);
@@ -609,7 +474,7 @@ export async function getMessages(chatId: string) {
   let messages: ChatMessage[] = [];
   const dbMessages = await sql('SELECT * FROM messages WHERE chat_id = $1', [chatId]);
   dbMessages.map((dbMessage) => {
-    messages.push(dbRowToObject(dbMessage, 'message') as ChatMessage);
+    messages.push(dbRowToObject(dbMessage, RowMapping.ChatMessage) as ChatMessage);
   });
   return messages;
 }
@@ -663,9 +528,17 @@ export async function getOpinions(userId: string) {
     [userId],
   );
   dbOpinions.map((dbOpinion) => {
-    opinions.push(dbRowToObject(dbOpinion, 'opinion') as Opinion);
+    opinions.push(dbRowToObject(dbOpinion, RowMapping.Opinion) as Opinion);
   });
   return opinions;
+}
+
+export async function getCompanyById(companyId: string): Promise<Company> {
+  const companies = await sql(
+    'SELECT companies.*, addresses.*, ST_X(addresses.geography::geometry) as longitude, ST_Y(addresses.geography::geometry) as latitude FROM companies INNER JOIN addresses ON companies.address_id = addresses.address_id WHERE companies.company_id = $1',
+    [companyId],
+  );
+  return dbRowToObject(companies[0], RowMapping.Company) as Company;
 }
 
 export async function addOpinion(state: any, formData: FormData) {
@@ -676,4 +549,286 @@ export async function addOpinion(state: any, formData: FormData) {
     [formData.get('forUserId'), formData.get('stars'), formData.get('desc'), userId],
   );
   redirect({ locale: 'pl', href: `/profile/${formData.get('forUserId')}` });
+}
+
+export async function getGoodCategoryIdByName(category: GoodsCategory): Promise<string | null> {
+  const categories = await sql('SELECT * FROM goods_categories WHERE name = $1', [category]);
+  if (categories.length > 0) return categories[0]['category_id'];
+  return null;
+}
+
+export async function getGoodCategoryById(id: string): Promise<GoodsCategory | null> {
+  const categories = await sql('SELECT * FROM goods_categories WHERE category_id = $1', [id]);
+  if (categories.length > 0) return categories[0]['name'] as GoodsCategory;
+  return null;
+}
+
+export async function getInitialContractValues({
+  postId,
+  secoundUserId,
+}: {
+  postId: string;
+  secoundUserId: string;
+}): Promise<Contract> {
+  const { userId } = await verifySession();
+  const secoundUser = await getUserById(secoundUserId);
+  const currentUser = await getUserById(userId);
+
+  let companies: Record<'carrier' | 'principal', Company> = {
+    carrier: {
+      companyName: '',
+      taxId: '',
+      address: {
+        countryId: 0,
+        stateId: 0,
+        cityId: 0,
+        countryName: '',
+        city: '',
+        geography: { coordinates: ['0', '0'] },
+        countryIso2: '',
+      },
+    },
+    principal: {
+      companyName: '',
+      taxId: '',
+      address: {
+        countryId: 0,
+        stateId: 0,
+        cityId: 0,
+        countryName: '',
+        city: '',
+        geography: { coordinates: ['0', '0'] },
+        countryIso2: '',
+      },
+    },
+  };
+
+  const carrier = currentUser.accountType == AccountType.Carrier ? currentUser : secoundUser;
+  const principal = currentUser.accountType == AccountType.Principal ? currentUser : secoundUser;
+
+  if (carrier.companyId) {
+    companies.carrier = await getCompanyById(carrier.companyId);
+  }
+  if (principal.companyId) {
+    companies.principal = await getCompanyById(principal.companyId);
+  }
+
+  const announcement = await getAnnouncementsById(postId);
+  const errand = await getErrandById(postId);
+
+  let initialContractValues: Contract = {
+    carrier: {
+      id: carrier.id!,
+      isCompany: !carrier.isPhisicalPerson!,
+      companyDetails: companies.carrier,
+      personDetails: {
+        name: carrier.firstname + ' ' + carrier.lastname,
+        address: {
+          countryId: 0,
+          stateId: 0,
+          cityId: 0,
+          countryName: '',
+          city: '',
+          geography: { coordinates: ['0', '0'] },
+        },
+      },
+    },
+    principal: {
+      id: principal.id!,
+      isCompany: !principal.isPhisicalPerson!,
+      companyDetails: companies.principal,
+      personDetails: {
+        name: secoundUser.firstname + ' ' + secoundUser.lastname,
+        address: {
+          countryId: 0,
+          stateId: 0,
+          cityId: 0,
+          countryName: '',
+          city: '',
+          geography: { coordinates: ['0', '0'] },
+        },
+      },
+    },
+    good: {
+      category: GoodsCategory.Other,
+      name: '',
+    },
+    road: {
+      from: {
+        countryId: 0,
+        stateId: 0,
+        cityId: 0,
+        countryName: '',
+        city: '',
+        geography: { coordinates: ['0', '0'] },
+      },
+      to: {
+        countryId: 0,
+        stateId: 0,
+        cityId: 0,
+        countryName: '',
+        city: '',
+        geography: { coordinates: ['0', '0'] },
+      },
+      departureDate: new Date(),
+      arrivalDate: new Date(),
+    },
+    acceptedByCarrier: false,
+    acceptedByPrincipal: false,
+  };
+
+  if (announcement) {
+    initialContractValues.road = {
+      from: announcement.from,
+      to: announcement.to,
+      departureDate: announcement.departureDate,
+      arrivalDate: announcement.arrivalDate,
+    };
+  }
+  if (errand) {
+    initialContractValues.road = {
+      from: errand.from,
+      to: errand.to,
+      departureDate: errand.earliestAt,
+      arrivalDate: errand.latestAt,
+    };
+    initialContractValues.good = {
+      category: errand.ware.category,
+      name: errand.ware.name,
+    };
+  }
+  return initialContractValues;
+}
+
+export async function addContract(state: any, formData: FormData) {
+  const { accountType } = await verifySession();
+
+  const carrier: PersonDetails = JSON.parse(formData.get('carrier') as string);
+  const principal: PersonDetails = JSON.parse(formData.get('principal') as string);
+  const road: RoadDetails = JSON.parse(formData.get('road') as string);
+  const good: GoodDetails = JSON.parse(formData.get('good') as string);
+  const chatId = formData.get('chatId');
+
+  const fromAddressId = await addAddress(road.from);
+  const toAddressId = await addAddress(road.to);
+
+  const carrierCompanyId = carrier.isCompany ? await addCompany(carrier.companyDetails!) : null;
+  const principalCompanyId = principal.isCompany
+    ? await addCompany(principal.companyDetails!)
+    : null;
+
+  const carrierAddressId = await addAddress(carrier.personDetails!.address);
+  const prinipalAddressId = await addAddress(principal.personDetails!.address);
+
+  const goodCategoryId = await getGoodCategoryIdByName(good.category);
+
+  await sql(
+    'INSERT INTO contracts (carrier_id, principal_id, from_address_id, to_address_id, departure_date, arrival_date, carrier_company_id, principal_company_id, carrier_address_id, principal_address_id, carrier_as_company, principal_as_company, good_category_id, good_name, chat_id, accepted_by_carrier, accepted_by_principal) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)',
+    [
+      carrier.id,
+      principal.id,
+      fromAddressId,
+      toAddressId,
+      road.departureDate,
+      road.arrivalDate,
+      carrierCompanyId,
+      principalCompanyId,
+      carrierAddressId,
+      prinipalAddressId,
+      carrier.isCompany,
+      principal.isCompany,
+      goodCategoryId,
+      good.name,
+      chatId,
+      accountType == AccountType.Carrier ? true : false,
+      accountType == AccountType.Principal ? true : false,
+    ],
+  );
+  redirect({ href: `/chats/${chatId}`, locale: 'pl' });
+}
+
+export async function getContractIdForChatId(chatId: string): Promise<string | null> {
+  const contracts = await sql(
+    'SELECT * FROM contracts WHERE chat_id = $1 ORDER BY created_at DESC LIMIT 1',
+    [chatId],
+  );
+  if (contracts.length > 0) return contracts[0]['contract_id'];
+  return null;
+}
+
+export async function getAddressById(id: string): Promise<Address | null> {
+  const addresses = await sql(
+    'SELECT *, ST_X(addresses.geography::geometry) as longitude, ST_Y(addresses.geography::geometry) as latitude FROM addresses WHERE address_id = $1',
+    [id],
+  );
+  if (addresses.length > 0) return dbRowToObject(addresses[0], RowMapping.Address) as Address;
+  return null;
+}
+
+export async function getContractById(contractId: string): Promise<Contract | undefined> {
+  const dbContract = (await sql('SELECT * FROM contracts WHERE contract_id = $1', [contractId]))[0];
+  const carrier = await getUserById(dbContract['carrier_id']);
+  const principal = await getUserById(dbContract['principal_id']);
+  const fromAddress = await getAddressById(dbContract['from_address_id']);
+  const toAddress = await getAddressById(dbContract['to_address_id']);
+  const carrierAsCompany = dbContract['carrier_as_company'];
+  const principalAsCompany = dbContract['principal_as_company'];
+  const departureDate = dbContract['departure_date'] as Date;
+  const arrivalDate = dbContract['arrival_date'] as Date;
+  const carrierCompany = dbContract['carrier_company_id']
+    ? await getCompanyById(dbContract['carrier_company_id'])
+    : null;
+  const principalCompany = dbContract['principal_company_id']
+    ? await getCompanyById(dbContract['principal_company_id'])
+    : null;
+  const carrierAddress = await getAddressById(dbContract['carrier_address_id']);
+  const principalAddress = await getAddressById(dbContract['principal_address_id']);
+  const goodCategory = await getGoodCategoryById(dbContract['good_category_id']);
+  const goodName = dbContract['good_name'];
+  const acceptedByCarrier = dbContract['accepted_by_carrier'];
+  const acceptedByPrincipal = dbContract['accepted_by_principal'];
+  const chatId = dbContract['chat_id'];
+
+  const contract: Contract = {
+    carrier: {
+      id: carrier.id!,
+      isCompany: carrierAsCompany,
+      companyDetails: {
+        companyName: carrierCompany?.companyName!,
+        taxId: carrierCompany?.taxId!,
+        address: carrierCompany?.address!,
+      },
+      personDetails: {
+        name: carrier.firstname + ' ' + carrier.lastname,
+        address: carrierAddress!,
+      },
+    },
+    principal: {
+      id: principal.id!,
+      isCompany: principalAsCompany,
+      companyDetails: {
+        companyName: principalCompany?.companyName!,
+        taxId: principalCompany?.taxId!,
+        address: principalCompany?.address!,
+      },
+      personDetails: {
+        name: principal.firstname + ' ' + principal.lastname,
+        address: principalAddress!,
+      },
+    },
+    good: {
+      category: goodCategory!,
+      name: goodName,
+    },
+    road: {
+      from: fromAddress!,
+      to: toAddress!,
+      departureDate: departureDate,
+      arrivalDate: arrivalDate,
+    },
+    acceptedByCarrier: acceptedByCarrier,
+    acceptedByPrincipal: acceptedByPrincipal,
+    chatId: chatId,
+  };
+  return contract;
 }
