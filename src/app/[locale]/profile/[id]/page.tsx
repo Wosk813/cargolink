@@ -1,16 +1,18 @@
 export const dynamic = 'force-dynamic';
 
-import { getUserById } from '@/src/app/lib/actions';
+import { editUserPremissions, getUserById } from '@/src/app/lib/actions';
 import Opinions from '../../../ui/opinions/opinions';
 import Description from '../../../ui/profile/description';
 import { verifySession } from '@/src/app/lib/dal';
 import { getTranslations } from 'next-intl/server';
-import { Language } from '@/src/app/lib/definitions';
+import { Language, Role } from '@/src/app/lib/definitions';
+import { Select } from '@/src/app/ui/select';
+import RoleSelect from '@/src/app/ui/profile/premissions';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const linkUserId = (await params).id;
   const user = await getUserById(linkUserId);
-  const { userId } = await verifySession();
+  const { userId, role } = await verifySession();
   const t = await getTranslations('profile');
 
   return (
@@ -58,6 +60,17 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           <div className="rounded-md bg-slate-700 p-2">
             <p className="text-sm text-slate-400">{t('postsCount')}</p>
             {user.postCount}
+          </div>
+          {role == Role.Admin && (
+            <RoleSelect
+              userId={user.id!}
+              currentRole={user.role!}
+              onRoleChange={editUserPremissions}
+            />
+          )}
+          <div className="rounded-md bg-slate-700 p-2">
+            <p className="text-sm text-slate-400">{t('accountPremissions')}</p>
+            {t(user.role)}
           </div>
         </div>
       </div>

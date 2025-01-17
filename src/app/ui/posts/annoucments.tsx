@@ -6,7 +6,6 @@ import { ArrowsUpDownIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24
 import Input from '../input';
 import { useState } from 'react';
 import { SortDirection, FilterProps } from '../../lib/definitions';
-import { Select } from '../select';
 import AnnoucmentsWrapper from './annoucements-wrapper';
 import AnnoucementsMapButt from './map-button';
 import { useTranslations } from 'next-intl';
@@ -28,7 +27,7 @@ function SortButton({ content, selected, ...rest }: SortButtonProps) {
   );
 }
 
-export default function Annoucments() {
+export default function Annoucments({ asModerator }: { asModerator: boolean }) {
   const [sortOptionsAreHidden, setSortOptionsAreHidden] = useState(true);
   const [filterOptionsAreHidden, setFilterOptionsAreHidden] = useState(true);
   const [sortDirection, setSortDirection] = useState(SortDirection.ByNewest);
@@ -144,6 +143,7 @@ export default function Annoucments() {
   };
 
   const t = useTranslations('posts');
+
   return (
     <div className="flex w-full flex-col gap-4">
       <div className="rounded-md bg-slate-700 transition-all duration-300 ease-in-out">
@@ -373,7 +373,7 @@ export default function Annoucments() {
         </div>
       </div>
       <AnnoucementsMapButt postType="announcements" />
-      <AnnoucmentsWrapper filterOptions={filters} sortDirection={sortDirection} />
+      <AnnoucmentsWrapper filterOptions={filters} sortDirection={sortDirection} showNotVerified={asModerator} />
     </div>
   );
 }

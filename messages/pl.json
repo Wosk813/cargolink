@@ -14,7 +14,9 @@
     "close": "Zamknij",
     "announcement": "Planowana trasa",
     "addAnnoucement": "Dodaj ogłoszenie o planowanej trasie",
-    "addErrand": "Dodaj zlecenie"
+    "addErrand": "Dodaj zlecenie",
+    "verifyErrands": "Zweryfikuj zlecenia",
+    "verifyAnnouncements": "Zweryfikuj ogłoszenia o planowanej trasie"
   },
   "login": {
     "login": "Zaloguj się",
@@ -248,7 +250,12 @@
     "userDesc": "Opis użytkownika",
     "saveChanges": "Zapisz zmiany",
     "noInfo": "Brak informacji",
-    "noDesc": "Brak opisu"
+    "noDesc": "Brak opisu",
+    "accountPremissions": "Uprawnienia konta",
+    "user": "Użytkownik",
+    "moderator": "Moderator",
+    "admin": "Admin",
+    "changeUserPremissions": "Zmień uprawnienia użytkownika"
   },
   "chat": {
     "showChats": "Pokaż czaty",

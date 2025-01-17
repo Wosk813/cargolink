@@ -13,6 +13,7 @@ import {
   PersonDetails,
   PostTypes,
   RoadDetails,
+  Role,
   RowMapping,
 } from '@/src/app/lib/definitions';
 import bcrypt from 'bcrypt';
@@ -152,6 +153,7 @@ export async function getUserByEmail(email: string) {
 export async function getAnnouncements(
   sortBy: SortDirection = SortDirection.ByNewest,
   filterOptions: FilterProps,
+  getUnverified?: boolean | null | undefined,
 ) {
   let sqlString = `
     SELECT announcements.*, a1.country_id as from_country_id, a1.state_id as from_state_id, a1.city_id as from_city_id, a1.country_name as from_country_name, a1.country_iso2 as from_country_iso2, a1.city_name as from_city, a2.country_id as to_country_id, a2.state_id as to_state_id, a2.city_id as to_city_id, a2.country_name as to_country_name, a2.country_iso2 as to_country_iso2, a2.city_name as to_city, ST_X(a1.geography::geometry) as from_longitude, ST_Y(a1.geography::geometry) as from_latitude, ST_X(a2.geography::geometry) as to_longitude, ST_Y(a2.geography::geometry) as to_latitude FROM announcements LEFT JOIN addresses a1 ON announcements.from_address_id = a1.address_id LEFT JOIN addresses a2 ON announcements.to_address_id = a2.address_id
@@ -163,7 +165,9 @@ export async function getAnnouncements(
   const announcements: Array<AnnouncementProps | null> = [];
 
   dbrows.map((dbrow) => {
-    if (!dbrow['is_accepted']) return;
+    if ((!getUnverified && !dbrow['is_accepted']) || (getUnverified && dbrow['is_accepted']))
+      return;
+
     let row: AnnouncementProps | null = dbRowToObject(
       dbrow,
       RowMapping.AnnoucementProps,
@@ -177,6 +181,7 @@ export async function getAnnouncements(
 export async function getErrands(
   sortBy: SortDirection = SortDirection.ByNewest,
   filterOptions: FilterProps,
+  getUnverified?: boolean | null | undefined,
 ) {
   let sqlString = `
     SELECT
@@ -213,7 +218,8 @@ export async function getErrands(
   const errands: Array<ErrandProps | null> = [];
 
   dbrows.map((dbrow) => {
-    if (!dbrow['is_accepted']) return;
+    if ((!getUnverified && !dbrow['is_accepted']) || (getUnverified && dbrow['is_accepted']))
+      return;
     let row: ErrandProps | null = dbRowToObject(dbrow, RowMapping.ErrandProps) as ErrandProps;
     errands.push(row);
   });
@@ -831,4 +837,24 @@ export async function getContractById(contractId: string): Promise<Contract | un
     chatId: chatId,
   };
   return contract;
+}
+
+export async function acceptErrand(id: string) {
+  await sql('UPDATE errands SET is_accepted = true WHERE errand_id = $1', [id]);
+}
+
+export async function deleteErrand(id: string) {
+  await sql('DELETE FROM errands WHERE errand_id = $1', [id]);
+}
+
+export async function acceptAnnouncement(id: string) {
+  await sql('UPDATE announcements SET is_accepted = true WHERE announcement_id = $1', [id]);
+}
+
+export async function deleteAnnouncement(id: string) {
+  await sql('DELETE FROM announcements WHERE announcement_id = $1', [id]);
+}
+
+export async function editUserPremissions(userId: string, role: Role) {
+  await sql('UPDATE users SET role = $1 WHERE user_id = $2', [role, userId]);
 }

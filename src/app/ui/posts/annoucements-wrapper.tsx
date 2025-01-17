@@ -11,9 +11,14 @@ import { useLocale } from 'next-intl';
 type WrapperProps = {
   sortDirection: SortDirection;
   filterOptions: FilterProps;
+  showNotVerified: boolean;
 };
 
-export default function AnnoucmentsWrapper({ sortDirection, filterOptions }: WrapperProps) {
+export default function AnnoucmentsWrapper({
+  sortDirection,
+  filterOptions,
+  showNotVerified,
+}: WrapperProps) {
   const [annoucements, setAnnoucements] = useState<Array<AnnouncementProps>>([]);
   const [isLoading, setLoading] = useState(true);
   const currentLocale = useLocale();
@@ -85,10 +90,15 @@ export default function AnnoucmentsWrapper({ sortDirection, filterOptions }: Wra
 
     const params = buildURLParams();
 
-    router.push(`/${currentLocale}/announcements?${params.toString()}`, { scroll: false });
+    router.push(
+      `/${currentLocale}/announcements${showNotVerified ? '/notVerified' : ''}?${params.toString()}`,
+      { scroll: false },
+    );
 
     setLoading(true);
-    fetch(`/pl/announcements/get?${params.toString()}`, { cache: 'no-store' })
+    fetch(`/pl/announcements/get/${showNotVerified ? '/notVerified' : ''}?${params.toString()}`, {
+      cache: 'no-store',
+    })
       .then((res) => res.json())
       .then((data) => {
         setAnnoucements(data);
@@ -108,12 +118,14 @@ export default function AnnoucmentsWrapper({ sortDirection, filterOptions }: Wra
       {annoucements.map((annoucement: AnnouncementProps, index) => (
         <Link key={annoucement.id} href={`/announcements/${annoucement.id}`}>
           <Annoucement
+            id={annoucement.id}
             title={annoucement.title}
             from={annoucement.from}
             to={annoucement.to}
             departureDate={annoucement.departureDate}
             arrivalDate={annoucement.arrivalDate}
             carProps={annoucement.carProps}
+            showModeratorButtons={showNotVerified}
           />
         </Link>
       ))}

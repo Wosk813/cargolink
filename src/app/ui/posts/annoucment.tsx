@@ -1,6 +1,8 @@
 import { useTranslations } from 'next-intl';
 import { AnnouncementProps } from '../../lib/definitions';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import { Button } from '../button';
+import { acceptAnnouncement, deleteAnnouncement } from '../../lib/actions';
 
 export const FormattedDate = ({ date }: { date: Date | undefined }) => {
   if (!date) return <p>Error</p>;
@@ -33,12 +35,14 @@ export const formatWeight = (weight: number | undefined) => {
 };
 
 export default function Annoucement({
+  id,
   title,
   from,
   to,
   departureDate,
   arrivalDate,
   carProps,
+  showModeratorButtons,
 }: AnnouncementProps) {
   const t = useTranslations('posts');
 
@@ -82,6 +86,16 @@ export default function Annoucement({
           <p className="text-center text-xl md:text-2xl">{carProps.maxSize.height} cm</p>
         </div>
       </div>
+      {showModeratorButtons && (
+        <div className="flex flex-col gap-4">
+          <Button onClick={() => acceptAnnouncement(id!)} className="bg-lime-300">
+            Zatwierdź
+          </Button>
+          <Button onClick={() => deleteAnnouncement(id!)} className="bg-red-500 text-white">
+            Usuń
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

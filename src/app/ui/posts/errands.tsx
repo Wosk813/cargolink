@@ -28,7 +28,7 @@ function SortButton({ content, selected, ...rest }: SortButtonProps) {
   );
 }
 
-export default function Errands() {
+export default function Errands({ asModerator }: { asModerator: boolean }) {
   const [sortOptionsAreHidden, setSortOptionsAreHidden] = useState(true);
   const [filterOptionsAreHidden, setFilterOptionsAreHidden] = useState(true);
   const [sortDirection, setSortDirection] = useState(SortDirection.ByNewest);
@@ -410,7 +410,11 @@ export default function Errands() {
         </div>
       </div>
       <AnnoucementsMapButt postType="errands" />
-      <ErrandsWrapper filterOptions={filters} sortDirection={sortDirection} />
+      <ErrandsWrapper
+        filterOptions={filters}
+        sortDirection={sortDirection}
+        showNotVerified={asModerator}
+      />
     </div>
   );
 }
