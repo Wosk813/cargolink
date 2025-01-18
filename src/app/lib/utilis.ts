@@ -306,3 +306,51 @@ export function sortDirectionToSQL(sortBy: SortDirection, onColumn: string = '')
 export async function verifyPassword(plainPassword: string, hashedPassword: string) {
   return await bcrypt.compare(plainPassword, hashedPassword);
 }
+
+export function calculateDistance(point1: GeoPoint, point2: GeoPoint): number {
+  const R = 6371;
+
+  const lat1 = (parseFloat(point1.coordinates[0]) * Math.PI) / 180;
+  const lon1 = (parseFloat(point1.coordinates[1]) * Math.PI) / 180;
+  const lat2 = (parseFloat(point2.coordinates[0]) * Math.PI) / 180;
+  const lon2 = (parseFloat(point2.coordinates[1]) * Math.PI) / 180;
+
+  const dLat = lat2 - lat1;
+  const dLon = lon2 - lon1;
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c;
+
+  return Number(distance.toFixed(2));
+}
+
+export function arePointsInRange(point1: GeoPoint, point2: GeoPoint, maxDistance: number): boolean {
+  return calculateDistance(point1, point2) <= maxDistance;
+}
+
+export function areDimensionsValid(ware: ErrandProps['ware'], carProps: AnnouncementProps['carProps']): boolean {
+  return (
+    ware.weight <= carProps.maxWeight &&
+    ware.size.height <= carProps.maxSize.height &&
+    ware.size.x * ware.size.y <= carProps.maxSize.x * carProps.maxSize.y
+  );
+}
+
+export function isMatchingDelivery(
+  fromPoint1: GeoPoint,
+  fromPoint2: GeoPoint,
+  toPoint1: GeoPoint,
+  toPoint2: GeoPoint,
+  ware: ErrandProps['ware'],
+  carProps: AnnouncementProps['carProps']
+): boolean {
+  const isStartPointValid = arePointsInRange(fromPoint1, fromPoint2, 50);
+  const isEndPointValid = arePointsInRange(toPoint1, toPoint2, 50);
+  const areSizesValid = areDimensionsValid(ware, carProps);
+
+  return isStartPointValid && isEndPointValid && areSizesValid;
+}

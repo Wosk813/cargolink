@@ -35,7 +35,14 @@ import {
 } from '@/src/app/lib/definitions';
 import { getTranslations } from 'next-intl/server';
 import { verifySession } from './dal';
-import { dbRowToObject, filterOptionsToSQL, sortDirectionToSQL, verifyPassword } from './utilis';
+import {
+  calculateDistance,
+  dbRowToObject,
+  filterOptionsToSQL,
+  isMatchingDelivery,
+  sortDirectionToSQL,
+  verifyPassword,
+} from './utilis';
 
 const sql = neon(
   `postgres://neondb_owner:zZD3Rg6YXVMn@ep-soft-firefly-a2gmv5of-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require`,
@@ -152,17 +159,16 @@ export async function getUserByEmail(email: string) {
 
 export async function getAnnouncements(
   sortBy: SortDirection = SortDirection.ByNewest,
-  filterOptions: FilterProps,
+  filterOptions?: FilterProps,
   getUnverified?: boolean | null | undefined,
 ) {
   let sqlString = `
     SELECT announcements.*, a1.country_id as from_country_id, a1.state_id as from_state_id, a1.city_id as from_city_id, a1.country_name as from_country_name, a1.country_iso2 as from_country_iso2, a1.city_name as from_city, a2.country_id as to_country_id, a2.state_id as to_state_id, a2.city_id as to_city_id, a2.country_name as to_country_name, a2.country_iso2 as to_country_iso2, a2.city_name as to_city, ST_X(a1.geography::geometry) as from_longitude, ST_Y(a1.geography::geometry) as from_latitude, ST_X(a2.geography::geometry) as to_longitude, ST_Y(a2.geography::geometry) as to_latitude FROM announcements LEFT JOIN addresses a1 ON announcements.from_address_id = a1.address_id LEFT JOIN addresses a2 ON announcements.to_address_id = a2.address_id
-    ${filterOptionsToSQL(filterOptions)} 
     ${sortDirectionToSQL(sortBy)}
   `;
 
   const dbrows = await sql(sqlString);
-  const announcements: Array<AnnouncementProps | null> = [];
+  const announcements: Array<AnnouncementProps> = [];
 
   dbrows.map((dbrow) => {
     if ((!getUnverified && !dbrow['is_accepted']) || (getUnverified && dbrow['is_accepted']))
@@ -180,7 +186,7 @@ export async function getAnnouncements(
 
 export async function getErrands(
   sortBy: SortDirection = SortDirection.ByNewest,
-  filterOptions: FilterProps,
+  filterOptions?: FilterProps,
   getUnverified?: boolean | null | undefined,
 ) {
   let sqlString = `
@@ -215,7 +221,7 @@ export async function getErrands(
   `;
 
   const dbrows = await sql(sqlString);
-  const errands: Array<ErrandProps | null> = [];
+  const errands: Array<ErrandProps> = [];
 
   dbrows.map((dbrow) => {
     if ((!getUnverified && !dbrow['is_accepted']) || (getUnverified && dbrow['is_accepted']))
@@ -342,28 +348,55 @@ export async function addAnnouncement(state: NewAnnouncementFormState, formData:
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-  const data = validatedFields.data;
-  let [size_x, size_y] = data.maxSize.split('x').map(Number);
+    let [size_x, size_y] = validatedFields.data.maxSize.split('x').map(Number);
+    const annoucement: AnnouncementProps = {
+      title: validatedFields.data.title,
+      from: validatedFields.data.from,
+      to: validatedFields.data.to,
+      departureDate: new Date(validatedFields.data.departureDate),
+      arrivalDate: new Date(validatedFields.data.arrivalDate),
+      desc: validatedFields.data.desc,
+      carProps: {
+        maxWeight: Number(validatedFields.data.maxWeight),
+        maxSize: {
+          x: size_x,
+          y: size_y,
+          height: Number(validatedFields.data.maxHeight),
+        },
+        model: validatedFields.data.model,
+        brand: validatedFields.data.brand
+      },
+    };
+
   const { userId } = await verifySession();
 
-  const from_address_id = await addAddress(data.from);
-  const to_address_id = await addAddress(data.to);
+  const linkedErrandId = await tryLinkToPost(annoucement);
+  if (linkedErrandId) {
+    redirect({
+      locale: 'pl',
+      href: `/errands/foundGoodErrand/${linkedErrandId}`,
+    });
+    return;
+  }
+
+  const from_address_id = await addAddress(annoucement.from);
+  const to_address_id = await addAddress(annoucement.to);
 
   await sql(
     'INSERT INTO announcements (title, description, start_date, arrive_date, max_weight, size_x, size_y, max_height, author_id, is_accepted, vehicle_brand, vehicle_model, from_address_id, to_address_id, road_color) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',
     [
-      data.title,
-      data.desc,
-      data.departureDate,
-      data.arrivalDate,
-      data.maxWeight,
+      annoucement.title,
+      annoucement.desc,
+      annoucement.departureDate,
+      annoucement.arrivalDate,
+      annoucement.carProps.maxWeight,
       size_x,
       size_y,
-      data.maxHeight,
+      annoucement.carProps.maxSize.height,
       userId,
       false,
-      data.brand,
-      data.model,
+      annoucement.carProps.brand,
+      annoucement.carProps.model,
       from_address_id,
       to_address_id,
       '#' + ((Math.random() * 0xffffff) << 0).toString(16),
@@ -388,32 +421,63 @@ export async function addErrand(state: NewErrandFormState, formData: FormData) {
     category: formData.get('wareCategory'),
     specialConditions: formData.get('specialConditions'),
   });
+
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
 
-  const data = validatedFields.data;
-  let [size_x, size_y] = data.wareSize.split('x').map(Number);
+  let [size_x, size_y] = validatedFields.data.wareSize.split('x').map(Number);
+
+  const errand: ErrandProps = {
+    title: validatedFields.data.title,
+    from: validatedFields.data.from,
+    to: validatedFields.data.to,
+    earliestAt: new Date(validatedFields.data.earliestAt),
+    latestAt: new Date(validatedFields.data.latestAt),
+    desc: validatedFields.data.desc,
+    ware: {
+      category: validatedFields.data.category as GoodsCategory,
+      name: validatedFields.data.wareName,
+      weight: Number(validatedFields.data.wareWeight),
+      size: {
+        x: size_x,
+        y: size_y,
+        height: Number(validatedFields.data.wareHeight),
+      },
+      specialConditions: validatedFields.data.specialConditions || undefined,
+    },
+  };
+
   const { userId } = await verifySession();
 
-  const from_address_id = await addAddress(data.from);
-  const to_address_id = await addAddress(data.to);
+  const from_address_id = await addAddress(errand.from);
+  const to_address_id = await addAddress(errand.to);
 
-  const category = await sql('SELECT category_id FROM goods_categories WHERE name=$1', [
-    data.category,
-  ]);
+  const categoryId = await getGoodCategoryIdByName(errand.ware.category);
+
+  const linkedAnnouncementId = await tryLinkToPost(errand);
+  console.log('linkedAnnouncementId ' + linkedAnnouncementId);
+  if (linkedAnnouncementId) {
+    console.log('redirecting to good announcement');
+    redirect({
+      locale: 'pl',
+      href: `/announcements/foundGoodAnnouncement/${linkedAnnouncementId}`,
+    });
+    return;
+  }
+
   const result = await sql(
     'INSERT INTO goods (name, category_id, weight, size_x, size_y, height, special_conditions) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING good_id',
     [
-      data.wareName,
-      category[0].category_id,
-      data.wareWeight,
+      errand.ware.name,
+      categoryId,
+      errand.ware.weight,
       size_x,
       size_y,
-      data.wareHeight,
-      data.specialConditions,
+      errand.ware.size.height,
+      errand.ware.specialConditions,
     ],
   );
 
@@ -422,10 +486,10 @@ export async function addErrand(state: NewErrandFormState, formData: FormData) {
   await sql(
     'INSERT INTO errands (title, description, earliest_at, latest_at, good_id, author_id, is_accepted, road_color, from_address_id, to_address_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
     [
-      data.title,
-      data.desc,
-      data.earliestAt,
-      data.latestAt,
+      errand.title,
+      errand.desc,
+      errand.earliestAt,
+      errand.latestAt,
       goodId,
       userId,
       false,
@@ -857,4 +921,34 @@ export async function deleteAnnouncement(id: string) {
 
 export async function editUserPremissions(userId: string, role: Role) {
   await sql('UPDATE users SET role = $1 WHERE user_id = $2', [role, userId]);
+}
+
+export async function tryLinkToPost(post: ErrandProps | AnnouncementProps): Promise<string | null> {
+  if ('ware' in post) {
+    const announcements = await getAnnouncements(SortDirection.ByNewest);
+    const match = announcements.find((announcement) =>
+      isMatchingDelivery(
+        post.from.geography!,
+        announcement.from.geography!,
+        post.to.geography!,
+        announcement.to.geography!,
+        post.ware,
+        announcement.carProps,
+      ),
+    );
+    return match?.id ?? null;
+  } else {
+    const errands = await getErrands(SortDirection.ByNewest);
+    const match = errands.find((errand) =>
+      isMatchingDelivery(
+        post.from.geography!,
+        errand.from.geography!,
+        post.to.geography!,
+        errand.to.geography!,
+        errand.ware,
+        post.carProps,
+      ),
+    );
+    return match?.id ?? null;
+  }
 }
