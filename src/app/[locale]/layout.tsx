@@ -58,7 +58,7 @@ async function getNavLinks(
         href: '/errands/add',
         highlighted: true,
       });
-    if (role == Role.Moderator || role == Role.Admin)
+    if (role == Role.Moderator || role == Role.Admin) {
       links.push({
         name: t('verifyAnnouncements'),
         href: '/announcements/notVerified',
@@ -67,8 +67,9 @@ async function getNavLinks(
       links.push({
         name: t('verifyErrands'),
         href: '/errands/notVerified',
-        highlighted: false
+        highlighted: false,
       });
+    }
   }
   return links;
 }

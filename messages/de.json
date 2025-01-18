@@ -232,7 +232,11 @@
     "chooseState": "Bundesland auswählen",
     "chooseCity": "Stadt auswählen",
     "postalCode": "Postleitzahl",
-    "street": "Straße"
+    "street": "Straße",
+    "foundGoodAnnouncement": "Eine Anzeige für eine geplante Route, die zum Auftrag passt, den Sie hinzufügen möchten, wurde gefunden",
+    "goToAnnouncement": "Zur Anzeige gehen",
+    "foundGoodErrand": "Ein Auftrag, der zur Anzeige für eine geplante Route passt, die Sie hinzufügen möchten, wurde gefunden",
+    "goToErrand": "Zum Auftrag gehen"
   },
   "profile": {
     "aboutMe": "Über mich",
