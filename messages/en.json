@@ -16,7 +16,8 @@
     "addAnnoucement": "Add an announcement about your planned route",
     "addErrand": "Add errand",
     "verifyErrands": "Verify errands",
-    "verifyAnnouncements": "Verify planned route announcements"
+    "verifyAnnouncements": "Verify planned route announcements",
+    "statute": "Statute"
   },
   "login": {
     "login": "Log in",

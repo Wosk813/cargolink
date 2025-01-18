@@ -34,6 +34,11 @@ async function getNavLinks(
       href: '/search/searchUser',
       highlighted: false,
     },
+    {
+      name: t('statute'),
+      href: '/statute',
+      highlighted: false,
+    },
   ];
   if (isAuth) {
     links.push({
