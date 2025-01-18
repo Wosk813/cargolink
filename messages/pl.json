@@ -2,7 +2,7 @@
   "nav": {
     "announcements": "Planowane trasy",
     "errands": "Zlecenia",
-    "searchUser": "Wyszukaj użytkownika",
+    "search": "Wyszukaj użytkownika",
     "login": "Zaloguj się",
     "signup": "Zarejestruj się",
     "profile": "Profil",
@@ -17,7 +17,9 @@
     "addErrand": "Dodaj zlecenie",
     "verifyErrands": "Zweryfikuj zlecenia",
     "verifyAnnouncements": "Zweryfikuj ogłoszenia o planowanej trasie",
-    "statute": "Regulamin"
+    "statute": "Regulamin",
+    "auth": "Autentykacja",
+    "addOpinion": "Dodaj opinie"
   },
   "login": {
     "login": "Zaloguj się",
@@ -87,7 +89,7 @@
   "posts": {
     "sort": "Sortuj",
     "filter": "Filtruj",
-    "openMap": "Otwóz mapę tras",
+    "openMap": "Otwórz mapę tras",
     "fromCity": "z",
     "from": "od",
     "to": "do",

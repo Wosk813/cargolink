@@ -20,7 +20,7 @@ export default function Nav({ links, onLogout, isAuth, role }: ClientNavigationP
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const currentPath = pathname.split('/').pop();
+  const currentPath = pathname.split('/')[2];
 
   const handleOpenMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -42,7 +42,9 @@ export default function Nav({ links, onLogout, isAuth, role }: ClientNavigationP
           <NavLinks links={links} handleClickLink={handleClickLink} />
         </div>
         <div className="mt-auto">
-          {role && role != Role.User && <p className="text-sm text-slate-400">{role.toUpperCase()}</p>}
+          {role && role != Role.User && (
+            <p className="text-sm text-slate-400">{role.toUpperCase()}</p>
+          )}
           <BottomButtons onLogout={onLogout} isAuth={isAuth} />
         </div>
       </div>
@@ -51,7 +53,7 @@ export default function Nav({ links, onLogout, isAuth, role }: ClientNavigationP
         data-testid="page-title"
         className="flex w-full justify-between px-5 py-8 text-4xl font-bold text-white md:hidden"
       >
-        <p>{currentPath}</p>
+        <p>{t(currentPath)}</p>
         <Bars3Icon data-testid="menu-button" onClick={handleOpenMenu} className="w-10 text-white" />
       </div>
 

@@ -2,7 +2,7 @@
   "nav": {
     "announcements": "Geplante Routen",
     "errands": "Bestellungen",
-    "searchUser": "Benutzersuche",
+    "search": "Benutzersuche",
     "login": "Einloggen",
     "signup": "Registrieren",
     "profile": "Profil",
@@ -17,7 +17,9 @@
     "addErrand": "Auftrag hinzufügen",
     "verifyErrands": "Aufträge überprüfen",
     "verifyAnnouncements": "Anzeigen für geplante Routen überprüfen",
-    "statute": "Satzung"
+    "statute": "Satzung",
+    "auth": "Authentifizierung",
+    "addOpinion": "Meinung hinzufügen"
   },
   "login": {
     "login": "Einloggen",

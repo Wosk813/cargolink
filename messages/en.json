@@ -2,7 +2,7 @@
   "nav": {
     "announcements": "Announcements",
     "errands": "Errands",
-    "searchUser": "Search user",
+    "search": "Search user",
     "login": "Login",
     "signup": "Sign up",
     "profile": "Profile",
@@ -17,7 +17,9 @@
     "addErrand": "Add errand",
     "verifyErrands": "Verify errands",
     "verifyAnnouncements": "Verify planned route announcements",
-    "statute": "Statute"
+    "statute": "Statute",
+    "auth": "Authentication",
+    "addOpinion": "Add opinion"
   },
   "login": {
     "login": "Log in",

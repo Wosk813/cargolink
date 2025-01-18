@@ -30,7 +30,7 @@ async function getNavLinks(
       highlighted: false,
     },
     {
-      name: t('searchUser'),
+      name: t('search'),
       href: '/search/searchUser',
       highlighted: false,
     },
