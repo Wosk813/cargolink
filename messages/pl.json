@@ -232,7 +232,11 @@
     "chooseState": "Wybierz stan",
     "chooseCity": "Wybierz miasto",
     "postalCode": "Kod pocztowy",
-    "street": "Ulica"
+    "street": "Ulica",
+    "foundGoodAnnouncement": "Znaleziono ogłoszenie o planowanej trasie pasujące do zlecenia, które chcesz dodać",
+    "goToAnnouncement": "Przejdź do ogłoszenia",
+    "foundGoodErrand": "Znaleziono zlecenie pasujące do ogłoszenia o planowanej trasie, które chcesz dodać",
+    "goToErrand": "Przejdź do zlecenia"
   },
   "profile": {
     "aboutMe": "O mnie",

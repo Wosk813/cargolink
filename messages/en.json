@@ -232,7 +232,11 @@
     "chooseState": "Choose state",
     "chooseCity": "Choose city",
     "postalCode": "Postal code",
-    "street": "Street"
+    "street": "Street",
+    "foundGoodAnnouncement": "A planned route announcement matching the errand you want to add has been found",
+    "goToAnnouncement": "Go to announcement",
+    "foundGoodErrand": "An errand matching the planned route announcement you want to add has been found",
+    "goToErrand": "Go to errand"
   },
   "profile": {
     "aboutMe": "About me",
