@@ -38,9 +38,7 @@ export default function Nav({ links, onLogout, isAuth, role }: ClientNavigationP
       >
         <h1 className="py-8 text-center text-4xl font-bold">CargoLink</h1>
 
-        <div>
-          <NavLinks links={links} handleClickLink={handleClickLink} />
-        </div>
+        <div>{links && <NavLinks links={links} handleClickLink={handleClickLink} />}</div>
         <div className="mt-auto">
           {role && role != Role.User && (
             <p className="text-sm text-slate-400">{role.toUpperCase()}</p>
