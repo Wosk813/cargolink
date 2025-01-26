@@ -7,14 +7,14 @@ import { verifySession } from '@/src/app/lib/dal';
 import { Button } from '@/src/app/ui/button';
 import { getTranslations } from 'next-intl/server';
 import GoToChatButton from '@/src/app/ui/posts/go-to-chat-butt';
+import { AccountType } from '@/src/app/lib/definitions';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const annoucementId = (await params).id;
   const annoucement = await getAnnouncementsById(annoucementId);
   if (!annoucement) return <h1>Error</h1>;
-  const { userId, isAuth } = await verifySession();
+  const { userId, isAuth, accountType } = await verifySession();
   const t = await getTranslations('posts');
-  console.log(annoucement)
   return (
     <div className="flex flex-col gap-4 pb-4">
       <div className="flex flex-col gap-4 md:flex-row">
@@ -39,7 +39,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         </div>
       </div>
       <Opinions forUserId={annoucement?.authorId ?? ''} />
-      {isAuth && (
+      {isAuth && accountType == AccountType.Principal && (
         <div
           className={`flex flex-col gap-2 rounded-md bg-slate-700 p-2 ${annoucement?.authorId == userId ? 'hidden' : ''}`}
         >

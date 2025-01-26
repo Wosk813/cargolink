@@ -348,25 +348,25 @@ export async function addAnnouncement(state: NewAnnouncementFormState, formData:
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-    let [size_x, size_y] = validatedFields.data.maxSize.split('x').map(Number);
-    const annoucement: AnnouncementProps = {
-      title: validatedFields.data.title,
-      from: validatedFields.data.from,
-      to: validatedFields.data.to,
-      departureDate: new Date(validatedFields.data.departureDate),
-      arrivalDate: new Date(validatedFields.data.arrivalDate),
-      desc: validatedFields.data.desc,
-      carProps: {
-        maxWeight: Number(validatedFields.data.maxWeight),
-        maxSize: {
-          x: size_x,
-          y: size_y,
-          height: Number(validatedFields.data.maxHeight),
-        },
-        model: validatedFields.data.model,
-        brand: validatedFields.data.brand
+  let [size_x, size_y] = validatedFields.data.maxSize.split('x').map(Number);
+  const annoucement: AnnouncementProps = {
+    title: validatedFields.data.title,
+    from: validatedFields.data.from,
+    to: validatedFields.data.to,
+    departureDate: new Date(validatedFields.data.departureDate),
+    arrivalDate: new Date(validatedFields.data.arrivalDate),
+    desc: validatedFields.data.desc,
+    carProps: {
+      maxWeight: Number(validatedFields.data.maxWeight),
+      maxSize: {
+        x: size_x,
+        y: size_y,
+        height: Number(validatedFields.data.maxHeight),
       },
-    };
+      model: validatedFields.data.model,
+      brand: validatedFields.data.brand,
+    },
+  };
 
   const { userId } = await verifySession();
 
@@ -564,6 +564,7 @@ export async function startNewChat(state: any, postId: string) {
     'SELECT * FROM chats WHERE announcement_id = $1 OR errand_id = $1 AND interested_user_id = $2',
     [postId, userId],
   );
+
   if (chat.length > 0) redirect({ locale: 'pl', href: '/chats' });
 
   const annoucements = await sql(
@@ -571,7 +572,7 @@ export async function startNewChat(state: any, postId: string) {
     [postId],
   );
   if (annoucements.length > 0)
-    await sql('INSERT INTO chats (announcement_id, interested_user_id) VALUES ($1, $2)', [
+    await sql('INSERT INTO chats (announcement_id, interested_user_id) VALUES ($1, $2) RETURN', [
       annoucements[0]['announcement_id'],
       userId,
     ]);
