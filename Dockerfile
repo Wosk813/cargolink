@@ -1,19 +1,13 @@
-FROM node:18-alpine
-
-# Instalacja niezbędnych pakietów do kompilacji
-RUN apk add --no-cache python3 make g++ linux-headers
-
+FROM node:18-slim AS builder
 WORKDIR /app
-
-# Kopiowanie plików package
-COPY package*.json ./
-
-# Instalacja zależności
-RUN npm install
-
-# Kopiowanie reszty aplikacji
+COPY package.json package-lock.json ./
+RUN npm install --legacy-peer-deps
 COPY . .
-
+RUN npm run build
+RUN npm prune --production
+FROM node:18-slim
+ENV NODE_ENV=production
+WORKDIR /app
+COPY --from=builder /app ./
 EXPOSE 3000
-
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
