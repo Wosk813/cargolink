@@ -1,0 +1,17 @@
+---
+- name: base
+  hosts: all
+  become: true 
+  
+  tasks:
+    - name: app
+      community.docker.docker_container:
+        name: cargolink
+        image: wosk813/cargolink:latest
+        state: started
+        ports:
+          - "80:3000"
+        restart_policy: always
+      tags: app
+
+        
